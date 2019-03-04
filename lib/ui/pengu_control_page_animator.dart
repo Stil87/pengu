@@ -29,6 +29,6 @@ class _PengUControlPageAnimatorState extends State<PengUControlPageAnimator>
 
   @override
   Widget build(BuildContext context) {
-    return PengUControlPage();
+    return PengUControlPage(animationController: _controller);
   }
 }
