@@ -14,7 +14,7 @@ class _FoldableOptionsState extends State<FoldableOptions>
     Icons.star_border,
     Icons.notifications_none
   ];
-double boxheight = 10;
+
   Animation<Alignment> firstAnim;
   Animation<Alignment> secondAnim;
   Animation<Alignment> thirdAnim;
@@ -68,9 +68,11 @@ double boxheight = 10;
   @override
   void initState() {
     super.initState();
+
     controller = AnimationController(vsync: this, duration: duration);
 
     final anim = CurvedAnimation(parent: controller, curve: Curves.linear);
+    boxHeight = Tween<double>(begin: 20.0, end: 200.0).animate(anim);
     firstAnim = Tween<Alignment>(
             begin: Alignment.bottomCenter, end: Alignment.bottomRight)
         .animate(anim);
@@ -86,24 +88,24 @@ double boxheight = 10;
     fifthAnim = Tween<Alignment>(
             begin: Alignment.bottomCenter, end: Alignment.bottomLeft)
         .animate(anim);
-    verticalPadding = Tween<double>(begin: 0, end: 35).animate(anim);
-    boxHeight = Tween<double>(begin: 0.5, end: 1.0).animate(anim);
+    verticalPadding = Tween<double>(begin: 0, end: 30).animate(anim);
 
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      padding: EdgeInsets.only(bottom: 15.0),
-      width: 200,
-      height: 150 ,
-      margin: EdgeInsets.only(right: 2),
-      child: AnimatedBuilder(
-        animation: controller,
-        builder: (context, child) {
-          return Stack(
-
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        //reminder ohne Container ist auch coo wenn das menü sich nur horizontal bewegt
+        return Container(
+          decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.all(Radius.circular(800.0))),
+          width:   boxHeight.value ,//250,
+          height:  boxHeight.value,
+          margin: EdgeInsets.only(top: 0.0, bottom: 50.0),
+          child: Stack(
             children: <Widget>[
               Align(
                 alignment: firstAnim.value,
@@ -113,7 +115,8 @@ double boxheight = 10;
                   alignment: secondAnim.value,
                   child: Container(
                       padding: EdgeInsets.only(
-                          left: 0.0, top: verticalPadding.value),
+                          right: verticalPadding.value,
+                          top: verticalPadding.value),
                       child: getItem(options.elementAt(1)))),
               Align(
                   alignment: thirdAnim.value,
@@ -121,8 +124,9 @@ double boxheight = 10;
               Align(
                   alignment: fourthAnim.value,
                   child: Container(
-                    padding:
-                        EdgeInsets.only(left: 0.0, top: verticalPadding.value),
+                    padding: EdgeInsets.only(
+                        left: verticalPadding.value,
+                        top: verticalPadding.value),
                     child: getItem(options.elementAt(3)),
                   )),
               Align(
@@ -142,9 +146,9 @@ double boxheight = 10;
                             : Icons.add)),
               )
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

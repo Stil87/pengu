@@ -3,6 +3,8 @@ import 'package:peng_u/ui/pengu_control_page_animated_menu.dart';
 import 'package:peng_u/ui/pengu_control_page_intro_animation.dart';
 import 'dart:ui' as ui;
 
+import 'package:peng_u/ui/pengu_control_page_scroll_manager_activity.dart';
+
 class PengUControlPage extends StatefulWidget {
   final PengUControlPageIntroAnimation introAnimation;
 
@@ -19,37 +21,29 @@ class _PengUControlPageState extends State<PengUControlPage> {
     return Scaffold(
         appBar: AppBar(title: Text('PengYou')),
         body: AnimatedBuilder(
-            animation: widget.introAnimation.introController,
+            animation: widget.introAnimation.introAnimationController,
             builder: _animatePengUControlPage));
   }
 
 //method
   Widget _animatePengUControlPage(BuildContext context, Widget child) {
-    return Stack(fit: StackFit.expand, children: <Widget>[
-      Align(
-          alignment: Alignment.bottomCenter,
-          child: _createPengUControlPageContent())
-    ]);
-  }
-
-  Widget _createPengUControlPageContent() {
-    return SingleChildScrollView(
-      //idee
-      child: Stack(
-        //crossAxisAlignment: CrossAxisAlignment.end,
+    return Column(
+        verticalDirection: VerticalDirection.down,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          //_createPengUCollecter(),
+          Expanded(flex: 3,
 
-          //_createPengUScrollManager(),
-          _createAnimatedMenu()
-        ],
-      ),
-    );
-  }
-
-//method that creates the menu
-  Widget _createAnimatedMenu() {
-    return  FoldableOptions();
-
+            child: Container(
+              color: Colors.lightBlueAccent,
+            ),
+          ),
+          Expanded(
+            child: PengUScrollManagerActivity(
+              animationController: widget.introAnimation.introAnimationController,
+            ),
+          ),
+          Align(alignment:Alignment.bottomCenter,child: FoldableOptions()),
+        ]);
   }
 }
