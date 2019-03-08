@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:peng_u/ui/pengu_control_page_intro_animation.dart';
 
+
+//debug
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+
 class PengUScrollManagerActivity extends StatefulWidget {
   final PengUControlPageIntroAnimation introAnimation;
   //create debug list
@@ -26,32 +32,40 @@ class _PengUScrollManagerActivityState
             widget.introAnimation.scrollerXTranslation.value, 0.0, 0.0),
         child: SizedBox.fromSize(
           size: Size.fromHeight(250),
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 7.0),
-              itemCount: widget.debugListActivity.length,
-              itemBuilder: (_, int index) {
-                var course = widget.debugListActivity[index];
-                return Dismissible(
-                    onDismissed: (direction) {
-                      // Remove the item from our data source.
-                      setState(() {
-                        // Show a snackbar! This snackbar could also contain "Undo" actions.
-                        Scaffold.of(context).showSnackBar(
-                            SnackBar(content: Text(" dismissed")));
-                      });
+          child: StreamBuilder(
+            stream: Firestore.instance.collection('User').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData){ return Text('no data bitch');}
+
+              return ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 7.0),
+                  itemCount: snapshot.data.documents.length,
+                  itemBuilder: (_, int index) {
+                    var course = snapshot.data.documents[index];
+                    debugPrint('${snapshot.data.documents[index]}');
+                    return Dismissible(
+                        onDismissed: (direction) {
+                          // Remove the item from our data source.
+                          setState(() {
+                            // Show a snackbar! This snackbar could also contain "Undo" actions.
+                            Scaffold.of(context).showSnackBar(
+                                SnackBar(content: Text(" dismissed")));
+                          });
 
 
-                    },
-                    //dismissThresholds: {DismissDirection.horizontal: 1.0  },
-                    background: Icon(Icons.ac_unit),
-                    movementDuration: Duration(seconds: 2),
-                    crossAxisEndOffset: 0,
-                    resizeDuration: Duration(seconds: 1),
-                    direction: DismissDirection.up,
-                    key: Key(widget.debugListActivity[index]),
-                    child: Text(widget.debugListActivity[index],style: TextStyle(fontSize: 50.0),));
-              }),
+                        },
+                        //dismissThresholds: {DismissDirection.horizontal: 1.0  },
+                        background: Icon(Icons.ac_unit),
+                        movementDuration: Duration(seconds: 2),
+                        crossAxisEndOffset: 0,
+                        resizeDuration: Duration(seconds: 1),
+                        direction: DismissDirection.up,
+                        key: Key(snapshot.data.documents[index]['Name']),
+                        child: Text(snapshot.data.documents[index]['Name'],style: TextStyle(fontSize: 50.0),));
+                  });
+            }
+          ),
         ),
       ),
     );;
