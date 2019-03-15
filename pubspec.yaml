@@ -26,6 +26,11 @@ dependencies:
   circle_wheel_scroll: ^0.0.1+1
   cloud_firestore:
   firebase_core:
+  package_info: ^0.4.0+2
+  firebase_auth: ^0.8.1+4
+  shared_preferences: ^0.5.1+1
+  flutter_swiper: ^1.1.5
+  google_sign_in: ^4.0.1+1
 
 dev_dependencies:
   flutter_test:
