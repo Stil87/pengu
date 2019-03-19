@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:peng_u/ui/pengu_control_page_animated_menu.dart';
+import 'package:peng_u/ui/button_app_bar/fancy_tab_bar.dart';
+import 'package:peng_u/ui/animated_menu/pengu_control_page_animated_menu.dart';
 import 'package:peng_u/ui/pengu_control_page_intro_animation.dart';
 import 'dart:ui' as ui;
 
@@ -20,6 +21,7 @@ class _PengUControlPageState extends State<PengUControlPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(title: Text('PengYou')),
+        bottomNavigationBar: FancyTabBar(),
         body: AnimatedBuilder(
             animation: widget.introAnimation.introAnimationController,
             builder: _animatePengUControlPage));
@@ -35,6 +37,7 @@ class _PengUControlPageState extends State<PengUControlPage> {
           Expanded(flex: 3,
 
             child: Container(
+              child: Hero(tag: 'test', child:  Image.asset('assets/images/default.png')),
               color: Colors.lightBlueAccent,
             ),
           ),

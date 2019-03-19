@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:peng_u/ui/list_tiles/friends.dart';
 import 'package:peng_u/ui/pengu_control_page_intro_animation.dart';
 
 
@@ -44,25 +45,7 @@ class _PengUScrollManagerActivityState
                   itemBuilder: (_, int index) {
                     var course = snapshot.data.documents[index];
                     debugPrint('${snapshot.data.documents[index]}');
-                    return Dismissible(
-                        onDismissed: (direction) {
-                          // Remove the item from our data source.
-                          setState(() {
-                            // Show a snackbar! This snackbar could also contain "Undo" actions.
-                            Scaffold.of(context).showSnackBar(
-                                SnackBar(content: Text(" dismissed")));
-                          });
-
-
-                        },
-                        //dismissThresholds: {DismissDirection.horizontal: 1.0  },
-                        background: Icon(Icons.ac_unit),
-                        movementDuration: Duration(seconds: 2),
-                        crossAxisEndOffset: 0,
-                        resizeDuration: Duration(seconds: 1),
-                        direction: DismissDirection.up,
-                        key: Key(snapshot.data.documents[index]['Name']),
-                        child: Text(snapshot.data.documents[index]['Name'],style: TextStyle(fontSize: 50.0),));
+                    return FriendsTile(course);
                   });
             }
           ),

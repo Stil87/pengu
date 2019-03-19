@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:peng_u/ui/pengu_control_page_animator.dart';
 import 'package:peng_u/ui/walkthrough/main_screen.dart';
 import 'package:peng_u/ui/walkthrough/welcome_screen.dart';
 
@@ -21,8 +22,8 @@ class _RootScreenState extends State<RootScreen> {
           );
         } else {
           if (snapshot.hasData) {
-            return new MainScreen(
-              firebaseUser: snapshot.data,
+            return new PengUControlPageAnimator(
+              //firebaseUser: snapshot.data,
             );
           } else {
             return WelcomeScreen();

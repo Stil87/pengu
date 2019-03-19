@@ -15,8 +15,8 @@
 
 
 //2do
-
-//firebase auth via walkthrough
+//hero animation for page change -> profile
+//pub.dartlang.org/packages/flutter_sidekick -> für auswahl same screen
 //firebase animated list
 //  global
 //  buddies
@@ -25,3 +25,4 @@
 //widget as slidetransition
 //ausgrauen der already in friends
 //shared prefs in der cloud
+//offline funktionalität
