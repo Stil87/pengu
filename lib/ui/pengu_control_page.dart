@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:peng_u/ideas/teambuilder_stfl.dart';
 import 'package:peng_u/ui/button_app_bar/fancy_tab_bar.dart';
 import 'package:peng_u/ui/animated_menu/pengu_control_page_animated_menu.dart';
 import 'package:peng_u/ui/pengu_control_page_intro_animation.dart';
 import 'dart:ui' as ui;
+import 'package:flutter_sidekick/flutter_sidekick.dart';
 
 import 'package:peng_u/ui/pengu_control_page_scroll_manager_activity.dart';
 
@@ -34,19 +36,8 @@ class _PengUControlPageState extends State<PengUControlPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Expanded(flex: 3,
-
-            child: Container(
-              child: Hero(tag: 'test', child:  Image.asset('assets/images/default.png')),
-              color: Colors.lightBlueAccent,
-            ),
-          ),
-          Expanded(
-            child: PengUScrollManagerActivity(
-              animationController: widget.introAnimation.introAnimationController,
-            ),
-          ),
-          Align(alignment:Alignment.bottomCenter,child: FoldableOptions()),
+          Expanded(flex: 3, child: Teambuilderstfl()),
+          Align(alignment: Alignment.bottomCenter, child: FoldableOptions()),
         ]);
   }
 }

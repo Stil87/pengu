@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sidekick/flutter_sidekick.dart';
+import 'package:peng_u/model/pengU_user.dart';
+
 
 class FoldableOptions extends StatefulWidget {
   @override
@@ -27,11 +30,12 @@ class _FoldableOptionsState extends State<FoldableOptions>
 
   Widget getItem(IconData source) {
     final size = 40.0;
-    return GestureDetector(
-      onTap: () {
-        controller.reverse();
-      },
-      child: Container(
+    return //GestureDetector(
+      //onTap: () {
+       // controller.reverse();
+     // },
+      //child:
+    Container(
         width: size,
         height: size,
         decoration: BoxDecoration(
@@ -42,8 +46,8 @@ class _FoldableOptionsState extends State<FoldableOptions>
           color: Colors.white,
           size: 18,
         ),
-      ),
-    );
+      );
+   // );
   }
 
   Widget buildPrimaryItem(IconData source) {
@@ -109,7 +113,9 @@ class _FoldableOptionsState extends State<FoldableOptions>
             children: <Widget>[
               Align(
                 alignment: firstAnim.value,
-                child: getItem(options.elementAt(0)),
+                child: GestureDetector(onTap: () =>
+                    SidekickTeamBuilder.of<User>(context)
+                        .moveAll(SidekickFlightDirection.toTarget),child: getItem(options.elementAt(0))),
               ),
               Align(
                   alignment: secondAnim.value,
