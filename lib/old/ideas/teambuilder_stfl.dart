@@ -123,7 +123,7 @@ class WrapItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () => SidekickTeamBuilder.of<User>(context).move(user),
+      onTap: () => SidekickTeamBuilder.of<User>(context).move(user),
       child: Padding(
         padding: const EdgeInsets.all(2.0),
         child: CircleAvatar(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:peng_u/ideas/teambuilder_stfl.dart';
-import 'package:peng_u/ui/button_app_bar/fancy_tab_bar.dart';
-import 'package:peng_u/ui/animated_menu/pengu_control_page_animated_menu.dart';
-import 'package:peng_u/ui/pengu_control_page_intro_animation.dart';
+import 'package:peng_u/old/ideas/teambuilder_stfl.dart';
+import 'package:peng_u/old/ui/button_app_bar/fancy_tab_bar.dart';
+import 'package:peng_u/old/ui/animated_menu/pengu_control_page_animated_menu.dart';
+import 'package:peng_u/old/ui/pengu_control_page_intro_animation.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_sidekick/flutter_sidekick.dart';
 
-import 'package:peng_u/ui/pengu_control_page_scroll_manager_activity.dart';
+import 'package:peng_u/old/ui/pengu_control_page_scroll_manager_activity.dart';
 
 class PengUControlPage extends StatefulWidget {
   final PengUControlPageIntroAnimation introAnimation;

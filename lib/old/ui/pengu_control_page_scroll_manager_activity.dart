@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:peng_u/ui/list_tiles/friends.dart';
-import 'package:peng_u/ui/pengu_control_page_intro_animation.dart';
+import 'package:peng_u/old/ui/list_tiles/friends.dart';
+import 'package:peng_u/old/ui/pengu_control_page_intro_animation.dart';
 
 
 //debug

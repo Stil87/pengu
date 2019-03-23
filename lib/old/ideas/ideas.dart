@@ -26,3 +26,4 @@
 //ausgrauen der already in friends
 //shared prefs in der cloud
 //offline funktionalität
+//Login Animation

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import "package:flutter_swiper/flutter_swiper.dart";
 
-import 'package:peng_u/business/walkthrough.dart';
-import 'package:peng_u/widgets/custom_flat_button.dart';
+import 'package:peng_u/old/business/walkthrough.dart';
+import 'package:peng_u/old/widgets/custom_flat_button.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:peng_u/widgets/custom_flat_button.dart';
+import 'package:peng_u/old/widgets/custom_flat_button.dart';
 
 
 class WelcomeScreen extends StatelessWidget {

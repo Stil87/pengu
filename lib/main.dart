@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:peng_u/ideas/peng_u_teambuilder.dart';
-import 'package:peng_u/ideas/teambuilder_stfl.dart';
-import 'package:peng_u/ui/pengu_control_page_animator.dart';
-import 'package:peng_u/ui/walkthrough/root_screen.dart';
-import 'package:peng_u/ui/walkthrough/sign_in_screen.dart';
-import 'package:peng_u/ui/walkthrough/sign_up_screen.dart';
-import 'package:peng_u/ui/walkthrough/walk_screen.dart';
+
+import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
+
+import 'package:peng_u/old/ui/walkthrough/walk_screen.dart';
+import 'package:peng_u/ux/login_screen/login_screen.dart';
+import 'package:peng_u/ux/login_screen/root_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -24,14 +23,15 @@ class PengU extends StatelessWidget {
     return MaterialApp(
       title: 'Better place',
       theme:
-      ThemeData(primarySwatch: Colors.blue, brightness: Brightness.light),
+          ThemeData(primarySwatch: Colors.blue, brightness: Brightness.light),
       routes: <String, WidgetBuilder>{
         '/walkthrough': (BuildContext context) => new WalkthroughScreen(),
         '/root': (BuildContext context) => new RootScreen(),
-        '/signin': (BuildContext context) => new SignInScreen(),
-        '/signup': (BuildContext context) => new SignUpScreen(),
+        '/signin': (BuildContext context) => LoginPage(), //new SignInScreen(),
+        '/signup': (BuildContext context) => LoginPage(), //new SignUpScreen(),
         //'/main': (BuildContext context) => new MainScreen(),
-        '/main': (BuildContext context) => new PengUControlPageAnimator(),},
+        '/main': (BuildContext context) => new PengUControlPageAnimator(),
+      },
       home: _handleCurrentScreen(),
     );
   }
@@ -47,4 +47,3 @@ class PengU extends StatelessWidget {
 }
 
 //PengUControlPageAnimator(),
-

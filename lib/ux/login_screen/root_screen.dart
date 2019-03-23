@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:peng_u/ui/pengu_control_page_animator.dart';
-import 'package:peng_u/ui/walkthrough/main_screen.dart';
-import 'package:peng_u/ui/walkthrough/welcome_screen.dart';
+import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
+import 'package:peng_u/old/ui/walkthrough/main_screen.dart';
+import 'package:peng_u/old/ui/walkthrough/welcome_screen.dart';
+import 'package:peng_u/ux/login_screen/login_screen.dart';
 
 class RootScreen extends StatefulWidget {
   @override
@@ -18,7 +19,8 @@ class _RootScreenState extends State<RootScreen> {
       builder: (BuildContext context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return new Container(
-            color: Colors.white,
+            child: CircularProgressIndicator(),
+
           );
         } else {
           if (snapshot.hasData) {
@@ -26,7 +28,7 @@ class _RootScreenState extends State<RootScreen> {
               //firebaseUser: snapshot.data,
             );
           } else {
-            return WelcomeScreen();
+            return LoginPage();
           }
         }
       },

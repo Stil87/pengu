@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'tab_item.dart';
+import 'package:peng_u/business/backend/firebase_auth.dart';
+import 'package:peng_u/old/ui/walkthrough/main_screen.dart';
+import 'package:peng_u/old/ui/button_app_bar/tab_item.dart';
 import 'package:vector_math/vector_math.dart' as vector;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FancyTabBar extends StatefulWidget {
   @override
@@ -22,6 +25,7 @@ class _FancyTabBarState extends State<FancyTabBar>
   IconData activeIcon = Icons.search;
 
   int currentSelected = 1;
+  Future<FirebaseUser> currentUser = Auth.getCurrentFirebaseUser();
 
   @override
   void initState() {
@@ -113,6 +117,7 @@ class _FancyTabBarState extends State<FancyTabBar>
                       currentSelected = 2;
                     });
                     _initAnimationAndStart(_positionAnimation.value, 1);
+                    _navigateToMain();
                   })
             ],
           ),
@@ -141,8 +146,11 @@ class _FancyTabBarState extends State<FancyTabBar>
                                   decoration: BoxDecoration(
                                       color: Colors.white,
                                       shape: BoxShape.circle,
-                                      boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)])
-                              ),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 8)
+                                      ])),
                             ),
                           )),
                     ),
@@ -183,6 +191,13 @@ class _FancyTabBarState extends State<FancyTabBar>
         ),
       ],
     );
+  }
+
+  void _navigateToMain() async {
+    await Auth.getCurrentFirebaseUser().then((user) => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainScreen(firebaseUser: user))));
   }
 
   _initAnimationAndStart(double from, double to) {
