@@ -1,12 +1,17 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peng_u/business/backend/firebase_auth.dart';
 import 'package:peng_u/business/validator.dart';
 import 'package:peng_u/model/pengU_user.dart';
 import 'package:peng_u/ux/login_screen/bubble_indication_painter.dart';
 import 'package:peng_u/ux/login_screen/custom_alert_dialog.dart';
 import 'package:peng_u/ux/login_screen/style.dart' as Theme;
+import 'package:peng_u/ux/user_profile_screen/user_profile_screen.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key}) : super(key: key);
@@ -78,7 +83,7 @@ class _LoginPageState extends State<LoginPage>
                       width: 250.0,
                       height: 191.0,
                       fit: BoxFit.fill,
-                      image: new AssetImage('assets/images/login_logo.png')),
+                      image: new AssetImage('assets/images/friends.png')),
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 20.0),
@@ -127,6 +132,7 @@ class _LoginPageState extends State<LoginPage>
     myFocusNodeEmail.dispose();
     myFocusNodeName.dispose();
     _pageController?.dispose();
+
     super.dispose();
   }
 
@@ -319,28 +325,34 @@ class _LoginPageState extends State<LoginPage>
                       tileMode: TileMode.clamp),
                 ),
                 child: MaterialButton(
-                    highlightColor: Colors.transparent,
-                    splashColor: Theme.Colors.loginGradientEnd,
-                    //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 10.0, horizontal: 42.0),
-                      child: Text(
-                        "LOGIN",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                            fontFamily: "WorkSansBold"),
-                      ),
+                  highlightColor: Colors.transparent,
+                  splashColor: Theme.Colors.loginGradientEnd,
+                  //shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5.0))),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 42.0),
+                    child: Text(
+                      "LOGIN",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25.0,
+                          fontFamily: "WorkSansBold"),
                     ),
-                    onPressed: () => showInSnackBar("Login button pressed")),
+                  ),
+                  onPressed: () => _emailLogin(
+                      context: context,
+                      email: loginEmailController.text,
+                      password: loginPasswordController.text),
+                ),
               ),
             ],
           ),
           Padding(
             padding: EdgeInsets.only(top: 10.0),
             child: FlatButton(
-                onPressed: () {},
+                onPressed: () {
+                  //Todo: forgot password? implementieren
+                },
                 child: Text(
                   "Forgot Password?",
                   style: TextStyle(
@@ -421,7 +433,9 @@ class _LoginPageState extends State<LoginPage>
               Padding(
                 padding: EdgeInsets.only(top: 10.0),
                 child: GestureDetector(
-                  onTap: () => showInSnackBar("Google button pressed"),
+                  onTap: () {
+                    _googleLogin(context);
+                  },
                   child: Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: new BoxDecoration(
@@ -440,6 +454,72 @@ class _LoginPageState extends State<LoginPage>
         ],
       ),
     );
+  }
+
+  void _googleLogin(BuildContext context) async {
+    try {
+      SystemChannels.textInput.invokeMethod('TextInput.hide');
+
+      final GoogleSignIn _googleSignIn = GoogleSignIn();
+      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final AuthCredential credential = GoogleAuthProvider.getCredential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      if (credential != null) {
+        Auth.signInWithGoogle(credential).then((uid) {
+          Auth.getCurrentFirebaseUser().then((firebaseUser) {
+            User user = new User(
+              firstName: firebaseUser.displayName,
+              userID: firebaseUser.uid,
+              email: firebaseUser.email ?? '',
+              profilePictureURL: firebaseUser.photoUrl ?? '',
+            );
+            Auth.addUser(user);
+            //Todo: Navigator: Unhandled Exception: Looking up a deactivated widget's ancestor is unsafe.
+            //Navigator.push(context,
+            //  MaterialPageRoute(builder: (context) => UserProfileScreen()));
+            debugPrint('google sign in function ');
+          });
+        });
+      } else {
+        debugPrint('credentials = null');
+      }
+      ;
+    } catch (e) {
+      print("Error in Google sign in: $e");
+      String exception = Auth.getExceptionText(e);
+      _showErrorAlert(
+          title: "Login failed",
+          content: exception,
+          onPressed: () {
+            //Todo:handle show Error Alert on Pressed }
+          });
+    }
+  }
+
+  void _emailLogin(
+      {String email, String password, BuildContext context}) async {
+    if (Validator.validateEmail(email) &&
+        Validator.validatePassword(password)) {
+      try {
+        SystemChannels.textInput.invokeMethod('TextInput.hide');
+
+        await Auth.signIn(email, password).then((uid) => Navigator.push(context,
+            MaterialPageRoute(builder: (context) => UserProfileScreen())));
+      } catch (e) {
+        print("Error in email sign in: $e");
+        String exception = Auth.getExceptionText(e);
+        _showErrorAlert(
+          title: "Login failed",
+          content: exception,
+          onPressed: () => debugPrint('error email log in'),
+        );
+      }
+    }
   }
 
   Widget _buildSignUp(BuildContext context) {
@@ -649,30 +729,30 @@ class _LoginPageState extends State<LoginPage>
       String email,
       String password,
       BuildContext context}) async {
-    if (Validator.validateName(fullname) &&
-        Validator.validateEmail(email))// &&
-        //Validator.validatePassword(password))
-    {
-      try {
-        SystemChannels.textInput.invokeMethod('TextInput.hide');
+    //if (Validator.validateName(fullname) &&
+    //Validator.validateEmail(email)) // &&
+    //Validator.validatePassword(password))
+    //{
+    try {
+      SystemChannels.textInput.invokeMethod('TextInput.hide');
 
-        await Auth.signUp(email, password).then((uID) {
-          Auth.addUser(new User(
-              userID: uID,
-              email: email,
-              firstName: fullname,
-              profilePictureURL: ''));
-        });
-      } catch (e) {
-        print("Error in sign up: $e");
-        String exception = Auth.getExceptionText(e);
-        _showErrorAlert(
-          title: "Signup failed",
-          content: exception,
-          onPressed: () => debugPrint('hello'),
-        );
-      }
+      await Auth.signUp(email, password).then((uID) {
+        Auth.addUser(new User(
+            userID: uID,
+            email: email,
+            firstName: fullname,
+            profilePictureURL: ''));
+      });
+    } catch (e) {
+      print("Error in sign up: $e");
+      String exception = Auth.getExceptionText(e);
+      _showErrorAlert(
+        title: "Signup failed",
+        content: exception,
+        onPressed: () => debugPrint('hello'),
+      );
     }
+    //}
   }
 
   void _showErrorAlert({String title, String content, VoidCallback onPressed}) {

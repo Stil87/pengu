@@ -21,3 +21,4 @@ class Validator {
     return text.toString().length >= 6;
   }
 }
+//Todo: password validation doesnt work

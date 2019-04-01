@@ -8,6 +8,7 @@
 //bist du eine bar lass deine kunden bestätigen
 //user profil
 //user machen content
+//Bin da knopf
 
 
 
@@ -15,6 +16,8 @@
 
 
 //2do
+//Stream video
+//
 //hero animation for page change -> profile
 //pub.dartlang.org/packages/flutter_sidekick -> für auswahl same screen
 //firebase animated list
@@ -27,3 +30,14 @@
 //shared prefs in der cloud
 //offline funktionalität
 //Login Animation
+
+//ConnectionState snapshot
+//return snapshot.connectionState == ConnectionState.done
+//? snapshot.hasData
+//? Column(
+//mainAxisAlignment: MainAxisAlignment.center,
+//children: <Widget>[
+//Image.network(snapshot.data.image),
+//SizedBox(height: 16.0),
+//Text(snapshot.data.title),
+//:CicularProgressIndicator

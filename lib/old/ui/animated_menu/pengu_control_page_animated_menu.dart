@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sidekick/flutter_sidekick.dart';
+import 'package:peng_u/business/backend/firebase_auth.dart';
 import 'package:peng_u/model/pengU_user.dart';
 
 
@@ -32,10 +33,10 @@ class _FoldableOptionsState extends State<FoldableOptions>
     final size = 40.0;
     return //GestureDetector(
       //onTap: () {
-       // controller.reverse();
-     // },
+      // controller.reverse();
+      // },
       //child:
-    Container(
+      Container(
         width: size,
         height: size,
         decoration: BoxDecoration(
@@ -47,7 +48,7 @@ class _FoldableOptionsState extends State<FoldableOptions>
           size: 18,
         ),
       );
-   // );
+    // );
   }
 
   Widget buildPrimaryItem(IconData source) {
@@ -78,22 +79,21 @@ class _FoldableOptionsState extends State<FoldableOptions>
     final anim = CurvedAnimation(parent: controller, curve: Curves.linear);
     boxHeight = Tween<double>(begin: 20.0, end: 200.0).animate(anim);
     firstAnim = Tween<Alignment>(
-            begin: Alignment.bottomCenter, end: Alignment.bottomRight)
+        begin: Alignment.bottomCenter, end: Alignment.bottomRight)
         .animate(anim);
     secondAnim =
         Tween<Alignment>(begin: Alignment.bottomCenter, end: Alignment.topRight)
             .animate(anim);
     thirdAnim = Tween<Alignment>(
-            begin: Alignment.bottomCenter, end: Alignment.topCenter)
+        begin: Alignment.bottomCenter, end: Alignment.topCenter)
         .animate(anim);
     fourthAnim =
         Tween<Alignment>(begin: Alignment.bottomCenter, end: Alignment.topLeft)
             .animate(anim);
     fifthAnim = Tween<Alignment>(
-            begin: Alignment.bottomCenter, end: Alignment.bottomLeft)
+        begin: Alignment.bottomCenter, end: Alignment.bottomLeft)
         .animate(anim);
     verticalPadding = Tween<double>(begin: 0, end: 30).animate(anim);
-
   }
 
   @override
@@ -106,16 +106,15 @@ class _FoldableOptionsState extends State<FoldableOptions>
           decoration: BoxDecoration(
               color: Colors.blue,
               borderRadius: BorderRadius.all(Radius.circular(800.0))),
-          width:   boxHeight.value ,//250,
-          height:  boxHeight.value,
+          width: boxHeight.value,
+          //250,
+          height: boxHeight.value,
           margin: EdgeInsets.only(top: 0.0, bottom: 50.0),
           child: Stack(
             children: <Widget>[
               Align(
                 alignment: firstAnim.value,
-                child: GestureDetector(onTap: () =>
-                    SidekickTeamBuilder.of<User>(context)
-                        .moveAll(SidekickFlightDirection.toTarget),child: getItem(options.elementAt(0))),
+                child: getItem(options.elementAt(0)),
               ),
               Align(
                   alignment: secondAnim.value,

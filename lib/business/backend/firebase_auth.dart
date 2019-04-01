@@ -63,6 +63,11 @@ class Auth {
     }
   }
 
+
+
+
+
+
   static Stream<User> getUser(String userID) {
     return Firestore.instance
         .collection("users")
@@ -74,6 +79,7 @@ class Auth {
       }).first;
     });
   }
+
 
   static String getExceptionText(Exception e) {
     if (e is PlatformException) {

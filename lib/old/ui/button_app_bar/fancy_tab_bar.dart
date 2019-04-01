@@ -95,6 +95,7 @@ class _FancyTabBarState extends State<FancyTabBar>
                       currentSelected = 0;
                     });
                     _initAnimationAndStart(_positionAnimation.value, -1);
+                    _logOut();
                   }),
               TabItem(
                   selected: currentSelected == 1,
@@ -208,6 +209,10 @@ class _FancyTabBarState extends State<FancyTabBar>
     _fadeOutController.reset();
     _animationController.forward();
     _fadeOutController.forward();
+  }
+
+  void _logOut() {
+    Auth.signOut();
   }
 }
 

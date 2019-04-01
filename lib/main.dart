@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
+import 'package:peng_u/old/ui/walkthrough/sign_in_screen.dart';
+import 'package:peng_u/old/ui/walkthrough/sign_up_screen.dart';
 
 import 'package:peng_u/old/ui/walkthrough/walk_screen.dart';
 import 'package:peng_u/ux/login_screen/login_screen.dart';
@@ -27,8 +29,8 @@ class PengU extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/walkthrough': (BuildContext context) => new WalkthroughScreen(),
         '/root': (BuildContext context) => new RootScreen(),
-        '/signin': (BuildContext context) => LoginPage(), //new SignInScreen(),
-        '/signup': (BuildContext context) => LoginPage(), //new SignUpScreen(),
+        '/signin': (BuildContext context) =>  new SignInScreen(),
+        '/signup': (BuildContext context) =>  new SignUpScreen(),
         //'/main': (BuildContext context) => new MainScreen(),
         '/main': (BuildContext context) => new PengUControlPageAnimator(),
       },

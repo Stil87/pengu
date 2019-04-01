@@ -44,8 +44,9 @@ class _MainScreenState extends State<MainScreen> {
             ListTile(
               title: Text('Log Out'),
               onTap: () {
-                _logOut();
+
                 _scaffoldKey.currentState.openEndDrawer();
+                _logOut();
               },
             ),
           ],
@@ -64,23 +65,26 @@ class _MainScreenState extends State<MainScreen> {
             );
           } else {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    height: 100.0,
-                    width: 100.0,
-                    child: CircleAvatar(
-                      backgroundImage: (snapshot.data.profilePictureURL != '')
-                          ? NetworkImage(snapshot.data.profilePictureURL)
-                          : AssetImage("assets/images/default.png"),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      height: 100.0,
+                      width: 100.0,
+                      child: CircleAvatar(
+                        backgroundImage: (snapshot.data.profilePictureURL != '')
+                            ? NetworkImage(snapshot.data.profilePictureURL)
+                            : AssetImage("assets/images/default.png"),
+                      ),
                     ),
-                  ),
-                  Text("Name: ${snapshot.data.firstName}"),
-                  Text("Email: ${snapshot.data.email}"),
-                  Text("UID: ${snapshot.data.userID}"),
-                ],
+                    Text("Name: ${snapshot.data.firstName}"),
+                    Text("Email: ${snapshot.data.email}"),
+                    Text("UID: ${snapshot.data.userID}"),
+                  ],
+                ),
               ),
             );
           }

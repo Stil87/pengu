@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:peng_u/old/ideas/teambuilder_stfl.dart';
+import 'package:peng_u/ux/login_screen/teambuilder_stfl.dart';
 import 'package:peng_u/old/ui/button_app_bar/fancy_tab_bar.dart';
 import 'package:peng_u/old/ui/animated_menu/pengu_control_page_animated_menu.dart';
 import 'package:peng_u/old/ui/pengu_control_page_intro_animation.dart';
@@ -22,7 +22,7 @@ class _PengUControlPageState extends State<PengUControlPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('PengYou')),
+        //appBar: AppBar(title: Text('PengYou')),
         bottomNavigationBar: FancyTabBar(),
         body: AnimatedBuilder(
             animation: widget.introAnimation.introAnimationController,
