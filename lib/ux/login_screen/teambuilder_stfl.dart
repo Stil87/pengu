@@ -14,6 +14,7 @@ class Teambuilderstfl extends StatefulWidget {
 class _TeambuilderstflState extends State<Teambuilderstfl> {
   //StreamController<User> streamController;
   List<User> userList = List();
+  StreamSubscription streamSub;
 
   @override
   void initState() {
@@ -25,15 +26,22 @@ class _TeambuilderstflState extends State<Teambuilderstfl> {
   @override
   void dispose() {
     super.dispose();
+    streamSub.cancel();
     //streamController.close();
-
   }
 
-  startfunction() {
+  startfunction() async {
     List<User> list = [];
 
-    Firestore.instance.collection('users').snapshots().listen((snapshot) {
+    streamSub =
+        Firestore.instance.collection('users').snapshots().listen((snapshot) {
       snapshot.documents.forEach((doc) => list.add(User.fromDocument(doc)));
+
+      //Future<List<T>> toList() async {
+      //  final result = <T>[];
+      //await this.forEach(result.add);
+      //return result;
+      // }
 
       setState(() {
         userList = [];
@@ -131,6 +139,7 @@ class WrapItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //Todo: Add circular progress bar
     return GestureDetector(
       onTap: () => SidekickTeamBuilder.of<User>(context).move(user),
       child: Padding(

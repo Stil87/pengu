@@ -34,6 +34,8 @@ dependencies:
   flutter_sidekick: ^0.1.3
   font_awesome_flutter: ^8.0.1
   cached_network_image: ^0.7.0
+  image_picker: ^0.5.1
+  firebase_storage: any
 
 
 dev_dependencies:

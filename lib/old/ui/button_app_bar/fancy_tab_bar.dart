@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peng_u/business/backend/firebase_auth.dart';
 import 'package:peng_u/old/ui/walkthrough/main_screen.dart';
 import 'package:peng_u/old/ui/button_app_bar/tab_item.dart';
+import 'package:peng_u/ux/user_profile_screen/user_profile_screen.dart';
 import 'package:vector_math/vector_math.dart' as vector;
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -198,7 +199,7 @@ class _FancyTabBarState extends State<FancyTabBar>
     await Auth.getCurrentFirebaseUser().then((user) => Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => MainScreen(firebaseUser: user))));
+            builder: (context) => UserProfileScreen(firebaseUser: user))));
   }
 
   _initAnimationAndStart(double from, double to) {
