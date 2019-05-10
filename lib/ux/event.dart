@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:peng_u/old/ui/animated_menu/pengu_control_page_animated_menu.dart';
 import 'package:peng_u/ux/login_screen/teambuilder_stfl.dart';
+import 'package:peng_u/ux/teambuilder_grouping.dart';
 
 class EventCard extends StatefulWidget {
   @override
@@ -30,7 +31,7 @@ class _EventCardState extends State<EventCard>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Expanded(flex: 3, child: Teambuilderstfl()),
+          Expanded(flex: 3, child: TeambuilderstflGroup()),//Teambuilderstfl()),
           Align(alignment: Alignment.bottomCenter, child: FoldableOptions()),
         ]);
   }

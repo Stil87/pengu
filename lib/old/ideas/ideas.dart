@@ -9,6 +9,8 @@
 //user profil
 //user machen content
 //Bin da knopf
+//pattern _private variablen
+//image compress
 
 
 
@@ -30,14 +32,9 @@
 //shared prefs in der cloud
 //offline funktionalität
 //Login Animation
+//_private
+//try catch catchError getExceptiontext in firetore provider
+//firebase rules (store storage)
+//sign out Facebook or google and firebase
 
-//ConnectionState snapshot
-//return snapshot.connectionState == ConnectionState.done
-//? snapshot.hasData
-//? Column(
-//mainAxisAlignment: MainAxisAlignment.center,
-//children: <Widget>[
-//Image.network(snapshot.data.image),
-//SizedBox(height: 16.0),
-//Text(snapshot.data.title),
-//:CicularProgressIndicator
+
