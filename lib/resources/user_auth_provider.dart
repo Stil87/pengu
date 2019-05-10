@@ -6,52 +6,55 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peng_u/model/pengU_user.dart';
 
 class UserAuthProvider {
+
   Firestore _firestore = Firestore.instance;
+  FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   /*User Auth Firebase*/
 
   ///Firebase authentification Sign in with email and password
   /// returns User Id
 
-  static Future<String> signIn(String email, String password) async {
-    FirebaseUser user = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: email, password: password);
+  Future<String> signInFirebaseAuthWithEmail(
+      String email, String password) async {
+    FirebaseUser user = await _firebaseAuth.signInWithEmailAndPassword(
+        email: email, password: password);
     return user.uid;
   }
 
   ///Firebase authentification Sign up with email and password
   ///returns User Id
 
-  static Future<String> signUp(String email, String password) async {
-    FirebaseUser user = await FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password);
+  Future<String> signUpFirebaseAuthWithEmail(
+      String email, String password) async {
+    FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(
+        email: email, password: password);
     return user.uid;
   }
 
   ///returns the current firebaseUser
 
-  static Future<FirebaseUser> getCurrentFirebaseUser() async {
+  Future<FirebaseUser> getCurrentFirebaseUser() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     return user;
   }
 
   ///returns the current firebaseUserId
 
-  static Future<String> getCurrentFirebaseUserId() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  Future<String> getCurrentFirebaseUserId() async {
+    FirebaseUser user = await _firebaseAuth.currentUser();
     String userId = user.uid;
     return userId;
   }
 
   ///adds FirebaseAut User to firebase storage collection "users" needed user object
 
-  static void addUser(User user) async {
-    checkUserExist(user.userID).then((value) {
+  Future<void> addUserToFirebaseStoreCollection(User user) async {
+    checkUserExistInFirestoreCollection(user.userID).then((value) {
       if (!value) {
         print("user ${user.firstName} ${user.email} added");
-        Firestore.instance
-            .document("users/${user.userID}")
-            .setData(user.toJson());
+        _firestore.document("users/${user.userID}").setData(user.toJson());
       } else {
         print("user ${user.firstName} ${user.email} exists");
       }
@@ -60,10 +63,10 @@ class UserAuthProvider {
 
   ///method that checks if user exists already in firestore collection "user"
 
-  static Future<bool> checkUserExist(String userID) async {
+  Future<bool> checkUserExistInFirestoreCollection(String userID) async {
     bool exists = false;
     try {
-      await Firestore.instance.document("users/$userID").get().then((doc) {
+      await _firestore.document("users/$userID").get().then((doc) {
         if (doc.exists)
           exists = true;
         else
@@ -78,8 +81,8 @@ class UserAuthProvider {
 
   /// method that returns a user object from firestore "users" collection with User.fromDocument method
 
-  static Stream<User> getUser(String userID) {
-    return Firestore.instance
+  Stream<User> getUserFomFirestoreCollection(String userID) {
+    return _firestore
         .collection("users")
         .where("userID", isEqualTo: userID)
         .snapshots()
@@ -90,19 +93,25 @@ class UserAuthProvider {
     });
   }
 
+  ///Stream which listens to change in User sign in status FirebaseAuth
+  ///returns either a user object or null
+
+  Stream<FirebaseUser> checkUserSignedInWithFirebaseAuth() {
+    return _firebaseAuth.onAuthStateChanged;
+  }
+
   ///Firebase authentification Sign out current user
   ///returns User Id
 
-  static Future<void> signOut() async {
-    return FirebaseAuth.instance.signOut();
+  Future<void> signOutFirebaseAuth() async {
+    return await _firebaseAuth.signOut();
   }
 
   /*User Auth Firebase with GOOGLE*/
 
   ///method to sign in user to Firebase.Auth with google account
 
-  static Future signInWithGoogle() async {
-    final GoogleSignIn _googleSignIn = GoogleSignIn();
+  Future signInWithGoogle() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -120,7 +129,7 @@ class UserAuthProvider {
             email: firebaseUser.email ?? '',
             profilePictureURL: firebaseUser.photoUrl ?? '',
           );
-          addUser(user);
+          addUserToFirebaseStoreCollection(user);
           //Todo: Navigator: Unhandled Exception: Looking up a deactivated widget's ancestor is unsafe.
           //Navigator.push(context,
           //  MaterialPageRoute(builder: (context) => UserProfileScreen()));
@@ -140,6 +149,19 @@ class UserAuthProvider {
     FirebaseUser user =
         await FirebaseAuth.instance.signInWithCredential(credential);
     return user.uid;
+  }
+
+  ///Stream which listens to change in User sign in status GoogleSignInAccount
+
+  Stream<GoogleSignInAccount> checkUserSignedInWithGoogle() {
+    return _googleSignIn.onCurrentUserChanged;
+  }
+
+  ///Method thats signs out Google account
+
+  Future<GoogleSignInAccount> signOutWithGoogle() {
+    _googleSignIn.signOut();
+    print('Google sign out');
   }
 
   /*User Auth Firebase with Facebook*/
