@@ -55,8 +55,6 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
 
       _statefulWidgetDemoState(); //get currentuserId
 
-
-
       //Future<List<T>> toList() async {
       //  final result = <T>[];
       //await this.forEach(result.add);
@@ -91,7 +89,11 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
                 padding: EdgeInsets.only(top: 50.0),
               ),
               Text('select your besties'),
-              Expanded(child: TextField(controller: textEditingController,decoration: InputDecoration(hintText: 'Search'),)),
+              Expanded(
+                  child: TextField(
+                controller: textEditingController,
+                decoration: InputDecoration(hintText: 'Search'),
+              )),
               FlatButton(
                 color: Colors.lightBlueAccent,
                 child: Text('group!'),

@@ -6,7 +6,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peng_u/model/pengU_user.dart';
 
 class UserAuthProvider {
-
   Firestore _firestore = Firestore.instance;
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
@@ -17,7 +16,7 @@ class UserAuthProvider {
   /// returns User Id
 
   Future<String> signInFirebaseAuthWithEmail(
-      String email, String password) async {
+      {String email, String password}) async {
     FirebaseUser user = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
     return user.uid;
@@ -27,7 +26,7 @@ class UserAuthProvider {
   ///returns User Id
 
   Future<String> signUpFirebaseAuthWithEmail(
-      String email, String password) async {
+      {String email, String password}) async {
     FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
     return user.uid;
@@ -50,8 +49,8 @@ class UserAuthProvider {
 
   ///adds FirebaseAut User to firebase storage collection "users" needed user object
 
-  Future<void> addUserToFirebaseStoreCollection(User user) async {
-    checkUserExistInFirestoreCollection(user.userID).then((value) {
+  Future<void> addUserToFirebaseStoreCollection({User user}) async {
+    checkUserExistInFirestoreCollection(userID: user.userID).then((value) {
       if (!value) {
         print("user ${user.firstName} ${user.email} added");
         _firestore.document("users/${user.userID}").setData(user.toJson());
@@ -63,7 +62,7 @@ class UserAuthProvider {
 
   ///method that checks if user exists already in firestore collection "user"
 
-  Future<bool> checkUserExistInFirestoreCollection(String userID) async {
+  Future<bool> checkUserExistInFirestoreCollection({String userID}) async {
     bool exists = false;
     try {
       await _firestore.document("users/$userID").get().then((doc) {
@@ -81,7 +80,7 @@ class UserAuthProvider {
 
   /// method that returns a user object from firestore "users" collection with User.fromDocument method
 
-  Stream<User> getUserFomFirestoreCollection(String userID) {
+  Stream<User> getUserFomFirestoreCollection({String userID}) {
     return _firestore
         .collection("users")
         .where("userID", isEqualTo: userID)
@@ -96,8 +95,19 @@ class UserAuthProvider {
   ///Stream which listens to change in User sign in status FirebaseAuth
   ///returns either a user object or null
 
-  Stream<FirebaseUser> checkUserSignedInWithFirebaseAuth() {
+  Stream<FirebaseUser> checkUserSignedInWithFirebaseAuthChangeListener() {
     return _firebaseAuth.onAuthStateChanged;
+  }
+
+  ///Future<bool> which returns status if User sign in  FirebaseAuth
+  ///returns either true or false
+
+  Future<bool> checkIfUserSignedInWithFirebaseAuthBool() async {
+    if (_firebaseAuth.currentUser() != null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   ///Firebase authentification Sign out current user
@@ -121,7 +131,7 @@ class UserAuthProvider {
     );
 
     if (credential != null) {
-      signInWithGoogleCredential(credential).then((uid) {
+      signInWithGoogleCredential(credential: credential).then((uid) {
         getCurrentFirebaseUser().then((firebaseUser) {
           User user = new User(
             firstName: firebaseUser.displayName,
@@ -129,7 +139,7 @@ class UserAuthProvider {
             email: firebaseUser.email ?? '',
             profilePictureURL: firebaseUser.photoUrl ?? '',
           );
-          addUserToFirebaseStoreCollection(user);
+          addUserToFirebaseStoreCollection(user: user);
           //Todo: Navigator: Unhandled Exception: Looking up a deactivated widget's ancestor is unsafe.
           //Navigator.push(context,
           //  MaterialPageRoute(builder: (context) => UserProfileScreen()));
@@ -145,7 +155,7 @@ class UserAuthProvider {
   ///Helper method which signs user in Firebase.Auth with google account credentials
 
   static Future<String> signInWithGoogleCredential(
-      AuthCredential credential) async {
+      {AuthCredential credential}) async {
     FirebaseUser user =
         await FirebaseAuth.instance.signInWithCredential(credential);
     return user.uid;
@@ -159,7 +169,7 @@ class UserAuthProvider {
 
   ///Method thats signs out Google account
 
-  Future<GoogleSignInAccount> signOutWithGoogle() {
+  Future<GoogleSignInAccount> signOutWithGoogle() async {
     _googleSignIn.signOut();
     print('Google sign out');
   }
@@ -171,7 +181,7 @@ class UserAuthProvider {
 
   ///returns String error messages depending on input exception
 
-  static String getExceptionText(Exception e) {
+  static String getExceptionText({Exception e}) {
     if (e is PlatformException) {
       switch (e.message) {
         case 'There is no user record corresponding to this identifier. The user may have been deleted.':
