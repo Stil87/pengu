@@ -1,4 +1,10 @@
 import 'dart:async';
+import 'dart:async';
+import 'package:google_maps_webservice/places.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location/location.dart' as LocationManager;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +14,10 @@ import 'package:peng_u/business/backend/firebase_auth.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/pengU_user.dart';
 import 'package:peng_u/ux/user_bubble.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:location/location.dart' as LocationManager;
+import 'package:google_maps_webservice/places.dart';
 
 class TeambuilderstflGroup extends StatefulWidget {
   @override
@@ -23,6 +33,12 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
   String currentUserID = '';
   String roomId;
   TextEditingController textEditingController = TextEditingController();
+  static const String googleApiKEy = 'AIzaSyCFvSvlS_QGpJdZAUgAWj_fxTtoM_AuM50';
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: googleApiKEy);
+  GoogleMapController mapController;
+  List<PlacesSearchResult> places = [];
+  bool isLoading;
+  String errorMessage;
 
   _statefulWidgetDemoState() {
     Auth.getCurrentFirebaseUserId().then((val) => setState(() {
@@ -90,14 +106,30 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
               ),
               Text('select your besties'),
               Expanded(
+                child: GoogleMap(
+                  initialCameraPosition:
+                      CameraPosition(target: LatLng(0.0, 0.0)),
+                  onMapCreated: _onMapCreated,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: true,
+                ),
+              ),
+              Expanded(
                   child: TextField(
                 controller: textEditingController,
                 decoration: InputDecoration(hintText: 'Search'),
               )),
+              Expanded(
+                child: ListView.builder(
+                    itemCount: places.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return new Text(places[index].name);
+                    }),
+              ),
               FlatButton(
                 color: Colors.lightBlueAccent,
                 child: Text('group!'),
-                onPressed: () => printGroupList(context),
+                onPressed: () => printPlacesWithUserLoactio(),
               ),
               FlatButton(
                   child: Text('invite'),
@@ -207,7 +239,7 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
     }*/
     //Event event = Event(invitedUserId: userIdList);
     //Map<String, List> userMap = {"invitedUsersIds": addedUserList, 'event' : 'vögelei'};
-    Event event = Event(invitedUserId: addedUserList, eventName: 'testname');
+    Event event = Event(invitedUserId: addedUserList, eventName: textEditingController.text);
     roomId = Firestore.instance.collection('rooms').document().documentID;
     print(roomId);
     finalUserList.forEach((user) {
@@ -232,6 +264,64 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
       'invitedUser': {currentUserID: 'in'}
     });
     print('change Comittment');
+  }
+
+  void _onMapCreated(GoogleMapController controller) async {
+    mapController = controller;
+    //refresh();
+  }
+
+  void refresh() async {
+    final center = await getUserLocation();
+
+    mapController.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: center == null ? LatLng(0, 0) : center, zoom: 15.0)));
+    //getNearbyPlaces(center);
+  }
+
+  Future<LatLng> getUserLocation() async {
+    LocationManager.LocationData currentLocation;
+    final location = LocationManager.Location();
+    try {
+      currentLocation = await location.getLocation();
+      final lat = currentLocation.altitude;
+      final lng = currentLocation.longitude;
+      final center = LatLng(lat, lng);
+      print('lat: $lat');
+      return center;
+    } on Exception {
+      currentLocation = null;
+      return null;
+    }
+  }
+
+  void printPlacesWithUserLoactio() async {
+    //LatLng center = await getUserLocation();
+    getNearbyPlaces();
+    textEditingController.clear();
+    setState(() {
+      places.clear();
+    });
+  }
+
+  void getNearbyPlaces() async {
+    setState(() {
+      this.isLoading = true;
+      this.errorMessage = null;
+    });
+
+    final location = Location(48.7643321, 9.1653504);
+    final result = await _places.searchByText(
+      textEditingController.text,
+      location: location,
+    );
+    print('getNearbyPlaces:  ${result.results[1].name}');
+    setState(() {
+      this.isLoading = false;
+      if (result.status == "OK") {
+        this.places = result.results;
+      }
+    });
   }
 }
 
