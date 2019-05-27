@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
 import 'package:peng_u/old/ui/walkthrough/main_screen.dart';
 import 'package:peng_u/old/ui/walkthrough/welcome_screen.dart';
+import 'package:peng_u/ui/login.dart';
 import 'package:peng_u/ux/event.dart';
 import 'package:peng_u/ux/login_screen/login_screen.dart';
 import 'package:peng_u/ux/standard_Screen.dart';
+import 'package:peng_u/blocs/login_bloc_provider.dart';
 
 class RootScreen extends StatefulWidget {
   @override
@@ -28,7 +30,7 @@ class _RootScreenState extends State<RootScreen> {
           if (snapshot.hasData) {
             return StandardScreen();
           } else {
-            return LoginPage();
+            return Scaffold(body: LoginBlocProvider(child: LoginScreen()));//LoginPage();
           }
         }
       },

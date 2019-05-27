@@ -3,8 +3,7 @@ import 'dart:async';
 import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart' as LocationManager;
+
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -305,6 +304,26 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
   }
 
   void getNearbyPlaces() async {
+    setState(() {
+      this.isLoading = true;
+      this.errorMessage = null;
+    });
+
+    final location = Location(48.7643321, 9.1653504);
+    final result = await _places.searchByText(
+      textEditingController.text,
+      location: location,
+    );
+    print('getNearbyPlaces:  ${result.results[1].name}');
+    setState(() {
+      this.isLoading = false;
+      if (result.status == "OK") {
+        this.places = result.results;
+      }
+    });
+  }
+
+  void getNearbyPlacesPredicition() async {
     setState(() {
       this.isLoading = true;
       this.errorMessage = null;
