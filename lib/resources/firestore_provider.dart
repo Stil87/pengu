@@ -30,7 +30,7 @@ class FirestoreProvider {
 
   /// Add User Friend to users personal friends list create to fire
 
-  Future<DocumentReference> addUserIdToUsersPersonalFriendsListToFirestore(
+  Future<void> addUserIdToUsersPersonalFriendsListToFirestore(
       {String currentUserID, String newUserID}) async {
     return _firestore
         .collection(_firestoreCollectionNameAllUsers)
@@ -42,10 +42,10 @@ class FirestoreProvider {
   /// Delete User Friend from users personal friends list create to fire
 
   Future<void> deleteUserIdFromUsersPersonalFriendsListAtFirestore(
-      {String curretUserID, String toDeleteUserID}) async {
+      {String currentUserID, String toDeleteUserID}) async {
     return _firestore
         .collection(_firestoreCollectionNameAllUsers)
-        .document(curretUserID)
+        .document(currentUserID)
         .collection(_userPersonalFriendslistCollectionName)
         .document(toDeleteUserID)
         .delete();
@@ -78,7 +78,7 @@ class FirestoreProvider {
   ///Adds a room Id to a user´s private rooms list
 
   Future<void> addRoomIDToUsersPrivateRoomList(
-      {String UserID, String roomID}) async {
+      {String userID, String roomID}) async {
     return _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(UserID)
@@ -89,7 +89,7 @@ class FirestoreProvider {
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(
-      {String currentUserID, String roomId, String commitment}) async{
+      {String currentUserID, String roomId, String commitment}) async {
     return _firestore
         .collection(_roomCollectionNameAllRooms)
         .document(roomId)

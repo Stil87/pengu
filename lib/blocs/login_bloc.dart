@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 import 'package:flutter/services.dart';
+import 'package:peng_u/model/pengU_user.dart';
 import 'package:peng_u/resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:peng_u/utils/strings.dart';
@@ -22,6 +23,8 @@ class LoginBloc {
 
   String get emailAddress => _email.value;
 
+  void  setSignInStatus(bool event) => _isSignedIn.add(event);
+
   //change data
   Function(String) get changeEmail => _email.sink.add;
 
@@ -30,7 +33,7 @@ class LoginBloc {
   Function(bool) get showProgressBar => _isSignedIn.sink.add;
 
   final _validateEmail =
-      StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
+  StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
     if (email.contains('@')) {
       sink.add(email);
     } else {
@@ -40,22 +43,39 @@ class LoginBloc {
 
   final _validatePassword = StreamTransformer<String, String>.fromHandlers(
       handleData: (password, sink) {
-    if (password.length > 5) {
-      sink.add(password);
-    } else {
-      sink.addError(StringConstants.passwordValidateMessage);
-    }
-  });
+        if (password.length > 5) {
+          sink.add(password);
+        } else {
+          sink.addError(StringConstants.passwordValidateMessage);
+        }
+      });
 
-  Future signInWithFirebaseAndEmail() {
-    return _repository.signInFirebaseAuthWithEmail(
+  ///method signs in FirebaseAuth and returns FirebaseAuth user.id
+
+  Future<String> signInWithFirebaseAndEmail() async {
+    String userId = await _repository.signInFirebaseAuthWithEmail(
         _email.value, _password.value);
+    return userId;
+
   }
 
-  Future signUpWithFirebaseAndEmail() {
-    return _repository.createFirebaseAuthUserWithEmail(
+  ///method signs up a new user in FirebaseAuth and returns FirebaseAuth user id
+
+  Future<String> signUpWithFirebaseAndEmail() async{
+    String userId  =  await _repository.createFirebaseAuthUserWithEmail(
         _email.value, _password.value);
+    return userId;
+
   }
+
+  ///methods sign up with google in FirebaseAuth and returns FirebaseAuth user id
+
+  Future<String> signInWithGoogle () async {
+    String userId = await _repository.signInWithGoogle();
+    return userId;
+  }
+
+
 
   void dispose() async {
     await _email.drain();
@@ -83,7 +103,7 @@ class LoginBloc {
 
   ///returns String error messages depending on input exception
 
-   String getExceptionText({Exception e}) {
+  String getExceptionText({Exception e}) {
     if (e is PlatformException) {
       switch (e.message) {
         case 'There is no user record corresponding to this identifier. The user may have been deleted.':

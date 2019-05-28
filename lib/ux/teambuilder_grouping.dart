@@ -4,7 +4,6 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter/material.dart';
 
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import 'package:flutter_sidekick/flutter_sidekick.dart';
 import 'package:peng_u/business/backend/firebase_auth.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/resources/repository.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -38,6 +38,7 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
   List<PlacesSearchResult> places = [];
   bool isLoading;
   String errorMessage;
+  final _repository = Repository();
 
   _statefulWidgetDemoState() {
     Auth.getCurrentFirebaseUserId().then((val) => setState(() {
@@ -141,6 +142,10 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     FlatButton(
+                      child: Text('logOut'),
+                      onPressed: () => _repository.signOutFirebaseAuth(),
+                    ),
+                    FlatButton(
                       color: Colors.blue,
                       onPressed: () => SidekickTeamBuilder.of<User>(context)
                           .moveAll(SidekickFlightDirection.toTarget),
@@ -238,7 +243,8 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
     }*/
     //Event event = Event(invitedUserId: userIdList);
     //Map<String, List> userMap = {"invitedUsersIds": addedUserList, 'event' : 'vögelei'};
-    Event event = Event(invitedUserId: addedUserList, eventName: textEditingController.text);
+    Event event = Event(
+        invitedUserId: addedUserList, eventName: textEditingController.text);
     roomId = Firestore.instance.collection('rooms').document().documentID;
     print(roomId);
     finalUserList.forEach((user) {

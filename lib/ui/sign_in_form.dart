@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:peng_u/blocs/login_bloc.dart';
 import 'package:peng_u/blocs/login_bloc_provider.dart';
+import 'package:peng_u/ui/login.dart';
 import 'package:peng_u/utils/strings.dart';
+import 'package:peng_u/ux/login_screen/root_screen.dart';
 import 'package:peng_u/ux/teambuilder_grouping.dart';
 
 class SignInForm extends StatefulWidget {
@@ -33,7 +36,9 @@ class _SignInFormState extends State<SignInForm> {
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         passwordField(),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
-        submitButton()
+        submitButton(),
+        Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
+        googleButton(),
       ],
     );
   }
@@ -64,6 +69,28 @@ class _SignInFormState extends State<SignInForm> {
         });
   }
 
+  Widget googleButton() {
+    return Padding(
+      padding: EdgeInsets.only(top: 10.0),
+      child: GestureDetector(
+        onTap: () {
+          authenticateUserWithGoogle();
+        },
+        child: Container(
+          padding: const EdgeInsets.all(15.0),
+          decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+          ),
+          child: new Icon(
+            FontAwesomeIcons.google,
+            color: Color(0xFF0084ff),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget submitButton() {
     return StreamBuilder(
         stream: _bloc.signInStatus,
@@ -92,13 +119,25 @@ class _SignInFormState extends State<SignInForm> {
         });
   }
 
+  void authenticateUserWithGoogle() {
+    _bloc.showProgressBar(true);
+    _bloc.signInWithGoogle().then((userId) {
+      print('google sign in with FirebaseAuth User id: $userId');
+    }).catchError((e) {
+      _bloc.setSignInStatus(null);
+      showErrorMessage(errorMessage: e);
+    });
+  }
+
   void authenticateUser() {
     _bloc.showProgressBar(true);
-    _bloc.signInWithFirebaseAndEmail().then((value) {
+    _bloc.signInWithFirebaseAndEmail().then((userId) {
       //Already registered
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => TeambuilderstflGroup()));
+      print('firebaseAuth user signed in: userId: $userId');
+      Navigator.pop(context);
+      //todo:root to dasboard screen
     }).catchError((e) {
+      _bloc.setSignInStatus(null);
       if (_bloc.getExceptionText(e: e) == null) {
         showAlertDialog(context);
       } else {
@@ -107,11 +146,24 @@ class _SignInFormState extends State<SignInForm> {
     });
   }
 
+
   showAlertDialog(BuildContext context) {
     //set up the alerts buttons
-    Widget cancelButton = FlatButton(onPressed: () {}, child: Text('Nea!'));
+    Widget cancelButton = FlatButton(
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => RootScreen()));
+        },
+        child: Text('Nea!'));
+    //New FirebaseAuth user
     Widget signUpButton = FlatButton(
-        onPressed: () => _bloc.signUpWithFirebaseAndEmail(),
+        onPressed: () =>
+            _bloc.signUpWithFirebaseAndEmail().then((userId) {
+              print('new firebaseAuth user created with id: $userId');
+
+              //todo: route to dashboard screen
+              Navigator.pop(context);
+            }),
         child: Text('Yeah!'));
 
     //set up the alertDialog

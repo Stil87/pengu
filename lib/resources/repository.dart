@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/pengU_user.dart';
 
 import 'firestore_provider.dart';
@@ -22,8 +23,8 @@ class Repository {
   ///Firebase authentification create FirebaseUser (SignUp) with email and password
   ///returns User Id
 
-  Future<String> createFirebaseAuthUserWithEmail(
-          String email, String password) =>
+  Future<String> createFirebaseAuthUserWithEmail(String email,
+      String password) =>
       _userAuthProvider.signUpFirebaseAuthWithEmail(
           email: email, password: password);
 
@@ -100,21 +101,61 @@ class Repository {
   /// stream to get Users personal friends list returning firestore snapshop
 
   Stream<QuerySnapshot> userPersonalFriendsListFromFirestore(
-          {String currentUserId}) =>
+      {String currentUserId}) =>
       _firestoreProvider.userPersonalFriendsListFromFirestore(
           currentUserID: currentUserId);
 
   /// Add User Friend to users personal friends list create to fire
 
-  Future<void > addUserIdToUsersPersonalFriendsListToFirestore(
-          {String currentUserID, String newUserID}) =>
+  Future<void> addUserIdToUsersPersonalFriendsListToFirestore(
+      {String currentUserID, String newUserID}) =>
       _firestoreProvider.addUserIdToUsersPersonalFriendsListToFirestore(
           currentUserID: currentUserID, newUserID: newUserID);
 
   /// Delete User Friend to users personal friends list create to fire
 
-  Future<void > deleteUserIdFromUsersPersonalFriendsListAtFirestore(
+  Future<void> deleteUserIdFromUsersPersonalFriendsListAtFirestore(
       {String currentUserID, String toDeleteUserId}) =>
       _firestoreProvider.deleteUserIdFromUsersPersonalFriendsListAtFirestore(
           currentUserID: currentUserID, toDeleteUserID: toDeleteUserId);
+
+/*-----------User rooms related firestore provider operation*/
+
+  /// Creating a new unique room at Firestore rooms Collection and returns roomId as a String
+
+  Future<String> createNewRoomWithUniqueIDAtFirestoreRoomCollection() =>
+      _firestoreProvider.createNewRoomWithUniqueIDAtFirestoreRoomCollection();
+
+  ///sets the Event object Data with event.tojson to a room with the given roomID
+
+  Future<void> setEventDataToSpecificRoom({Event event, String roomID}) =>
+      _firestoreProvider.setEventDataToSpecificRoom(
+          event: event, roomID: roomID);
+
+  ///Adds a room Id to a user´s private rooms list
+
+  Future<void> addRoomIDToUsersPrivateRoomList(
+      {String userID, String roomID}) =>
+      _firestoreProvider.addRoomIDToUsersPrivateRoomList(
+          userID: userID, roomID: roomID);
+
+  ///changes user commitment in a specific room
+
+  Future<void> changeCurrentUserCommitmentInASpecificRoom(
+      {String currentUserID, String roomId, String commitment}) =>
+      _firestoreProvider.changeCurrentUserCommitmentInASpecificRoom(
+          currentUserID: currentUserID, roomId: roomId, commitment: commitment);
+
+  /// stream to get Users personal room list returning firestore snapshop
+  ///
+  //Todo: checkt bzw zeigt dem User dieser Stream auch Änderungen innhrhalb eines Rooms z.b commitment änderungen
+  Stream<QuerySnapshot> userPersonalRoomListFromFirestore(
+      {String currentUserID}) =>
+      _firestoreProvider.userPersonalRoomListFromFirestore(
+          currentUserID: currentUserID);
+
+  /// stream of the Event data in a specific room
+
+  Stream<DocumentSnapshot> getRoomDocumentSnapshotWithRoomID({String roomID}) =>
+      _firestoreProvider.getRoomDocumentSnapshotWithRoomID(roomID: roomID);
 }

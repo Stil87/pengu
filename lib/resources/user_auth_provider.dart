@@ -39,6 +39,18 @@ class UserAuthProvider {
     return user;
   }
 
+  ///returns a User object out of a Firebase User
+
+  Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser) async {
+    User user = new User(
+      firstName: firebaseUser.displayName,
+      userID: firebaseUser.uid,
+      email: firebaseUser.email ?? '',
+      profilePictureURL: firebaseUser.photoUrl ?? '',
+    );
+    return user;
+  }
+
   ///returns the current firebaseUserId
 
   Future<String> getCurrentFirebaseUserId() async {
@@ -119,9 +131,27 @@ class UserAuthProvider {
 
   /*User Auth Firebase with GOOGLE*/
 
-  ///method to sign in user to Firebase.Auth with google account
+  ///method to sign in user to Firebase.Auth with google account returning the FirebaseAuth user id
 
-  Future signInWithGoogle() async {
+  Future<String> signInWithGoogle() async {
+    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    if (credential != null) {
+      String userId = await signInWithGoogleCredential(credential: credential);
+      return userId;
+    }
+  }
+
+  ///method to sign in user to Firebase.Auth with google account
+  ///just here for debug reason and should be deleted when finished
+
+  Future signInWithGooglealt() async {
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
@@ -174,8 +204,7 @@ class UserAuthProvider {
     print('Google sign out');
   }
 
-  /*User Auth Firebase with Facebook*/
-  //Todo: do FAcebook Sign in register app on Facebook
-
+/*User Auth Firebase with Facebook*/
+//Todo: do FAcebook Sign in register app on Facebook
 
 }
