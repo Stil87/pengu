@@ -7,9 +7,10 @@ import 'firestore_provider.dart';
 import 'user_auth_provider.dart';
 
 class Repository {
-  /*--------repository based on User authentication and firestore collection "users"----------*/
-
   final _userAuthProvider = UserAuthProvider();
+  final _firestoreProvider = FirestoreProvider();
+
+  /*--------repository based on User authentication and firestore collection "users"----------*/
 
   ///Firebase authentification Sign in with email and password
   /// returns User Id
@@ -30,6 +31,11 @@ class Repository {
 
   Future<FirebaseUser> getCurrentFirebaseUser() =>
       _userAuthProvider.getCurrentFirebaseUser();
+
+  ///returns a User object out of a Firebase User
+
+  Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser) =>
+      _userAuthProvider.createUserWithFirebaseUser(firebaseUser);
 
   ///returns the current firebaseUserId
 
@@ -73,7 +79,7 @@ class Repository {
 
   ///method to sign in user to Firebase.Auth with google account
 
-  Future<void> signInWithGoogle() => _userAuthProvider.signInWithGoogle();
+  Future<String> signInWithGoogle() => _userAuthProvider.signInWithGoogle();
 
   ///Stream which listens to change in User sign in status GoogleSignInAccount
 
@@ -83,4 +89,32 @@ class Repository {
   ///Method thats signs out Google account
 
   Future<void> signOutWithGoogle() => _userAuthProvider.signOutWithGoogle();
+
+/*---------------------repository based on firestore business logic */
+
+  /// stream to get global User list returning firestore snapshop
+  ///
+  Stream<QuerySnapshot> globalUserListFromFirestore() =>
+      _firestoreProvider.globalUserListFromFirestore();
+
+  /// stream to get Users personal friends list returning firestore snapshop
+
+  Stream<QuerySnapshot> userPersonalFriendsListFromFirestore(
+          {String currentUserId}) =>
+      _firestoreProvider.userPersonalFriendsListFromFirestore(
+          currentUserID: currentUserId);
+
+  /// Add User Friend to users personal friends list create to fire
+
+  Future<void > addUserIdToUsersPersonalFriendsListToFirestore(
+          {String currentUserID, String newUserID}) =>
+      _firestoreProvider.addUserIdToUsersPersonalFriendsListToFirestore(
+          currentUserID: currentUserID, newUserID: newUserID);
+
+  /// Delete User Friend to users personal friends list create to fire
+
+  Future<void > deleteUserIdFromUsersPersonalFriendsListAtFirestore(
+      {String currentUserID, String toDeleteUserId}) =>
+      _firestoreProvider.deleteUserIdFromUsersPersonalFriendsListAtFirestore(
+          currentUserID: currentUserID, toDeleteUserID: toDeleteUserId);
 }
