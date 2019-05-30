@@ -23,8 +23,8 @@ class Repository {
   ///Firebase authentification create FirebaseUser (SignUp) with email and password
   ///returns User Id
 
-  Future<String> createFirebaseAuthUserWithEmail(String email,
-      String password) =>
+  Future<String> createFirebaseAuthUserWithEmail(
+          String email, String password) =>
       _userAuthProvider.signUpFirebaseAuthWithEmail(
           email: email, password: password);
 
@@ -101,21 +101,35 @@ class Repository {
   /// stream to get Users personal friends list returning firestore snapshop
 
   Stream<QuerySnapshot> userPersonalFriendsListFromFirestore(
-      {String currentUserId}) =>
+          {String currentUserId}) =>
       _firestoreProvider.userPersonalFriendsListFromFirestore(
           currentUserID: currentUserId);
+
+  /// stream to get Users personal friends list returning  List<Strings> of friends ids
+  ///
+  Stream<List<String>> streamUserPersonalFriendsIdStringList(
+          {String currentUserID}) =>
+      _firestoreProvider.streamUserPersonalFriendsIdStringList(
+          currentUserID: currentUserID);
+
+  /// stream to get Users personal friends list returning  List of user objects
+  ///
+  Stream<List<User>> streamUserPersonalFriendsObjectList(
+          {String currentUserID}) =>
+      _firestoreProvider.streamUserPersonalFriendsObjectList(
+          currentUserID: currentUserID);
 
   /// Add User Friend to users personal friends list create to fire
 
   Future<void> addUserIdToUsersPersonalFriendsListToFirestore(
-      {String currentUserID, String newUserID}) =>
+          {String currentUserID, String newUserID}) =>
       _firestoreProvider.addUserIdToUsersPersonalFriendsListToFirestore(
           currentUserID: currentUserID, newUserID: newUserID);
 
   /// Delete User Friend to users personal friends list create to fire
 
   Future<void> deleteUserIdFromUsersPersonalFriendsListAtFirestore(
-      {String currentUserID, String toDeleteUserId}) =>
+          {String currentUserID, String toDeleteUserId}) =>
       _firestoreProvider.deleteUserIdFromUsersPersonalFriendsListAtFirestore(
           currentUserID: currentUserID, toDeleteUserID: toDeleteUserId);
 
@@ -135,14 +149,14 @@ class Repository {
   ///Adds a room Id to a user´s private rooms list
 
   Future<void> addRoomIDToUsersPrivateRoomList(
-      {String userID, String roomID}) =>
+          {String userID, String roomID}) =>
       _firestoreProvider.addRoomIDToUsersPrivateRoomList(
           userID: userID, roomID: roomID);
 
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(
-      {String currentUserID, String roomId, String commitment}) =>
+          {String currentUserID, String roomId, String commitment}) =>
       _firestoreProvider.changeCurrentUserCommitmentInASpecificRoom(
           currentUserID: currentUserID, roomId: roomId, commitment: commitment);
 
@@ -150,8 +164,15 @@ class Repository {
   ///
   //Todo: checkt bzw zeigt dem User dieser Stream auch Änderungen innhrhalb eines Rooms z.b commitment änderungen
   Stream<QuerySnapshot> userPersonalRoomListFromFirestore(
-      {String currentUserID}) =>
+          {String currentUserID}) =>
       _firestoreProvider.userPersonalRoomListFromFirestore(
+          currentUserID: currentUserID);
+
+  /// stream to get Users personal rooms list returning  List of event objects
+  ///
+  Stream<List<Event>> streamUserPersonalEventsObjectList(
+          {String currentUserID}) =>
+      _firestoreProvider.streamUserPersonalEventsObjectList(
           currentUserID: currentUserID);
 
   /// stream of the Event data in a specific room

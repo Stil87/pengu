@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peng_u/model/event.dart';
+import 'package:peng_u/model/pengU_user.dart';
 
 class FirestoreProvider {
   Firestore _firestore = Firestore.instance;
   final String _firestoreCollectionNameAllUsers = 'users';
-  final String _userPersonalFriendslistCollectionName = 'userFriendsList';
+  final String _userPersonalFriendslistCollectionName = 'userFriends';
   final String _userPersonalFriendIdFieldInDocument = 'userFriendsId';
   final String _roomCollectionNameAllRooms = 'rooms';
   final String _userPersonalRoomsListCollectionName = 'userRooms';
@@ -26,6 +28,31 @@ class FirestoreProvider {
         .document(currentUserID)
         .collection(_userPersonalFriendslistCollectionName)
         .snapshots();
+  }
+
+  /// stream to get Users personal friends list returning  List<Strings> of friends ids
+  ///
+  Stream<List<String>> streamUserPersonalFriendsIdStringList(
+      {String currentUserID}) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserID)
+        .collection(_userPersonalFriendslistCollectionName)
+        .snapshots()
+        .map((list) => list.documents.map((doc) => doc.documentID).toList());
+  }
+
+  /// stream to get Users personal friends list returning  List of user objects
+  ///
+  Stream<List<User>> streamUserPersonalFriendsObjectList(
+      {String currentUserID}) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserID)
+        .collection(_userPersonalFriendslistCollectionName)
+        .snapshots()
+        .map((list) =>
+            list.documents.map((doc) => User.fromDocument(doc)).toList());
   }
 
   /// Add User Friend to users personal friends list create to fire
@@ -81,7 +108,7 @@ class FirestoreProvider {
       {String userID, String roomID}) async {
     return _firestore
         .collection(_firestoreCollectionNameAllUsers)
-        .document(UserID)
+        .document(userID)
         .collection(_userPersonalRoomsListCollectionName)
         .document(roomID);
   }
@@ -108,6 +135,21 @@ class FirestoreProvider {
         .document(currentUserID)
         .collection(_userPersonalRoomsListCollectionName)
         .snapshots();
+  }
+
+  /// stream to get Users personal rooms list returning  List of event objects
+  ///
+  Stream<List<Event>> streamUserPersonalEventsObjectList(
+      {String currentUserID}) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserID)
+        .collection(_userPersonalRoomsListCollectionName)
+        .snapshots()
+        .map((list) =>
+            list.documents.map((doc) => Event.fromFirestore(doc)).toList());
+
+    //Event.fromFirestore(doc)).toList());
   }
 
   /// stream of the Event data in a specific room

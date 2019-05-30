@@ -17,6 +17,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:location/location.dart' as LocationManager;
 import 'package:google_maps_webservice/places.dart';
+import 'package:provider/provider.dart';
 
 class TeambuilderstflGroup extends StatefulWidget {
   @override
@@ -39,6 +40,7 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
   bool isLoading;
   String errorMessage;
   final _repository = Repository();
+
 
   _statefulWidgetDemoState() {
     Auth.getCurrentFirebaseUserId().then((val) => setState(() {
@@ -87,6 +89,7 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseUser user = Provider.of<FirebaseUser>(context);
     return SidekickTeamBuilder<User>(
       //Todo add Streambuilder and Stream function to auth like mainscreen
       // body: StreamBuilder(
@@ -244,7 +247,7 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
     //Event event = Event(invitedUserId: userIdList);
     //Map<String, List> userMap = {"invitedUsersIds": addedUserList, 'event' : 'vögelei'};
     Event event = Event(
-        invitedUserId: addedUserList, eventName: textEditingController.text);
+        invitedUserObjectList: finalUserList, eventName: textEditingController.text);
     roomId = Firestore.instance.collection('rooms').document().documentID;
     print(roomId);
     finalUserList.forEach((user) {
