@@ -119,6 +119,12 @@ class Repository {
       _firestoreProvider.streamUserPersonalFriendsObjectList(
           currentUserID: currentUserID);
 
+  /// stream to get Users personal friends event list returning  List of Events objects
+  /// currentUser/userFriends(snapshot)/userObject/Eventlists/
+  ///
+  Stream<List<Event>> streamUserPersonalFriendsEventsObjectList(
+      {String currentUserID}) => _firestoreProvider.streamUserPersonalFriendsEventsObjectList(currentUserID: currentUserID);
+
   /// Add User Friend to users personal friends list create to fire
 
   Future<void> addUserIdToUsersPersonalFriendsListToFirestore(

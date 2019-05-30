@@ -30,11 +30,12 @@ class DashboardBloc {
     });
   }
 
-  /// stream to get Users personal friends list returning  List of user objects
+  /// stream to get Users personal friends event list returning  List of Events objects
+  /// currentUser/userFriends(snapshot)/userObject/Eventlists/
   ///
-  Stream<List<User>> streamUserPersonalFriendsObjectList(
+  Stream<List<Event>> streamUserPersonalFriendsEventObjectList(
       {String currentUserID}) =>
-      _repository.streamUserPersonalFriendsObjectList(
+      _repository.streamUserPersonalFriendsEventsObjectList(
           currentUserID: currentUserID);
 
   Future<String> getCurrentUserId() {

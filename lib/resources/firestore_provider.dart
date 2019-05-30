@@ -55,6 +55,22 @@ class FirestoreProvider {
             list.documents.map((doc) => User.fromDocument(doc)).toList());
   }
 
+  /// stream to get Users personal friends event list returning  List of Events objects
+  /// currentUser/userFriends(snapshot)/userObject/Eventlists/
+  ///
+  Stream<List<Event>> streamUserPersonalFriendsEventsObjectList(
+      {String currentUserID}) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserID)
+        .collection(_userPersonalFriendslistCollectionName)
+        .snapshots()
+        .map((list) => list.documents.map((doc) {
+              User user = User.fromDocument(doc);
+              return user.eventList.forEach((e) => e);
+            }).toList());
+  }
+
   /// Add User Friend to users personal friends list create to fire
 
   Future<void> addUserIdToUsersPersonalFriendsListToFirestore(

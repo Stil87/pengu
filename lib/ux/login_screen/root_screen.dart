@@ -6,7 +6,7 @@ import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
 import 'package:peng_u/old/ui/walkthrough/main_screen.dart';
 import 'package:peng_u/old/ui/walkthrough/welcome_screen.dart';
 import 'package:peng_u/resources/repository.dart';
-import 'package:peng_u/ui/dashboard_screen.dart';
+import 'package:peng_u/ui/dashboard_screen/dashboard_screen.dart';
 import 'package:peng_u/ui/login.dart';
 import 'package:peng_u/ux/event.dart';
 import 'package:peng_u/ux/login_screen/login_screen.dart';
@@ -34,6 +34,7 @@ class _RootScreenState extends State<RootScreen> {
         } else {
           if (snapshot.hasData) {
             return Scaffold(
+
               appBar: AppBar(
                 actions: <Widget>[
                   IconButton(

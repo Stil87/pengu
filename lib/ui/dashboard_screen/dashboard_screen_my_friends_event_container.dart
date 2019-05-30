@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:peng_u/blocs/dashboard_bloc.dart';
 import 'package:peng_u/model/event.dart';
+import 'package:peng_u/ui/dashboard_screen/dashboard_screen_event_card.dart';
 
-class DashboardScreenMyEventsCard extends StatefulWidget {
+class DashboardScreenMyFriendsEventsContainer extends StatefulWidget {
   @override
-  _DashboardScreenMyEventsCardState createState() =>
-      _DashboardScreenMyEventsCardState();
+  _DashboardScreenMyFriendsEventsContainerState createState() =>
+      _DashboardScreenMyFriendsEventsContainerState();
 }
 
-class _DashboardScreenMyEventsCardState
-    extends State<DashboardScreenMyEventsCard> {
+class _DashboardScreenMyFriendsEventsContainerState
+    extends State<DashboardScreenMyFriendsEventsContainer> {
   final _bloc = DashboardBloc();
-  String currentUserId;
+  String _currentUserId;
 
   @override
   void initState() {
     super.initState();
-    _statefulWidgetDemoState();
+    _getCurrentFirebaseUserID();
   }
 
-  _statefulWidgetDemoState() {
+  _getCurrentFirebaseUserID() {
     _bloc.getCurrentUserId().then((val) => setState(() {
-          currentUserId = val;
+          _currentUserId = val;
         }));
   }
 
@@ -30,20 +31,20 @@ class _DashboardScreenMyEventsCardState
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(color: Colors.blueAccent),
-      child: columnMaker(),
+      child: getData(),
     );
   }
 
-  Widget columnMaker() {
-    if (currentUserId == null) {
+  Widget getData() {
+    if (_currentUserId == null) {
       return Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
       );
     } else {
       return StreamBuilder(
-          stream: _bloc.streamUserPersonalEventsObjectList(
-              currentUserID: currentUserId),
+          stream: _bloc.streamUserPersonalFriendsEventObjectList(
+              currentUserID: _currentUserId),
           builder: (BuildContext context, AsyncSnapshot<List<Event>> list) {
             if (list.hasData) {
               var events = list.requireData;
@@ -51,7 +52,7 @@ class _DashboardScreenMyEventsCardState
                   scrollDirection: Axis.horizontal,
                   itemCount: events.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return MyEventCard(events[index]);
+                    return EventCard(events[index]);
                   });
             }
             return Container(
@@ -60,15 +61,5 @@ class _DashboardScreenMyEventsCardState
             );
           });
     }
-  }
-
-  Widget MyEventCard(Event event) {
-    return Column(
-      children: <Widget>[
-        Row(
-          children: <Widget>[Text(event.eventName), Icon(Icons.event)],
-        ),
-      ],
-    );
   }
 }
