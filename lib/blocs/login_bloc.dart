@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 import 'package:flutter/services.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:peng_u/utils/strings.dart';

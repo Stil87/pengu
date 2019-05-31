@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peng_u/model/event.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/resources/repository.dart';
 
 class DashboardBloc {
@@ -30,17 +30,22 @@ class DashboardBloc {
     });
   }
 
+  /// stream to get Users personal friends list returning  List of user objects
+  ///
+  Stream<List<User>> streamUserPersonalFriendsObjectList(
+          {String currentUserID}) =>
+      _repository.streamUserPersonalFriendsObjectList(
+          currentUserID: currentUserID);
+
   /// stream to get Users personal friends event list returning  List of Events objects
   /// currentUser/userFriends(snapshot)/userObject/Eventlists/
   ///
   Stream<List<Event>> streamUserPersonalFriendsEventObjectList(
-      {String currentUserID}) =>
+          {String currentUserID}) =>
       _repository.streamUserPersonalFriendsEventsObjectList(
           currentUserID: currentUserID);
 
   Future<String> getCurrentUserId() {
     return _repository.getCurrentFirebaseUserId();
   }
-
-
 }

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peng_u/model/event.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/model/user.dart';
 
 import 'firestore_provider.dart';
 import 'user_auth_provider.dart';

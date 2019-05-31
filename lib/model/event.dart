@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/model/user.dart';
 
 class Event {
   String roomId;

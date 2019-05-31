@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/blocs/dashboard_bloc.dart';
+import 'package:peng_u/blocs/dashboard_bloc_provider.dart';
+import 'package:peng_u/model/event.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
 import 'package:peng_u/old/ui/walkthrough/main_screen.dart';
 import 'package:peng_u/old/ui/walkthrough/welcome_screen.dart';
@@ -21,6 +24,7 @@ class RootScreen extends StatefulWidget {
 
 class _RootScreenState extends State<RootScreen> {
   final _repository = Repository();
+  final _bloc = DashboardBloc();
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +37,31 @@ class _RootScreenState extends State<RootScreen> {
           );
         } else {
           if (snapshot.hasData) {
-            return Scaffold(
-
-              appBar: AppBar(
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.exit_to_app),
-                    onPressed: ()=> _repository.signOutFirebaseAuth(),
-                  )
+            var user = snapshot.data.uid;
+            return MultiProvider(
+                providers: [
+                  // Make user events stream available
+                  StreamProvider<List<Event>>.value(
+                      stream: _bloc.streamUserPersonalEventsObjectList(
+                          currentUserID: user)),
+                  // Make user events stream available
+                  StreamProvider<List<User>>.value(
+                      stream: _bloc.streamUserPersonalFriendsObjectList(
+                          currentUserID: user))
                 ],
-              ),
-              body: LoginBlocProvider(
-                child: DashboardScreen(),
-              ),
-            ); //StandardScreen());
+                child: Scaffold(
+                  appBar: AppBar(
+                    actions: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.exit_to_app),
+                        onPressed: () => _repository.signOutFirebaseAuth(),
+                      )
+                    ],
+                  ),
+                  body: DashboardBlocProvider(
+                    child: DashboardScreen(),
+                  ),
+                )); //StandardScreen());
           } else {
             return Scaffold(
                 body: LoginBlocProvider(child: LoginScreen())); //LoginPage();

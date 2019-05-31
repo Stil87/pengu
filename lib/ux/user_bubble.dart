@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/model/user.dart';
 
 class UserBubble extends StatefulWidget {
   final User user;

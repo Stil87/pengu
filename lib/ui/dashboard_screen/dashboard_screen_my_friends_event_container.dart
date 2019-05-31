@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:peng_u/blocs/dashboard_bloc.dart';
 import 'package:peng_u/model/event.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/ui/dashboard_screen/dashboard_screen_event_card.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreenMyFriendsEventsContainer extends StatefulWidget {
   @override
@@ -62,4 +64,5 @@ class _DashboardScreenMyFriendsEventsContainerState
           });
     }
   }
+
 }

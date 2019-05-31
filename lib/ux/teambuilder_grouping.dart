@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sidekick/flutter_sidekick.dart';
 import 'package:peng_u/business/backend/firebase_auth.dart';
 import 'package:peng_u/model/event.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/resources/repository.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

@@ -4,7 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/services.dart';
 import 'package:peng_u/business/backend/firebase_auth.dart';
 import 'package:peng_u/business/validator.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/ux/login_screen/custom_alert_dialog.dart';
 import 'package:peng_u/old/widgets/custom_flat_button.dart';
 import 'package:peng_u/old/widgets/custom_text_field.dart';

@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peng_u/business/backend/firebase_auth.dart';
 import 'package:peng_u/business/validator.dart';
-import 'package:peng_u/model/pengU_user.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/ux/login_screen/bubble_indication_painter.dart';
 import 'package:peng_u/ux/login_screen/custom_alert_dialog.dart';
 import 'package:peng_u/ux/login_screen/style.dart' as Theme;

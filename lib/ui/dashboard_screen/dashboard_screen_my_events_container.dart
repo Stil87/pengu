@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:peng_u/blocs/dashboard_bloc.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:peng_u/ui/dashboard_screen/dashboard_screen_event_card.dart';
+import 'package:provider/provider.dart';
 
 class DashboardScreenMyEventsContainer extends StatefulWidget {
   @override
@@ -28,37 +29,28 @@ class _DashboardScreenMyEventsContainerState
 
   @override
   Widget build(BuildContext context) {
+    var events = Provider.of<List<Event>>(context);
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(color: Colors.blueAccent),
-      child: getData(),
+      child: getData(events),
     );
   }
 
-  Widget getData() {
+  Widget getData(List<Event> events) {
     if (_currentUserId == null) {
       return Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
       );
     } else {
-      return StreamBuilder(
-          stream: _bloc.streamUserPersonalEventsObjectList(
-              currentUserID: _currentUserId),
-          builder: (BuildContext context, AsyncSnapshot<List<Event>> list) {
-            if (list.hasData) {
-              var events = list.requireData;
-              return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: events.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return EventCard(events[index]);
-                  });
-            }
-            return Container(
-              alignment: Alignment.center,
-              child: Text('No Events'),
-            );
+
+
+      return ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: events.length,
+          itemBuilder: (BuildContext context, int index) {
+            return EventCard(events[index]);
           });
     }
   }

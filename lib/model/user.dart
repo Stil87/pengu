@@ -8,13 +8,11 @@ class User {
   final String profilePictureURL;
   final List<Event> eventList;
 
-  User({
-    this.userID,
+  User({this.userID,
     this.firstName,
     this.email,
     this.profilePictureURL,
-    this.eventList
-  });
+    this.eventList});
 
   Map<String, Object> toJson() {
     return {
@@ -23,11 +21,14 @@ class User {
       'email': email == null ? '' : email,
       'profilePictureURL': profilePictureURL,
       'appIdentifier': 'PengYou',
-      'eventList' : eventList
+      'eventList': eventList
     };
   }
 
+  Map eventListToJson(List<Event> eventList) {
 
+
+  }
 
   factory User.fromJson(Map<String, Object> doc) {
     User user = new User(

@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserProfileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(onPressed: (){},
+    return FloatingActionButton(heroTag: null,
+      onPressed: () {},
       highlightElevation: 50.0,
-    child: Icon(Icons.account_circle),);
+      child: Icon(Icons.account_circle),
+    );
   }
 }
