@@ -17,7 +17,7 @@ class User {
   Map<String, Object> toJson() {
     return {
       'userID': userID,
-      'firstName': firstName,
+      'firstName': firstName ?? 'default Name',
       'email': email == null ? '' : email,
       'profilePictureURL': profilePictureURL,
       'appIdentifier': 'PengYou',

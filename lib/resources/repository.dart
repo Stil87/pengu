@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/user.dart';
+import 'package:peng_u/resources/location_provider.dart';
 
 import 'firestore_provider.dart';
 import 'user_auth_provider.dart';
@@ -10,6 +13,7 @@ import 'user_auth_provider.dart';
 class Repository {
   final _userAuthProvider = UserAuthProvider();
   final _firestoreProvider = FirestoreProvider();
+  final _locationProvider = LocationProvider();
 
   /*--------repository based on User authentication and firestore collection "users"----------*/
 
@@ -123,7 +127,9 @@ class Repository {
   /// currentUser/userFriends(snapshot)/userObject/Eventlists/
   ///
   Stream<List<Event>> streamUserPersonalFriendsEventsObjectList(
-      {String currentUserID}) => _firestoreProvider.streamUserPersonalFriendsEventsObjectList(currentUserID: currentUserID);
+          {String currentUserID}) =>
+      _firestoreProvider.streamUserPersonalFriendsEventsObjectList(
+          currentUserID: currentUserID);
 
   /// Add User Friend to users personal friends list create to fire
 
@@ -147,10 +153,17 @@ class Repository {
       _firestoreProvider.createNewRoomWithUniqueIDAtFirestoreRoomCollection();
 
   ///sets the Event object Data with event.tojson to a room with the given roomID
+  ///
+  ///
 
   Future<void> setEventDataToSpecificRoom({Event event, String roomID}) =>
       _firestoreProvider.setEventDataToSpecificRoom(
           event: event, roomID: roomID);
+
+  ///stream to returning the dummy Event object in rooms/unique id
+  ///
+  Stream<Event> streamDummyEventById({String eventId}) =>
+  _firestoreProvider.streamDummyEventById(eventId);
 
   ///Adds a room Id to a user´s private rooms list
 
@@ -158,6 +171,11 @@ class Repository {
           {String userID, String roomID}) =>
       _firestoreProvider.addRoomIDToUsersPrivateRoomList(
           userID: userID, roomID: roomID);
+
+  Future<void> addRoomObjectToUsersPrivateRoomList(
+          {String userID, String roomID, Event event}) =>
+      _firestoreProvider.addRoomObjectToUsersPrivateRoomList(
+          userID: userID, roomID: roomID, event: event);
 
   ///changes user commitment in a specific room
 
@@ -185,4 +203,17 @@ class Repository {
 
   Stream<DocumentSnapshot> getRoomDocumentSnapshotWithRoomID({String roomID}) =>
       _firestoreProvider.getRoomDocumentSnapshotWithRoomID(roomID: roomID);
+
+/*-----------User location related firestore provider operation*/
+
+  ///method get User location returns a LatLng
+  ///
+  Future<LatLng> getUserLocation() => _locationProvider.getUserLocation();
+
+  ///method returns PlacesSearchResponse which can turn with .result into List<PlacesSearchResult>
+
+  Future<PlacesSearchResponse> getNearbyPlacesByText(
+          {String searchString, Location location}) =>
+      _locationProvider.getNearbyPlacesByText(
+          searchString: searchString, location: location);
 }

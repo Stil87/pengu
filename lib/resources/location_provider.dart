@@ -27,10 +27,10 @@ class LocationProvider {
 
   Future<PlacesSearchResponse> getNearbyPlacesByText(
       {String searchString, Location location}) async {
-    var _result = await _places.searchByText(
-      searchString,
+    final _result = await _places.searchByText(searchString,
       location: location,
     );
+print (_result.status);
     return _result;
   }
 }

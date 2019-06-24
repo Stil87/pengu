@@ -90,7 +90,7 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
   @override
   Widget build(BuildContext context) {
     FirebaseUser user = Provider.of<FirebaseUser>(context);
-    return SidekickTeamBuilder<User>(
+    return SidekickTeamBuilder(
       //Todo add Streambuilder and Stream function to auth like mainscreen
       // body: StreamBuilder(
       //        stream: Auth.getUser(widget.firebaseUser.uid),
@@ -108,6 +108,23 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
                 padding: EdgeInsets.only(top: 50.0),
               ),
               Text('select your besties'),
+              Expanded(
+                //height: 250.0,
+                child: Wrap(
+                  direction: Axis.vertical,
+                  //todo: List statefull widget mit targetdelegate as child
+                  children: targetBuilderDelegates
+                      .map((builderDelegate) => builderDelegate.build(
+                    context,
+                    WrapItem(builderDelegate.message, false),
+                    animationBuilder: (animation) => CurvedAnimation(
+                      parent: animation,
+                      curve: FlippedCurve(Curves.ease),
+                    ),
+                  ))
+                      .toList(),
+                ),
+              ),
               Expanded(
                 child: GoogleMap(
                   initialCameraPosition:
@@ -162,23 +179,7 @@ class _TeambuilderstflGroupState extends State<TeambuilderstflGroup> {
                   ],
                 ),
               ),
-              Expanded(
-                //height: 250.0,
-                child: Wrap(
-                  direction: Axis.vertical,
-                  //todo: List statefull widget mit targetdelegate as child
-                  children: targetBuilderDelegates
-                      .map((builderDelegate) => builderDelegate.build(
-                            context,
-                            WrapItem(builderDelegate.message, false),
-                            animationBuilder: (animation) => CurvedAnimation(
-                                  parent: animation,
-                                  curve: FlippedCurve(Curves.ease),
-                                ),
-                          ))
-                      .toList(),
-                ),
-              ),
+
               Expanded(
                 //height: 50.0,
                 child: ListView(

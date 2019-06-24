@@ -30,7 +30,7 @@ class _UserBubbleState extends State<UserBubble>
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Text(widget.user.firstName),
+       // Text(widget.user.firstName),
         Center(
             child: CircleAvatar(
                 foregroundColor: Colors.blue,

@@ -6,7 +6,7 @@ class UserProfileButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(heroTag: null,
-      onPressed: () {},
+      onPressed: () {Navigator.pushNamed(context, '/group');},
       highlightElevation: 50.0,
       child: Icon(Icons.account_circle),
     );

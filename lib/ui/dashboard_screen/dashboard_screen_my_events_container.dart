@@ -30,6 +30,9 @@ class _DashboardScreenMyEventsContainerState
   @override
   Widget build(BuildContext context) {
     var events = Provider.of<List<Event>>(context);
+    if ( events == null || events.isEmpty) {
+       CircularProgressIndicator();
+    }
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(color: Colors.blueAccent),
@@ -44,8 +47,6 @@ class _DashboardScreenMyEventsContainerState
         child: CircularProgressIndicator(),
       );
     } else {
-
-
       return ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: events.length,

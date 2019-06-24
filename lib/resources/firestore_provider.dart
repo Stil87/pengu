@@ -129,6 +129,18 @@ class FirestoreProvider {
         .document(roomID);
   }
 
+  ///Adds a eventobject to a user´s private rooms list
+
+  Future<void> addRoomObjectToUsersPrivateRoomList(
+      {String userID, String roomID, Event event}) async {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(userID)
+        .collection(_userPersonalRoomsListCollectionName)
+        .document(roomID)
+        .setData(event.toJson());
+  }
+
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(
@@ -151,6 +163,17 @@ class FirestoreProvider {
         .document(currentUserID)
         .collection(_userPersonalRoomsListCollectionName)
         .snapshots();
+  }
+
+  ///stream to returning the dummy Event object in rooms/unique id
+  ///
+  Stream<Event> streamDummyEventById(String eventId) {
+    return _firestore
+        .collection(_roomCollectionNameAllRooms)
+        .document(eventId)
+        .snapshots()
+        .map((doc) => Event.fromFirestore(doc))
+        .handleError((e) => print('method firestore provider: $e'));
   }
 
   /// stream to get Users personal rooms list returning  List of event objects

@@ -5,7 +5,7 @@ import 'package:peng_u/model/event.dart';
 import 'package:peng_u/ui/buttoms/friends_button.dart';
 import 'package:peng_u/ui/buttoms/user_profil_button.dart';
 import 'package:peng_u/ui/dashboard_screen/dashboard_screen_my_events_container.dart';
-import 'package:peng_u/ui/dashboard_screen/dashboard_screen_my_friends_event_container.dart';
+
 import 'package:peng_u/ui/buttoms/new_event_button.dart';
 import 'package:provider/provider.dart';
 

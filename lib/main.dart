@@ -4,8 +4,10 @@ import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
 import 'package:peng_u/old/ui/walkthrough/sign_in_screen.dart';
 import 'package:peng_u/old/ui/walkthrough/sign_up_screen.dart';
 import 'package:peng_u/old/ui/walkthrough/walk_screen.dart';
-import 'package:peng_u/ui/event_new_screen.dart';
+import 'package:peng_u/ui/dashboard_screen/dashboard_screen.dart';
+
 import 'package:peng_u/ux/login_screen/root_screen.dart';
+import 'package:peng_u/ux/teambuilder_grouping.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +40,9 @@ class PengU extends StatelessWidget {
           '/signup': (BuildContext context) => new SignUpScreen(),
           //'/main': (BuildContext context) => new MainScreen(),
           '/main': (BuildContext context) => new PengUControlPageAnimator(),
-          '/newEvent' : (BuildContext context) => NewEventScreen()
+
+          '/dashboard' : (BuildContext context) => DashboardScreen(),
+          '/group' : (BuildContext context) => TeambuilderstflGroup(),
         },
         home: _handleCurrentScreen(),
       ),

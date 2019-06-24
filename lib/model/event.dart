@@ -20,10 +20,10 @@ class Event {
     Map data = doc.data;
 
     return Event(
-        roomId: doc.documentID,
-        eventName: data['eventName'] ?? '',
+        roomId: doc.documentID ?? '',
+        eventName: data['eventName'] ?? 'we need a name',
         dateTime: data['dateTime'] ?? DateTime.now(),
-        googlePlaceId: data['googlePlaceId'] ?? '',
+        googlePlaceId: data['googlePlaceId'] ?? ' we need a place',
         invitedUserObjectList: data['invitedUserObjectList'] ?? null);
   }
 
