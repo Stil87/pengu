@@ -7,7 +7,7 @@ import 'package:peng_u/ux/user_bubble.dart';
 import 'package:rxdart/rxdart.dart';
 
 class NewEventScreenPlay extends StatefulWidget {
-  List _friendsList;
+  final List _friendsList;
 
   NewEventScreenPlay(this._friendsList);
 
@@ -17,28 +17,61 @@ class NewEventScreenPlay extends StatefulWidget {
 }
 
 class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
-  _NewEventScreenPlayState(this._friendlist);
+  _NewEventScreenPlayState(this._friendsList);
 
-  List _friendlist;
+  List _friendsList;
   NewEventBloc _bloc = NewEventBloc();
+  
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc.increment(0);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bloc.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
+        /*floatingActionButton: FloatingActionButton(onPressed: () {
+          print(_bloc.current);
+        }),*/
         body: StreamBuilder<Object>(
             stream: _bloc.stream$,
             builder: (context, snapshot) {
               return SidekickTeamBuilder(
-                  initialSourceList: _friendlist,
+                  initialSourceList: _friendsList,
                   builder: (context, sourceBuilderDelegates,
                       targetBuilderDelegates) {
                     return Column(children: <Widget>[
-                      Expanded(child: Text('here könnte ihre Werbung stehen')),
+                      StreamBuilder<List>(
+                          stream: _bloc.treeWordNameListStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+
+                              return Expanded(
+                                child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: snapshot.data.length,
+                                    itemBuilder: (_, index) => Card(
+                                          child: Text(snapshot.data[index]),
+                                        )),
+                              );
+                            }
+
+                            return Expanded(
+                                child: Text('We need a funny name!'));
+                          }),
                       Expanded(
                         child: Wrap(
                           direction: Axis.vertical,
-                          //todo: List statefull widget mit targetdelegate as child
                           children: targetBuilderDelegates
                               .map((builderDelegate) => builderDelegate.build(
                                     context,
@@ -100,7 +133,9 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
           child: ListView.builder(
               shrinkWrap: true,
               itemCount: NameList().nameList.length,
-              itemBuilder: (_, index) => ListTile(onTap: _bloc.increment(),
+              itemBuilder: (_, index) => ListTile(
+                    onTap: () => _bloc.addToThreeWordNameList(
+                        name: NameList().nameList[index]),
                     title: Text(NameList().nameList[index]),
                   )),
         ),
