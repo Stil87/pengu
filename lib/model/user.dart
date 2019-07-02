@@ -32,9 +32,9 @@ class User {
 
   factory User.fromJson(Map<String, Object> doc) {
     User user = new User(
-      userID: doc['userID'],
-      firstName: doc['firstName'],
-      email: doc['email'],
+      userID: doc['userID'] ?? 'defaultId',
+      firstName: doc['firstName'] ?? 'default name',
+      email: doc['email'] ?? 'default email',
       profilePictureURL: doc['profilePictureURL'],
     );
     return user;

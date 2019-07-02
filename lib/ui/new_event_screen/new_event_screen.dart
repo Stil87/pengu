@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sidekick/flutter_sidekick.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:peng_u/blocs/event_new_bloc.dart';
 import 'package:peng_u/model/user.dart';
 import 'package:peng_u/utils/name_list.dart';
@@ -19,14 +20,15 @@ class NewEventScreenPlay extends StatefulWidget {
 class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   _NewEventScreenPlayState(this._friendsList);
 
-  List _friendsList;
+  List<User> _friendsList;
+  List<PlacesSearchResult> _placesList = [];
   NewEventBloc _bloc = NewEventBloc();
-  
 
   @override
   void initState() {
     super.initState();
-    _bloc.increment(0);
+
+    _friendsList.forEach((user) => print(user.firstName));
   }
 
   @override
@@ -39,9 +41,6 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        /*floatingActionButton: FloatingActionButton(onPressed: () {
-          print(_bloc.current);
-        }),*/
         body: StreamBuilder<Object>(
             stream: _bloc.stream$,
             builder: (context, snapshot) {
@@ -54,34 +53,53 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                           stream: _bloc.treeWordNameListStream,
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
-
                               return Expanded(
                                 child: ListView.builder(
                                     shrinkWrap: true,
                                     scrollDirection: Axis.horizontal,
                                     itemCount: snapshot.data.length,
-                                    itemBuilder: (_, index) => Card(
-                                          child: Text(snapshot.data[index]),
-                                        )),
+                                    itemBuilder: (_, index) {
+                                      return Card(
+                                        child: Text(snapshot.data[index]),
+                                      );
+                                    }),
                               );
                             }
 
                             return Expanded(
                                 child: Text('We need a funny name!'));
                           }),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: StreamBuilder(
+                            stream: _bloc.pickedPlaceStream,
+                            builder: (context, snap) {
+                              if (!snap.hasData) {
+                                return Container();
+                              }
+                              if (snap.hasData) {
+                                return ListTile(
+                                  leading:
+                                  Image(image: NetworkImage(snap.data.icon)),
+                                  title: Text(snap.data.name),
+                                );
+                              }
+                            }),
+                      ),
                       Expanded(
                         child: Wrap(
                           direction: Axis.vertical,
                           children: targetBuilderDelegates
-                              .map((builderDelegate) => builderDelegate.build(
-                                    context,
-                                    WrapItem(builderDelegate.message, false),
-                                    animationBuilder: (animation) =>
-                                        CurvedAnimation(
-                                          parent: animation,
-                                          curve: FlippedCurve(Curves.ease),
-                                        ),
-                                  ))
+                              .map((builderDelegate) =>
+                              builderDelegate.build(
+                                context,
+                                WrapItem(builderDelegate.message, false),
+                                animationBuilder: (animation) =>
+                                    CurvedAnimation(
+                                      parent: animation,
+                                      curve: FlippedCurve(Curves.ease),
+                                    ),
+                              ))
                               .toList(),
                         ),
                       ),
@@ -89,27 +107,64 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         Expanded(child: _createNameFinderRow())
                       ],
                       if (snapshot.data == 1) ...[
+                        Expanded(flex: 2, child: _createPlaceFinder())
+                      ],
+                      if(snapshot.data == 2)...[
+                        Expanded(child: _createTimeFinder())
+
+                      ],
+                      if (snapshot.data == 3) ...[
                         Expanded(
                           //height: 50.0,
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: sourceBuilderDelegates
-                                .map((builderDelegate) => builderDelegate.build(
-                                      context,
-                                      WrapItem(builderDelegate.message, true),
-                                      animationBuilder: (animation) =>
-                                          CurvedAnimation(
-                                            parent: animation,
-                                            curve: Curves.ease,
-                                          ),
-                                    ))
+                                .map((builderDelegate) =>
+                                builderDelegate.build(
+                                  context,
+                                  WrapItem(builderDelegate.message, true),
+                                  animationBuilder: (animation) =>
+                                      CurvedAnimation(
+                                        parent: animation,
+                                        curve: Curves.ease,
+                                      ),
+                                ))
                                 .toList(),
                           ),
                         ),
                       ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Stack(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 20.0, right: 30.0),
+                              child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: FloatingActionButton(
+                                      heroTag: 0,
+                                      onPressed: () => _bloc.increment())),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  bottom: 20.0, left: 30.0),
+                              child: Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: FloatingActionButton(
+                                      heroTag: 1,
+                                      onPressed: () => _bloc.decrement())),
+                            ),
+                          ],
+                        ),
+                      )
                     ]);
                   });
             }));
+  }
+
+  _createTimeFinder() {
+    return 
   }
 
   _createNameFinderRow() {
@@ -133,22 +188,68 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
           child: ListView.builder(
               shrinkWrap: true,
               itemCount: NameList().nameList.length,
-              itemBuilder: (_, index) => ListTile(
-                    onTap: () => _bloc.addToThreeWordNameList(
-                        name: NameList().nameList[index]),
+              itemBuilder: (_, index) =>
+                  ListTile(
+                    onTap: () =>
+                        _bloc.addToThreeWordNameList(
+                            name: NameList().nameList[index]),
                     title: Text(NameList().nameList[index]),
                   )),
         ),
       ),
     );
   }
+
+  _createPlaceFinder() {
+    return Column(
+      children: <Widget>[
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Wrap(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.restaurant),
+                onPressed: () => _updatePlacesList('Restaurant'),
+              ),
+              IconButton(
+                icon: Icon(Icons.local_bar),
+                onPressed: () => _updatePlacesList('Bar'),
+              ),
+              IconButton(
+                icon: Icon(Icons.local_cafe),
+                onPressed: () => _updatePlacesList('Cafe'),
+              )
+            ],
+          ),
+        ),
+        Container(
+          color: Colors.red,
+          child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _placesList.length,
+              itemBuilder: (_, index) =>
+                  ListTile(
+                      onTap: () => _bloc.addPlace(_placesList[index]),
+                      leading: Image(
+                          image: NetworkImage(_placesList[index].icon)),
+                      title: Text(_placesList[index].name))),
+        )
+      ],
+    );
+  }
+
+  _updatePlacesList(String place) async {
+    await _bloc.getListOfPlaces(search: place).then((v) {
+      setState(() {
+        _placesList = v.results;
+      });
+    });
+  }
 }
 
 class WrapItem extends StatelessWidget {
-  const WrapItem(
-    this.user,
-    this.isSource,
-  ) : size = isSource ? 40.0 : 70.0;
+  const WrapItem(this.user,
+      this.isSource,) : size = isSource ? 40.0 : 70.0;
   final bool isSource;
   final double size;
 

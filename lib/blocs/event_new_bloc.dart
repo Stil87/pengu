@@ -23,6 +23,7 @@ class NewEventBloc {
   Observable<String> get wordThree => _wordThree.stream;*/
   BehaviorSubject _counter = BehaviorSubject(seedValue: 0);
   BehaviorSubject<List> _threeWordNameList = BehaviorSubject<List>();
+  BehaviorSubject _pickedPlace = BehaviorSubject(seedValue: 0);
 
   Observable get stream$ => _counter.stream;
 
@@ -32,9 +33,24 @@ class NewEventBloc {
 
   List get currentThreeWordList => _threeWordNameList.value;
 
-  increment(int int) {
-    _counter.add(int);
+  Observable get pickedPlaceStream => _pickedPlace.stream;
+
+  PlacesSearchResult get pickedPlace => _pickedPlace.value;
+
+  addPlace(PlacesSearchResult place) {
+    _pickedPlace.add(place);
+  }
+
+  increment() {
+    _counter.add(current+1);
     print(_counter.value);
+  }
+
+  decrement() {
+    if(current > 0) {
+
+    _counter.add(current-1);
+    print(_counter.value);}
   }
 
   addToThreeWordNameList({String name, int position}) {
@@ -53,6 +69,8 @@ class NewEventBloc {
     }
     _threeWordNameList.add(_list);
   }
+
+
 
   BehaviorSubject _pageRoot = BehaviorSubject(seedValue: 0);
 
@@ -74,6 +92,8 @@ class NewEventBloc {
     _counter.close();
     await _threeWordNameList.drain();
     _threeWordNameList.close();
+    await _pickedPlace.drain();
+    _pickedPlace.close();
   }
 
 /*
