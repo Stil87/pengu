@@ -19,6 +19,7 @@ class NewEventScreenPlay extends StatefulWidget {
 
 class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   _NewEventScreenPlayState(this._friendsList);
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   List<User> _friendsList;
   List<PlacesSearchResult> _placesList = [];
@@ -39,7 +40,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(key: _scaffoldKey,
         appBar: AppBar(),
         body: StreamBuilder<Object>(
             stream: _bloc.stream$,
@@ -121,8 +122,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       if (snapshot.data == 2) ...[
                         Expanded(flex: 2, child: _createTimeFinder())
                       ],
-                      if (snapshot.data == 3) ...[],
-                      if (snapshot.data == 4) ...[
+                      if (snapshot.data == 3) ...[
                         Expanded(
                           //height: 50.0,
                           child: ListView(
@@ -316,6 +316,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
 
   void _DayButtonClicked(int day) {
     _bloc.increment();
+    DateTime todaySelectedDateTime;
 
     Future<TimeOfDay> selectedTime = showTimePicker(
       initialTime: TimeOfDay.now(),
@@ -323,15 +324,20 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
     ).then((time) {
       if (day == 0) {
         final now = new DateTime.now();
-        DateTime todaySelectedDateTime =
+        todaySelectedDateTime =
             DateTime(now.year, now.month, now.day, time.hour, time.minute);
-        _bloc.setTimeToDateTime(todaySelectedDateTime);
       }
       if (day == 1) {
         final now = new DateTime.now().add(Duration(days: 1));
-        DateTime todaySelectedDateTime =
+        todaySelectedDateTime =
             DateTime(now.year, now.month, now.day, time.hour, time.minute);
+      }
+      if (todaySelectedDateTime.isAfter(DateTime.now())) {
         _bloc.setTimeToDateTime(todaySelectedDateTime);
+      } else {
+        final snackBar = SnackBar(content: Text('Travelling back in Time?!'));
+        _scaffoldKey.currentState.showSnackBar(snackBar);
+        _bloc.decrement();
       }
     });
   }
