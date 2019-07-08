@@ -27,7 +27,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   @override
   void initState() {
     super.initState();
-
+    _bloc.setZero();
     _friendsList.forEach((user) => print(user.firstName));
   }
 
@@ -71,7 +71,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                           }),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: StreamBuilder(
+                        child: StreamBuilder<PlacesSearchResult>(
                             stream: _bloc.pickedPlaceStream,
                             builder: (context, snap) {
                               if (!snap.hasData) {
@@ -79,27 +79,36 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                               }
                               if (snap.hasData) {
                                 return ListTile(
-                                  leading:
-                                  Image(image: NetworkImage(snap.data.icon)),
+                                  leading: Image(
+                                      image: NetworkImage(snap.data.icon)),
                                   title: Text(snap.data.name),
                                 );
                               }
                             }),
                       ),
+                      StreamBuilder<DateTime>(
+                          stream: _bloc.dateTimeStream,
+                          builder: (context, snap) {
+                            if (!snap.hasData) {
+                              return Container();
+                            }
+                            if (snap.hasData) {
+                              return Text(snap.data.toString());
+                            }
+                          }),
                       Expanded(
                         child: Wrap(
                           direction: Axis.vertical,
                           children: targetBuilderDelegates
-                              .map((builderDelegate) =>
-                              builderDelegate.build(
-                                context,
-                                WrapItem(builderDelegate.message, false),
-                                animationBuilder: (animation) =>
-                                    CurvedAnimation(
-                                      parent: animation,
-                                      curve: FlippedCurve(Curves.ease),
-                                    ),
-                              ))
+                              .map((builderDelegate) => builderDelegate.build(
+                                    context,
+                                    WrapItem(builderDelegate.message, false),
+                                    animationBuilder: (animation) =>
+                                        CurvedAnimation(
+                                          parent: animation,
+                                          curve: FlippedCurve(Curves.ease),
+                                        ),
+                                  ))
                               .toList(),
                         ),
                       ),
@@ -109,26 +118,25 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       if (snapshot.data == 1) ...[
                         Expanded(flex: 2, child: _createPlaceFinder())
                       ],
-                      if(snapshot.data == 2)...[
-                        Expanded(child: _createTimeFinder())
-
+                      if (snapshot.data == 2) ...[
+                        Expanded(flex: 2, child: _createTimeFinder())
                       ],
-                      if (snapshot.data == 3) ...[
+                      if (snapshot.data == 3) ...[],
+                      if (snapshot.data == 4) ...[
                         Expanded(
                           //height: 50.0,
                           child: ListView(
                             scrollDirection: Axis.horizontal,
                             children: sourceBuilderDelegates
-                                .map((builderDelegate) =>
-                                builderDelegate.build(
-                                  context,
-                                  WrapItem(builderDelegate.message, true),
-                                  animationBuilder: (animation) =>
-                                      CurvedAnimation(
-                                        parent: animation,
-                                        curve: Curves.ease,
-                                      ),
-                                ))
+                                .map((builderDelegate) => builderDelegate.build(
+                                      context,
+                                      WrapItem(builderDelegate.message, true),
+                                      animationBuilder: (animation) =>
+                                          CurvedAnimation(
+                                            parent: animation,
+                                            curve: Curves.ease,
+                                          ),
+                                    ))
                                 .toList(),
                           ),
                         ),
@@ -164,7 +172,71 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   }
 
   _createTimeFinder() {
-    return 
+    return Column(
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: FlatButton(
+              color: Colors.blueAccent,
+              onPressed: () {
+                _bloc.setTimeToDateTime(DateTime.now());
+              },
+              child: Text('Now!')),
+        ),
+        Wrap(
+          alignment: WrapAlignment.spaceAround,
+          spacing: 10.0,
+          children: <Widget>[
+            FlatButton(
+                color: Colors.blue,
+                onPressed: () {
+                  _bloc.setTimeToDateTime(
+                      DateTime.now().add(Duration(minutes: 30)));
+                },
+                child: Text('In 30')),
+            FlatButton(
+                color: Colors.blue,
+                onPressed: () {
+                  _bloc.setTimeToDateTime(
+                      DateTime.now().add(Duration(minutes: 60)));
+                },
+                child: Text('In 60')),
+            FlatButton(
+                color: Colors.blue,
+                onPressed: () {
+                  _bloc.setTimeToDateTime(
+                      DateTime.now().add(Duration(minutes: 90)));
+                },
+                child: Text('In 90')),
+            FlatButton(
+                color: Colors.blue,
+                onPressed: () {
+                  _bloc.setTimeToDateTime(
+                      DateTime.now().add(Duration(minutes: 120)));
+                },
+                child: Text('In 120')),
+          ],
+        ),
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: 10.0,
+          children: <Widget>[
+            FlatButton(
+                color: Colors.pink,
+                onPressed: () {
+                  _DayButtonClicked(0);
+                },
+                child: Text('Today')),
+            FlatButton(
+                color: Colors.pink,
+                onPressed: () {
+                  _DayButtonClicked(1);
+                },
+                child: Text('Tomorrow'))
+          ],
+        ),
+      ],
+    );
   }
 
   _createNameFinderRow() {
@@ -188,11 +260,9 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
           child: ListView.builder(
               shrinkWrap: true,
               itemCount: NameList().nameList.length,
-              itemBuilder: (_, index) =>
-                  ListTile(
-                    onTap: () =>
-                        _bloc.addToThreeWordNameList(
-                            name: NameList().nameList[index]),
+              itemBuilder: (_, index) => ListTile(
+                    onTap: () => _bloc.addToThreeWordNameList(
+                        name: NameList().nameList[index]),
                     title: Text(NameList().nameList[index]),
                   )),
         ),
@@ -227,12 +297,10 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
           child: ListView.builder(
               shrinkWrap: true,
               itemCount: _placesList.length,
-              itemBuilder: (_, index) =>
-                  ListTile(
-                      onTap: () => _bloc.addPlace(_placesList[index]),
-                      leading: Image(
-                          image: NetworkImage(_placesList[index].icon)),
-                      title: Text(_placesList[index].name))),
+              itemBuilder: (_, index) => ListTile(
+                  onTap: () => _bloc.addPlace(_placesList[index]),
+                  leading: Image(image: NetworkImage(_placesList[index].icon)),
+                  title: Text(_placesList[index].name))),
         )
       ],
     );
@@ -245,11 +313,35 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
       });
     });
   }
+
+  void _DayButtonClicked(int day) {
+    _bloc.increment();
+
+    Future<TimeOfDay> selectedTime = showTimePicker(
+      initialTime: TimeOfDay.now(),
+      context: context,
+    ).then((time) {
+      if (day == 0) {
+        final now = new DateTime.now();
+        DateTime todaySelectedDateTime =
+            DateTime(now.year, now.month, now.day, time.hour, time.minute);
+        _bloc.setTimeToDateTime(todaySelectedDateTime);
+      }
+      if (day == 1) {
+        final now = new DateTime.now().add(Duration(days: 1));
+        DateTime todaySelectedDateTime =
+            DateTime(now.year, now.month, now.day, time.hour, time.minute);
+        _bloc.setTimeToDateTime(todaySelectedDateTime);
+      }
+    });
+  }
 }
 
 class WrapItem extends StatelessWidget {
-  const WrapItem(this.user,
-      this.isSource,) : size = isSource ? 40.0 : 70.0;
+  const WrapItem(
+    this.user,
+    this.isSource,
+  ) : size = isSource ? 40.0 : 70.0;
   final bool isSource;
   final double size;
 

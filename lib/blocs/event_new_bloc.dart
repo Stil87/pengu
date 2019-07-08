@@ -23,7 +23,8 @@ class NewEventBloc {
   Observable<String> get wordThree => _wordThree.stream;*/
   BehaviorSubject _counter = BehaviorSubject(seedValue: 0);
   BehaviorSubject<List> _threeWordNameList = BehaviorSubject<List>();
-  BehaviorSubject _pickedPlace = BehaviorSubject(seedValue: 0);
+  BehaviorSubject<PlacesSearchResult> _pickedPlace = BehaviorSubject();
+  BehaviorSubject<DateTime> _dateTime = BehaviorSubject();
 
   Observable get stream$ => _counter.stream;
 
@@ -33,35 +34,48 @@ class NewEventBloc {
 
   List get currentThreeWordList => _threeWordNameList.value;
 
-  Observable get pickedPlaceStream => _pickedPlace.stream;
+  Observable<PlacesSearchResult> get pickedPlaceStream => _pickedPlace.stream;
 
   PlacesSearchResult get pickedPlace => _pickedPlace.value;
+
+  Observable<DateTime> get dateTimeStream => _dateTime.stream;
+
+  DateTime get selectedDateTime => _dateTime.value;
+
+  setTimeToDateTime (DateTime dateTime) {
+    _dateTime.add(dateTime);
+  }
+
+
 
   addPlace(PlacesSearchResult place) {
     _pickedPlace.add(place);
   }
 
   increment() {
-    _counter.add(current+1);
+    _counter.add(current + 1);
     print(_counter.value);
   }
 
   decrement() {
-    if(current > 0) {
+    if (current > 0) {
+      _counter.add(current - 1);
+      print(_counter.value);
+    }
+  }
 
-    _counter.add(current-1);
-    print(_counter.value);}
+  setZero() {
+    _counter.add(0);
   }
 
   addToThreeWordNameList({String name, int position}) {
     List _list = List();
     _list = [];
 
-
-    if (_threeWordNameList.value != null ) {
+    if (_threeWordNameList.value != null) {
       _list = _threeWordNameList.value;
     }
-    if (  _list.length <= 2 || _list.isEmpty) {
+    if (_list.length <= 2 || _list.isEmpty) {
       _list.add(name);
     } else {
       _list.removeAt(0);
@@ -69,8 +83,6 @@ class NewEventBloc {
     }
     _threeWordNameList.add(_list);
   }
-
-
 
   BehaviorSubject _pageRoot = BehaviorSubject(seedValue: 0);
 
@@ -94,6 +106,8 @@ class NewEventBloc {
     _threeWordNameList.close();
     await _pickedPlace.drain();
     _pickedPlace.close();
+    await _dateTime.drain();
+    _dateTime.close();
   }
 
 /*
