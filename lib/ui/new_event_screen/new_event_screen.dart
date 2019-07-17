@@ -19,6 +19,7 @@ class NewEventScreenPlay extends StatefulWidget {
 
 class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   _NewEventScreenPlayState(this._friendsList);
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   List<User> _friendsList;
@@ -40,7 +41,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(key: _scaffoldKey,
+    return Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(),
         body: StreamBuilder<Object>(
             stream: _bloc.stream$,
@@ -122,7 +124,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       if (snapshot.data == 2) ...[
                         Expanded(flex: 2, child: _createTimeFinder())
                       ],
-                      if (snapshot.data == 3) ...[
+                      if (snapshot.data == 3 ) ...[
                         Expanded(
                           //height: 50.0,
                           child: ListView(
@@ -140,6 +142,14 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                 .toList(),
                           ),
                         ),
+                        if (snapshot.data == 3) ...[
+                          Expanded(
+                            child: FloatingActionButton(
+                              onPressed: () {_sendEvent(SidekickTeamBuilder.of(context).targetList);},
+                              child: Icon(Icons.send),
+                            ),
+                          )
+                        ]
                       ],
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -340,6 +350,12 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
         _bloc.decrement();
       }
     });
+  }
+
+  void _sendEvent(List userList) {
+    _bloc.setInvitedUserList(userList);
+    print( userList);
+    _bloc.createEvent();
   }
 }
 

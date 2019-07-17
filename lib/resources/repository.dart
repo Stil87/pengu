@@ -131,6 +131,12 @@ class Repository {
       _firestoreProvider.streamUserPersonalFriendsEventsObjectList(
           currentUserID: currentUserID);
 
+  ///Future to search the firestore user list by searchKeyword
+  ///
+  Future<QuerySnapshot> getUserDocumentsFromFirestoreBySearchKey(
+      {String searchKey})  => _firestoreProvider.getUserDocumentsFromFirestoreBySearchKey(searchKey: searchKey);
+
+
   /// Add User Friend to users personal friends list create to fire
 
   Future<void> addUserIdToUsersPersonalFriendsListToFirestore(

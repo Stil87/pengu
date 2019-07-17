@@ -55,6 +55,16 @@ class FirestoreProvider {
             list.documents.map((doc) => User.fromDocument(doc)).toList());
   }
 
+  ///Future to search the firestore user list by searchKeyword
+  ///
+  Future<QuerySnapshot> getUserDocumentsFromFirestoreBySearchKey(
+      {String searchKey}) async {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .where('searchKey', isEqualTo: searchKey.substring(0, 1).toUpperCase())
+        .getDocuments();
+  }
+
   /// stream to get Users personal friends event list returning  List of Events objects
   /// currentUser/userFriends(snapshot)/userObject/Eventlists/
   ///

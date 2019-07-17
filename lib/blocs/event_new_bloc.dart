@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:meta/meta.dart';
@@ -25,6 +26,11 @@ class NewEventBloc {
   BehaviorSubject<List> _threeWordNameList = BehaviorSubject<List>();
   BehaviorSubject<PlacesSearchResult> _pickedPlace = BehaviorSubject();
   BehaviorSubject<DateTime> _dateTime = BehaviorSubject();
+  BehaviorSubject<List<User>> _invitedUserList = BehaviorSubject();
+
+  Observable<List<User>> get invitedUserListStream => _invitedUserList.stream;
+
+  List get invitedUserList => _invitedUserList.value;
 
   Observable get stream$ => _counter.stream;
 
@@ -42,11 +48,13 @@ class NewEventBloc {
 
   DateTime get selectedDateTime => _dateTime.value;
 
-  setTimeToDateTime (DateTime dateTime) {
+  setTimeToDateTime(DateTime dateTime) {
     _dateTime.add(dateTime);
   }
 
-
+  setInvitedUserList(List userList) {
+    _invitedUserList.add(userList);
+  }
 
   addPlace(PlacesSearchResult place) {
     _pickedPlace.add(place);
@@ -108,6 +116,8 @@ class NewEventBloc {
     _pickedPlace.close();
     await _dateTime.drain();
     _dateTime.close();
+    await _invitedUserList.drain();
+    _invitedUserList.close();
   }
 
 /*
@@ -126,7 +136,7 @@ class NewEventBloc {
   ///Method return List of places
   ///
   Future<PlacesSearchResponse> getNearbyPlacesByText(
-          {String searchString, Location location}) =>
+      {String searchString, Location location}) =>
       _repository.getNearbyPlacesByText(
           searchString: searchString, location: location);
 
@@ -138,7 +148,7 @@ class NewEventBloc {
     print(location);
     final locationDummy = Location(48.7643321, 9.1653504);
     var results = await getNearbyPlacesByText(
-            searchString: search, location: locationDummy)
+        searchString: search, location: locationDummy)
         .catchError((e) => print('places error : $e'));
 
     return results;
@@ -156,25 +166,32 @@ class NewEventBloc {
     return uniqueRoomId;
   }
 
-  Future<Event> createNewEvent(
-      {@required String eventName,
-      @required DateTime selectedDateTime,
-      @required String googlePlaceId,
-      @required List<User> invitedUserObjectList}) async {
+  Future<Event> createEvent() async {
+    FirebaseUser currentFirebaseUser = await _repository
+        .getCurrentFirebaseUser();
+    await _repository.createUserWithFirebaseUser(
+        currentFirebaseUser).then((u) {
+      invitedUserList.add(u);
+    });
+
     String uniqueRoomId =
-        await _repository.createNewRoomWithUniqueIDAtFirestoreRoomCollection();
+    await _repository.createNewRoomWithUniqueIDAtFirestoreRoomCollection();
+
     Event event = Event(
-        eventName: eventName,
+        eventName: currentThreeWordList.toString(),
         dateTime: selectedDateTime,
-        googlePlaceId: googlePlaceId,
-        invitedUserObjectList: invitedUserObjectList);
-    return event;
+        googlePlaceId: pickedPlace.placeId,
+        invitedUserObjectList: invitedUserList,
+        roomId: uniqueRoomId);
+    spreadEventToFriends(event);
   }
 
-  Future<void> spreadEventToFriends(String userId, String roomId, Event event) {
+
+  Future<void> spreadEventToFriends(Event event) {
     event.invitedUserObjectList.forEach((user) async {
       await _repository.addRoomObjectToUsersPrivateRoomList(
-          userID: user.userID, roomID: roomId, event: event);
+          userID: user.userID, roomID: event.roomId, event: event);
+      print('ebent created');
     });
   }
 }
