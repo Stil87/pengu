@@ -136,7 +136,7 @@ class NewEventBloc {
   ///Method return List of places
   ///
   Future<PlacesSearchResponse> getNearbyPlacesByText(
-      {String searchString, Location location}) =>
+          {String searchString, Location location}) =>
       _repository.getNearbyPlacesByText(
           searchString: searchString, location: location);
 
@@ -148,7 +148,7 @@ class NewEventBloc {
     print(location);
     final locationDummy = Location(48.7643321, 9.1653504);
     var results = await getNearbyPlacesByText(
-        searchString: search, location: locationDummy)
+            searchString: search, location: locationDummy)
         .catchError((e) => print('places error : $e'));
 
     return results;
@@ -167,15 +167,16 @@ class NewEventBloc {
   }
 
   Future<Event> createEvent() async {
-    FirebaseUser currentFirebaseUser = await _repository
-        .getCurrentFirebaseUser();
-    await _repository.createUserWithFirebaseUser(
-        currentFirebaseUser).then((u) {
+    FirebaseUser currentFirebaseUser =
+        await _repository.getCurrentFirebaseUser();
+    await _repository
+        .getUserFromFirestoreCollectionFuture(userID: currentFirebaseUser.uid)
+        .then((u) {
       invitedUserList.add(u);
     });
 
     String uniqueRoomId =
-    await _repository.createNewRoomWithUniqueIDAtFirestoreRoomCollection();
+        await _repository.createNewRoomWithUniqueIDAtFirestoreRoomCollection();
 
     Event event = Event(
         eventName: currentThreeWordList.toString(),
@@ -185,7 +186,6 @@ class NewEventBloc {
         roomId: uniqueRoomId);
     spreadEventToFriends(event);
   }
-
 
   Future<void> spreadEventToFriends(Event event) {
     event.invitedUserObjectList.forEach((user) async {

@@ -63,6 +63,11 @@ class Repository {
   Stream<User> getUserFomFirestoreCollection(String userID) =>
       _userAuthProvider.getUserFomFirestoreCollection(userID: userID);
 
+  ///Future that returns User object by Userid
+
+  Future<User> getUserFromFirestoreCollectionFuture({String userID}) =>
+  _firestoreProvider.getUserFromFirestoreCollectionFuture(userID: userID);
+
   ///Stream which listens to change in User sign in status FirebaseAuth
   ///returns a User object r null
 

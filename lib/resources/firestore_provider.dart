@@ -65,6 +65,14 @@ class FirestoreProvider {
         .getDocuments();
   }
 
+  ///Future that returns User object by Userid
+
+  Future<User> getUserFromFirestoreCollectionFuture({String userID}) async {
+    return _firestore.collection('users')
+        .where('userId', isEqualTo: userID)
+        .getDocuments().then((doc)=>doc.documents.map((doc)=> User.fromDocument(doc)).first);
+  }
+
   /// stream to get Users personal friends event list returning  List of Events objects
   /// currentUser/userFriends(snapshot)/userObject/Eventlists/
   ///

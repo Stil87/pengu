@@ -40,7 +40,7 @@ class DashboardScreen extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0, left: 30.0),
               child: Align(
-                  alignment: Alignment.bottomLeft, child: UserProfileButton()),
+                  alignment: Alignment.bottomLeft, child: UserProfileButton(user.uid)),
             ),
           ],
         )

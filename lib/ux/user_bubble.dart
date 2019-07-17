@@ -4,7 +4,7 @@ import 'package:peng_u/model/user.dart';
 class UserBubble extends StatefulWidget {
   final User user;
 
-  UserBubble({this.user});
+  UserBubble( {this.user});
 
   @override
   _UserBubbleState createState() => _UserBubbleState();

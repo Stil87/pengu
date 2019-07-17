@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -8,6 +9,7 @@ class AddFriendsBloc {
 
   BehaviorSubject<List> _tempSearchStore = BehaviorSubject(seedValue: []);
   BehaviorSubject<List> _resultSearchStore = BehaviorSubject(seedValue: []);
+  BehaviorSubject<List<User>> _userFriendsList = BehaviorSubject(seedValue: []);
 
   Observable<List> get tempSearchStoreStream => _tempSearchStore.stream;
 
@@ -17,11 +19,30 @@ class AddFriendsBloc {
 
   List get resultSearchStore => _resultSearchStore.value;
 
+  List get friendsList => _userFriendsList.value;
+
+  Stream getUserFriendsList(String userID) =>
+      _repository.streamUserPersonalFriendsObjectList(currentUserID: userID);
+
+  Future<User> getCurrentUser() async {
+    String userID = await _repository.getCurrentFirebaseUserId();
+    User user =
+        await _repository.getUserFromFirestoreCollectionFuture(userID: userID);
+    return user;
+  }
+
+  Stream<User> getUserObject(String userId) =>
+      _repository.getUserFomFirestoreCollection(userId);
+
   void dispose() async {
     await _tempSearchStore.drain();
     _tempSearchStore.close();
     await _resultSearchStore.drain();
     _resultSearchStore.close();
+  }
+
+  addToMyList(String userId) {
+    _repository.ad
   }
 
   initiateSearch(value) {
@@ -31,8 +52,8 @@ class AddFriendsBloc {
       _resultSearchStore.add([]);
     }
 
-    var capitalizedValue =
-        value.substring(0, 1).toUpperCase() + value.substring(1);
+    var capitalizedValue = value;
+    //.substring(0, 1).toUpperCase() + value.substring(1);
 
     if (resultSearchStore.length == 0 && value.length == 1) {
       _repository
@@ -43,16 +64,15 @@ class AddFriendsBloc {
           _resultSearchStore.add(list);
         });
       });
-    }else{
+    } else {
       _tempSearchStore.add([]);
       var list = [];
-      resultSearchStore.forEach((element){
-        if(element['firstName'].startsWith(capitalizedValue)) {
+      resultSearchStore.forEach((element) {
+        if (element['firstName'].startsWith(capitalizedValue)) {
           list.add(element);
           _tempSearchStore.add(list);
         }
       });
-
     }
   }
 }

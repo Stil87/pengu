@@ -104,6 +104,10 @@ class UserAuthProvider {
     });
   }
 
+
+
+
+
   ///Stream which listens to change in User sign in status FirebaseAuth
   ///returns either a user object or null
 
