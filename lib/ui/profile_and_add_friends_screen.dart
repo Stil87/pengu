@@ -46,24 +46,118 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         );
                       }
+                      return CircularProgressIndicator();
                     }),
+                Expanded(
+                    flex: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                          color: Colors.blue, child: Text('Your Friends')),
+                    )),
                 StreamBuilder<List<User>>(
                     stream: _bloc.getUserFriendsList(userId),
                     builder: (_, snap2) {
-                      if (snap2.hasData) {
+                      if (snap2.hasData && snap2.data.length > 0) {
+                        List<User> friendsList = [];
+                        //requested by the current user
+                        List<User> requestedFriendList = [];
+                        //requested from other user to current user
+                        List<User> friendRequested = [];
+                        snap2.data.forEach((user) {
+                          if (user.requestStatus == 'requested') {
+                            requestedFriendList.add(user);
+                          } else if (user.requestStatus == 'friendRequested') {
+                            print(user.requestStatus);
+                            print(friendRequested.length);
+                            friendRequested.add(user);
+                            print(friendRequested.length);
+                          } else if (user.requestStatus == 'friend') {
+                            friendsList.add(user);
+                          }
+                        });
                         return Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: snap2.data.length,
-                                itemBuilder: (_, index) =>
-                                    UserBubble(user: snap2.data[index])),
+                          flex: 2,
+                          child: Column(
+                            children: <Widget>[
+                              //Freunde
+                              if (friendsList.length > 0) ...[
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        scrollDirection: Axis.horizontal,
+                                        itemCount: friendsList.length,
+                                        itemBuilder: (_, index) => UserBubble(
+                                            user: friendsList[index])),
+                                  ),
+                                )
+                              ],
+                              //from user requested freindship
+                              if (requestedFriendList.length > 0) ...[
+                                Expanded(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                          'You asked someone to be your friend'),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: requestedFriendList
+                                                  .length,
+                                              itemBuilder: (_, index) =>
+                                                  UserBubble(
+                                                      user: requestedFriendList[
+                                                          index])),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                              // from other user requested
+                              if (friendRequested.length > 0) ...[
+                                Expanded(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text('Someone wants you as a friend'),
+                                      Expanded(
+                                        flex: 2,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: ListView.builder(
+                                              shrinkWrap: true,
+                                              scrollDirection: Axis.horizontal,
+                                              itemCount: friendRequested.length,
+                                              itemBuilder: (_, index) {
+                                                return GestureDetector(
+                                                  onTap: () => _bloc
+                                                      .acceptFriendshipRequest(
+                                                          userId,
+                                                          friendRequested[index]
+                                                              .userID),
+                                                  child: UserBubble(
+                                                      user: friendRequested[
+                                                          index]),
+                                                );
+                                              }),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ],
                           ),
                         );
+                      } else {
+                        return Expanded(child: Text('You dont have friends'));
                       }
-                      return CircularProgressIndicator();
                     }),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
@@ -74,17 +168,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
                 if (snap.hasData) ...[
                   Expanded(
+                    flex: 1,
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: ListView.builder(
                           shrinkWrap: true,
+                          itemExtent: 20.0,
                           itemCount: snap.data.length,
                           itemBuilder: (_, index) {
-                            return ListTile(
-                                leading: Image(
-                                    image: NetworkImage(
-                                        snap.data[index]['profilePictureUR'])),
-                                title: Text(snap.data[index]['firstName']));
+                            return Container(
+                              color: Colors.red,
+                              child: ListTile(
+                                  onTap: () => _bloc.sendFriendshipRequest(
+                                      userId, snap.data[index]['userID']),
+                                  leading: Image(
+                                      image: getImage(snap.data[index]
+                                          ['profilePictureUR'])),
+                                  title: Text(snap.data[index]['firstName'])),
+                            );
                           }),
                     ),
                   )
@@ -99,5 +200,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void dispose() {
     super.dispose();
     _bloc.dispose();
+  }
+
+  getImage(string) {
+    if (string != null) {
+      return NetworkImage(string);
+    } else
+      return AssetImage("assets/images/default.png");
   }
 }

@@ -41,9 +41,14 @@ class AddFriendsBloc {
     _resultSearchStore.close();
   }
 
-  addToMyList(String userId) {
-    _repository.ad
+  sendFriendshipRequest(String currentUserId, String userIdToAdd) {
+    print('addToMyList tapped');
+    _repository.sendUserFriendshipRequest(
+        currentUserId: currentUserId, userIdToAdd: userIdToAdd);
   }
+
+  acceptFriendshipRequest(String currentUserId, String userIdToAdd) =>
+      _repository.acceptFriendshipRequest(currentUserId, userIdToAdd);
 
   initiateSearch(value) {
     var list = [];

@@ -7,12 +7,15 @@ class User {
   final String email;
   final String profilePictureURL;
   final List<Event> eventList;
+  final String requestStatus;
 
-  User({this.userID,
-    this.firstName,
-    this.email,
-    this.profilePictureURL,
-    this.eventList});
+  User(
+      {this.userID,
+      this.firstName,
+      this.email,
+      this.profilePictureURL,
+      this.eventList,
+      this.requestStatus});
 
   Map<String, Object> toJson() {
     return {
@@ -21,14 +24,12 @@ class User {
       'email': email == null ? '' : email,
       'profilePictureURL': profilePictureURL,
       'appIdentifier': 'PengYou',
-      'eventList': eventList
+      'eventList': eventList,
+      'requestStatus' : requestStatus
     };
   }
 
-  Map eventListToJson(List<Event> eventList) {
-
-
-  }
+  Map eventListToJson(List<Event> eventList) {}
 
   factory User.fromJson(Map<String, Object> doc) {
     User user = new User(
@@ -36,6 +37,7 @@ class User {
       firstName: doc['firstName'] ?? 'default name',
       email: doc['email'] ?? 'default email',
       profilePictureURL: doc['profilePictureURL'],
+      requestStatus: doc['requestStatus'] ?? 'noRequest'
     );
     return user;
   }

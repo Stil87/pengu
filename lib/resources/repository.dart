@@ -49,7 +49,7 @@ class Repository {
 
   ///adds FirebaseAut User to firebase storage collection "users" needed user object
 
-  Future<String> addUserToFirebaseStoreCollection(User user) =>
+  Future<void> addUserToFirebaseStoreCollection(User user) =>
       _userAuthProvider.addUserToFirebaseStoreCollection(user: user);
 
   ///method that checks if user exists already in firestore collection "user"
@@ -66,7 +66,7 @@ class Repository {
   ///Future that returns User object by Userid
 
   Future<User> getUserFromFirestoreCollectionFuture({String userID}) =>
-  _firestoreProvider.getUserFromFirestoreCollectionFuture(userID: userID);
+      _firestoreProvider.getUserFromFirestoreCollectionFuture(userID: userID);
 
   ///Stream which listens to change in User sign in status FirebaseAuth
   ///returns a User object r null
@@ -139,8 +139,9 @@ class Repository {
   ///Future to search the firestore user list by searchKeyword
   ///
   Future<QuerySnapshot> getUserDocumentsFromFirestoreBySearchKey(
-      {String searchKey})  => _firestoreProvider.getUserDocumentsFromFirestoreBySearchKey(searchKey: searchKey);
-
+          {String searchKey}) =>
+      _firestoreProvider.getUserDocumentsFromFirestoreBySearchKey(
+          searchKey: searchKey);
 
   /// Add User Friend to users personal friends list create to fire
 
@@ -148,6 +149,19 @@ class Repository {
           {String currentUserID, String newUserID}) =>
       _firestoreProvider.addUserIdToUsersPersonalFriendsListToFirestore(
           currentUserID: currentUserID, newUserID: newUserID);
+
+  ///Future that adds a Userobeject as Json to current users friends list in firestore
+
+  Future<void> sendUserFriendshipRequest(
+          {String currentUserId, String userIdToAdd}) =>
+      _firestoreProvider.sendUserFriendshipRequest(
+          currentUserId: currentUserId, userIdToAdd: userIdToAdd);
+
+  ///Future that accepts a friendship request an put changes both requestStatus to friend
+
+  Future<void> acceptFriendshipRequest(
+      String currentUserId, String userIdToAdd) =>
+  _firestoreProvider.acceptFriendshipRequest(currentUserId, userIdToAdd);
 
   /// Delete User Friend to users personal friends list create to fire
 
@@ -174,7 +188,7 @@ class Repository {
   ///stream to returning the dummy Event object in rooms/unique id
   ///
   Stream<Event> streamDummyEventById({String eventId}) =>
-  _firestoreProvider.streamDummyEventById(eventId);
+      _firestoreProvider.streamDummyEventById(eventId);
 
   ///Adds a room Id to a user´s private rooms list
 

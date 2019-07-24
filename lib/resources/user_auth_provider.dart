@@ -65,7 +65,7 @@ class UserAuthProvider {
     checkUserExistInFirestoreCollection(userID: user.userID).then((value) {
       if (!value) {
         print("user ${user.firstName} ${user.email} added");
-        _firestore.document("users/${user.userID}").setData(user.toJson());
+        _firestore.collection('users').document(user.userID).setData(user.toJson());
       } else {
         print("user ${user.firstName} ${user.email} exists");
       }

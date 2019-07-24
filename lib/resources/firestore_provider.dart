@@ -68,9 +68,69 @@ class FirestoreProvider {
   ///Future that returns User object by Userid
 
   Future<User> getUserFromFirestoreCollectionFuture({String userID}) async {
-    return _firestore.collection('users')
+    return _firestore
+        .collection('users')
         .where('userId', isEqualTo: userID)
-        .getDocuments().then((doc)=>doc.documents.map((doc)=> User.fromDocument(doc)).first);
+        .getDocuments()
+        .then(
+            (doc) => doc.documents.map((doc) => User.fromDocument(doc)).first);
+  }
+
+  ///Future that adds a Userobeject to current users friends list in firestore
+
+  Future<void> sendUserFriendshipRequest(
+      {String currentUserId, String userIdToAdd}) async {
+    //get userToAdd Json plus requested value
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(userIdToAdd)
+        .get()
+        .then((friendsSnap) {
+      friendsSnap.data.addAll({'requestStatus': 'requested'});
+      //put userToAdd Json in currentUser Friendlist marked as requested
+      _firestore
+          .collection(_firestoreCollectionNameAllUsers)
+          .document(currentUserId)
+          .collection(_userPersonalFriendslistCollectionName)
+          .document(userIdToAdd)
+          .setData(friendsSnap.data)
+          .whenComplete(() {
+        //get current USer Json plus friendRequested value
+        _firestore
+            .collection(_firestoreCollectionNameAllUsers)
+            .document(currentUserId)
+            .get()
+            .then((currentUserSnap) {
+          currentUserSnap.data.addAll({'requestStatus': 'friendRequested'});
+          //put current user json in userToAdd freindlist marked as friendrequested
+          _firestore
+              .collection(_firestoreCollectionNameAllUsers)
+              .document(userIdToAdd)
+              .collection(_userPersonalFriendslistCollectionName)
+              .document(currentUserId)
+              .setData(currentUserSnap.data);
+        });
+      });
+    });
+  }
+
+  ///Future that accepts a friendship request an put changes both requestStatus to friend
+
+  Future<void> acceptFriendshipRequest(
+      String currentUserId, String userIdToAdd) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserId)
+        .collection(_userPersonalFriendslistCollectionName)
+        .document(userIdToAdd)
+        .setData({'requestStatus': 'friend'}, merge: true).whenComplete(() {
+      _firestore
+          .collection(_firestoreCollectionNameAllUsers)
+          .document(userIdToAdd)
+          .collection(_userPersonalFriendslistCollectionName)
+          .document(currentUserId)
+          .setData({'requestStatus': 'friend'}, merge: true);
+    });
   }
 
   /// stream to get Users personal friends event list returning  List of Events objects

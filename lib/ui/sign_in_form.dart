@@ -25,6 +25,7 @@ class _SignInFormState extends State<SignInForm> {
   void dispose() {
     _bloc.dispose();
     super.dispose();
+
   }
 
   @override
@@ -158,11 +159,11 @@ class _SignInFormState extends State<SignInForm> {
     //New FirebaseAuth user
     Widget signUpButton = FlatButton(
         onPressed: () =>
-            _bloc.signUpWithFirebaseAndEmail().then((userId) {
-              print('new firebaseAuth user created with id: $userId');
+            _bloc.signUpWithFirebaseAndEmail().then((v) {
+              print('new firebaseAuth user created with id: ');
 
               //todo: route to dashboard screen
-              Navigator.pop(context);
+             return Navigator.pop(context);
             }),
         child: Text('Yeah!'));
 
