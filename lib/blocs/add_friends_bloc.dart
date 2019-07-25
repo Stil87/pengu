@@ -50,6 +50,10 @@ class AddFriendsBloc {
   acceptFriendshipRequest(String currentUserId, String userIdToAdd) =>
       _repository.acceptFriendshipRequest(currentUserId, userIdToAdd);
 
+  Future deleteFriend(String currentUserId, String userToDeleteId) async {
+    return _repository.deleteFriend(currentUserId, userToDeleteId);
+  }
+
   initiateSearch(value) {
     var list = [];
     if (value.length == 0) {

@@ -89,8 +89,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         shrinkWrap: true,
                                         scrollDirection: Axis.horizontal,
                                         itemCount: friendsList.length,
-                                        itemBuilder: (_, index) => UserBubble(
-                                            user: friendsList[index])),
+                                        itemBuilder: (_, index) {
+                                          return GestureDetector(
+                                            onLongPress: (){ return showAlertDialog(
+                                                _,
+                                                friendsList[index]
+                                                    .userID);},
+                                            child: UserBubble(
+                                                user:
+                                                    friendsList[index]),
+                                          );
+                                        }),
                                   ),
                                 )
                               ],
@@ -108,12 +117,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           child: ListView.builder(
                                               shrinkWrap: true,
                                               scrollDirection: Axis.horizontal,
-                                              itemCount: requestedFriendList
-                                                  .length,
-                                              itemBuilder: (_, index) =>
-                                                  UserBubble(
+                                              itemCount:
+                                                  requestedFriendList.length,
+                                              itemBuilder: (_, index) {
+                                                return GestureDetector(
+                                                  onLongPress:(){ return
+                                                      showAlertDialog(
+                                                          _,
+                                                          requestedFriendList[
+                                                                  index]
+                                                              .userID);},
+                                                  child: UserBubble(
                                                       user: requestedFriendList[
-                                                          index])),
+                                                          index]),
+                                                );
+                                              }),
                                         ),
                                       ),
                                     ],
@@ -136,6 +154,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                               itemCount: friendRequested.length,
                                               itemBuilder: (_, index) {
                                                 return GestureDetector(
+                                                  onLongPress:(){ return
+                                                      showAlertDialog(
+                                                          _,
+                                                          friendRequested[index]
+                                                              .userID);},
                                                   onTap: () => _bloc
                                                       .acceptFriendshipRequest(
                                                           userId,
@@ -194,6 +217,37 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             );
           }),
     );
+  }
+
+   showAlertDialog(BuildContext context, String userToDeleteId) {
+    //set up the alerts buttons
+    Widget cancelButton = FlatButton(
+        onPressed: () {
+          return Navigator.pop(context);
+        },
+        child: Text('Nea!'));
+    //New FirebaseAuth user
+    Widget signUpButton = FlatButton(
+        onPressed: () {
+            _bloc.deleteFriend(userId, userToDeleteId);
+              //todo: route to dashboard screen
+              return Navigator.pop(context);
+            },
+        child: Text('Yeah!'));
+
+    //set up the alertDialog
+    AlertDialog alertDialog = AlertDialog(
+      title: Text('Delete Friend'),
+      content: Text('Do u wanna delete?'),
+      actions: <Widget>[cancelButton, signUpButton],
+    );
+
+    //show the dialog
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
   }
 
   @override

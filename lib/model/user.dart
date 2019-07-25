@@ -8,6 +8,7 @@ class User {
   final String profilePictureURL;
   final List<Event> eventList;
   final String requestStatus;
+  final String searchKey;
 
   User(
       {this.userID,
@@ -15,7 +16,8 @@ class User {
       this.email,
       this.profilePictureURL,
       this.eventList,
-      this.requestStatus});
+      this.requestStatus,
+      this.searchKey});
 
   Map<String, Object> toJson() {
     return {
@@ -25,7 +27,8 @@ class User {
       'profilePictureURL': profilePictureURL,
       'appIdentifier': 'PengYou',
       'eventList': eventList,
-      'requestStatus' : requestStatus
+      'requestStatus': requestStatus,
+      'searchKey': searchKey ?? 'd'
     };
   }
 
@@ -33,12 +36,12 @@ class User {
 
   factory User.fromJson(Map<String, Object> doc) {
     User user = new User(
-      userID: doc['userID'] ?? 'defaultId',
-      firstName: doc['firstName'] ?? 'default name',
-      email: doc['email'] ?? 'default email',
-      profilePictureURL: doc['profilePictureURL'],
-      requestStatus: doc['requestStatus'] ?? 'noRequest'
-    );
+        userID: doc['userID'] ?? 'defaultId',
+        firstName: doc['firstName'] ?? 'default name',
+        email: doc['email'] ?? 'default email',
+        profilePictureURL: doc['profilePictureURL'],
+        requestStatus: doc['requestStatus'] ?? 'noRequest',
+        searchKey: doc['searchKey'] ?? 'd');
     return user;
   }
 

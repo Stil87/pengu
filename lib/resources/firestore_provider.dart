@@ -133,6 +133,25 @@ class FirestoreProvider {
     });
   }
 
+  ///Future that deletes json user object to delete friends and all related requests requests
+
+  Future<void> deleteFriend(String currentUserId, String userToDeleteId) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserId)
+        .collection(_userPersonalFriendslistCollectionName)
+        .document(userToDeleteId)
+        .delete()
+        .whenComplete(() {
+      _firestore
+          .collection(_firestoreCollectionNameAllUsers)
+          .document(userToDeleteId)
+          .collection(_userPersonalFriendslistCollectionName)
+          .document(currentUserId)
+          .delete();
+    });
+  }
+
   /// stream to get Users personal friends event list returning  List of Events objects
   /// currentUser/userFriends(snapshot)/userObject/Eventlists/
   ///
@@ -160,17 +179,7 @@ class FirestoreProvider {
         .document(newUserID);
   }
 
-  /// Delete User Friend from users personal friends list create to fire
 
-  Future<void> deleteUserIdFromUsersPersonalFriendsListAtFirestore(
-      {String currentUserID, String toDeleteUserID}) async {
-    return _firestore
-        .collection(_firestoreCollectionNameAllUsers)
-        .document(currentUserID)
-        .collection(_userPersonalFriendslistCollectionName)
-        .document(toDeleteUserID)
-        .delete();
-  }
 
 /*-----------User rooms related firebase provider operation*/
 

@@ -160,15 +160,15 @@ class Repository {
   ///Future that accepts a friendship request an put changes both requestStatus to friend
 
   Future<void> acceptFriendshipRequest(
-      String currentUserId, String userIdToAdd) =>
-  _firestoreProvider.acceptFriendshipRequest(currentUserId, userIdToAdd);
+          String currentUserId, String userIdToAdd) =>
+      _firestoreProvider.acceptFriendshipRequest(currentUserId, userIdToAdd);
+
+  ///Future that deletes json user object to delete friends and all related requests requests
+
+  Future<void> deleteFriend(String currentUserId, String userToDeleteId) =>
+      _firestoreProvider.deleteFriend(currentUserId, userToDeleteId);
 
   /// Delete User Friend to users personal friends list create to fire
-
-  Future<void> deleteUserIdFromUsersPersonalFriendsListAtFirestore(
-          {String currentUserID, String toDeleteUserId}) =>
-      _firestoreProvider.deleteUserIdFromUsersPersonalFriendsListAtFirestore(
-          currentUserID: currentUserID, toDeleteUserID: toDeleteUserId);
 
 /*-----------User rooms related firestore provider operation*/
 

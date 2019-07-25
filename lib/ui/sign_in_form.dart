@@ -158,13 +158,12 @@ class _SignInFormState extends State<SignInForm> {
         child: Text('Nea!'));
     //New FirebaseAuth user
     Widget signUpButton = FlatButton(
-        onPressed: () =>
-            _bloc.signUpWithFirebaseAndEmail().then((v) {
-              print('new firebaseAuth user created with id: ');
+        onPressed: () {
+          _bloc.signUpWithFirebaseAndEmail();
 
-              //todo: route to dashboard screen
-             return Navigator.pop(context);
-            }),
+          //todo: route to dashboard screen
+          return Navigator.pop(context);
+        } ,
         child: Text('Yeah!'));
 
     //set up the alertDialog
