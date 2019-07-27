@@ -70,10 +70,10 @@ class FirestoreProvider {
   Future<User> getUserFromFirestoreCollectionFuture({String userID}) async {
     return _firestore
         .collection('users')
-        .where('userId', isEqualTo: userID)
-        .getDocuments()
+        .document(userID)
+        .get()
         .then(
-            (doc) => doc.documents.map((doc) => User.fromDocument(doc)).first);
+            (snap) => User.fromJson(snap.data));
   }
 
   ///Future that adds a Userobeject to current users friends list in firestore
@@ -220,7 +220,7 @@ class FirestoreProvider {
 
   Future<void> addRoomObjectToUsersPrivateRoomList(
       {String userID, String roomID, Event event}) async {
-    return _firestore
+    return await _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(userID)
         .collection(_userPersonalRoomsListCollectionName)

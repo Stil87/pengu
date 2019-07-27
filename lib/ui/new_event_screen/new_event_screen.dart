@@ -47,8 +47,14 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
         body: StreamBuilder<Object>(
             stream: _bloc.stream$,
             builder: (context, snapshot) {
+              List<User> _justFriendsList = [];
+              _friendsList.forEach((user){
+                if (user.requestStatus == 'friend'){
+                  _justFriendsList.add(user);
+                }
+              });
               return SidekickTeamBuilder(
-                  initialSourceList: _friendsList,
+                  initialSourceList: _justFriendsList,
                   builder: (context, sourceBuilderDelegates,
                       targetBuilderDelegates) {
                     return Column(children: <Widget>[
@@ -352,10 +358,10 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
     });
   }
 
-  void _sendEvent(List userList) {
-    _bloc.setInvitedUserList(userList);
+  void _sendEvent(List userList) async {
+   await _bloc.setInvitedUserList(userList);
     print( userList);
-    _bloc.createEvent();
+    await _bloc.createEvent();
   }
 }
 

@@ -39,6 +39,8 @@ class AddFriendsBloc {
     _tempSearchStore.close();
     await _resultSearchStore.drain();
     _resultSearchStore.close();
+    await _userFriendsList.drain();
+    _userFriendsList.close();
   }
 
   sendFriendshipRequest(String currentUserId, String userIdToAdd) {

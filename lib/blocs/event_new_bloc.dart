@@ -11,17 +11,6 @@ import 'package:rxdart/rxdart.dart';
 class NewEventBloc {
   final _repository = Repository();
 
-  //add rx stream contoller to each field. they return an observable instead of a stream
-  /* final _wordOne = BehaviorSubject<String>();
-  final _wordTwo = BehaviorSubject<String>();
-  final _wordThree = BehaviorSubject<String>();
- 
-
-  Observable<String> get wordOne => _wordOne.stream;
-
-  Observable<String> get wordTwo => _wordTwo.stream;
-
-  Observable<String> get wordThree => _wordThree.stream;*/
   BehaviorSubject _counter = BehaviorSubject(seedValue: 0);
   BehaviorSubject<List> _threeWordNameList = BehaviorSubject<List>();
   BehaviorSubject<PlacesSearchResult> _pickedPlace = BehaviorSubject();
@@ -52,8 +41,18 @@ class NewEventBloc {
     _dateTime.add(dateTime);
   }
 
-  setInvitedUserList(List userList) {
-    _invitedUserList.add(userList);
+  setInvitedUserList(List userList) async {
+    //add the user itself to the list
+    FirebaseUser currentFirebaseUser =
+        await _repository.getCurrentFirebaseUser();
+    await _repository
+        .getUserFromFirestoreCollectionFuture(userID: currentFirebaseUser.uid)
+        .then((user) {
+      userList.add(user);
+      _invitedUserList.add(userList);
+    });
+
+
   }
 
   addPlace(PlacesSearchResult place) {
@@ -120,16 +119,6 @@ class NewEventBloc {
     _invitedUserList.close();
   }
 
-/*
-  void dispose() async {
-    await _wordOne.drain();
-    _wordOne.close();
-    await _wordTwo.drain();
-    _wordTwo.close();
-    await _wordThree.drain();
-    _wordThree.close();
-  }*/
-
   /// Method returns userLocation
   Future getUserLocation() => _repository.getUserLocation();
 
@@ -167,13 +156,7 @@ class NewEventBloc {
   }
 
   Future<Event> createEvent() async {
-    FirebaseUser currentFirebaseUser =
-        await _repository.getCurrentFirebaseUser();
-    await _repository
-        .getUserFromFirestoreCollectionFuture(userID: currentFirebaseUser.uid)
-        .then((u) {
-      invitedUserList.add(u);
-    });
+
 
     String uniqueRoomId =
         await _repository.createNewRoomWithUniqueIDAtFirestoreRoomCollection();
@@ -191,7 +174,7 @@ class NewEventBloc {
     event.invitedUserObjectList.forEach((user) async {
       await _repository.addRoomObjectToUsersPrivateRoomList(
           userID: user.userID, roomID: event.roomId, event: event);
-      print('ebent created');
+      print('event created');
     });
   }
 }

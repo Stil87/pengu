@@ -27,14 +27,26 @@ class Event {
         invitedUserObjectList: data['invitedUserObjectList'] ?? null);
   }
 
-  Map<String, Object> toJson() {
+  Map<String,Object> toJson()  {
     return {
       'roomId': roomId,
       'eventName': eventName,
       'dateTime': dateTime,
       'googlePlaceId': googlePlaceId,
-      'invitedUserObjectList': invitedUserObjectList,
+      'invitedUserObjectList': userListToJason(invitedUserObjectList),
     };
   }
-}
 
+  Map<String, Object> userListToJason(List<User> list)  {
+    Map<String, Object> userMap = {};
+    if (list.length > 0) {
+      list.forEach((user) {
+        userMap.addAll({
+          user.userID: user.toJson()
+        });
+      });
+    }
+print ('here is the userMAp: $userMap');
+    return userMap;
+  }
+}
