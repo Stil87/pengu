@@ -241,4 +241,8 @@ class Repository {
           {String searchString, Location location}) =>
       _locationProvider.getNearbyPlacesByText(
           searchString: searchString, location: location);
+
+  ///returns a google PlaceDetail object by id
+  Future<PlaceDetails> getPlaceById(String id) =>
+      _locationProvider.getPlaceById(id);
 }

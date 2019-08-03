@@ -19,34 +19,46 @@ class Event {
   factory Event.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data;
 
+    DateTime _toDateTime(Timestamp timeStamp) {
+      DateTime dateTime = timeStamp.toDate();
+      return dateTime;
+    }
+
+    List<User> _userListJsonToList(Map jsonUserList) {
+      List<User> _userList = [];
+      jsonUserList.forEach((key, value) {
+        _userList.add(User.fromJson(value));
+      });
+      return _userList;
+    }
+
     return Event(
         roomId: doc.documentID ?? '',
         eventName: data['eventName'] ?? 'we need a name',
-        dateTime: data['dateTime'] ?? DateTime.now(),
+        dateTime: _toDateTime(data['dateTime']) ?? DateTime.now(),
         googlePlaceId: data['googlePlaceId'] ?? ' we need a place',
-        invitedUserObjectList: data['invitedUserObjectList'] ?? null);
+        invitedUserObjectList:
+            _userListJsonToList(data['invitedUserObjectList']) ?? null);
   }
 
-  Map<String,Object> toJson()  {
+  Map<String, Object> toJson() {
     return {
       'roomId': roomId,
       'eventName': eventName,
       'dateTime': dateTime,
       'googlePlaceId': googlePlaceId,
-      'invitedUserObjectList': userListToJason(invitedUserObjectList),
+      'invitedUserObjectList': _userListToJson(invitedUserObjectList),
     };
   }
 
-  Map<String, Object> userListToJason(List<User> list)  {
+  Map<String, Object> _userListToJson(List<User> list) {
     Map<String, Object> userMap = {};
     if (list.length > 0) {
       list.forEach((user) {
-        userMap.addAll({
-          user.userID: user.toJson()
-        });
+        userMap.addAll({user.userID: user.toJson()});
       });
     }
-print ('here is the userMAp: $userMap');
+    print('here is the userMAp: $userMap');
     return userMap;
   }
 }

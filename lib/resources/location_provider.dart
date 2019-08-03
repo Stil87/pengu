@@ -23,14 +23,22 @@ class LocationProvider {
     }
   }
 
+  Future<PlaceDetails> getPlaceById(String id) async {
+    PlacesDetailsResponse placeDetailRespond =
+        await _places.getDetailsByPlaceId(id);
+    PlaceDetails placeDetails = placeDetailRespond.result;
+    return placeDetails;
+  }
+
   ///method returns PlacesSearchResponse which can turn with .result into List<PlacesSearchResult>
 
   Future<PlacesSearchResponse> getNearbyPlacesByText(
       {String searchString, Location location}) async {
-    final _result = await _places.searchByText(searchString,
+    final _result = await _places.searchByText(
+      searchString,
       location: location,
     );
-print (_result.status);
+    print(_result.status);
     return _result;
   }
 }

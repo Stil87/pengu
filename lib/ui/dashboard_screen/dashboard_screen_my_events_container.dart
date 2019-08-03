@@ -33,7 +33,8 @@ class _DashboardScreenMyEventsContainerState
     if ( events == null || events.isEmpty) {
        CircularProgressIndicator();
     }
-    return Container(
+    return
+      Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(color: Colors.blueAccent),
       child: getData(events),
@@ -41,14 +42,17 @@ class _DashboardScreenMyEventsContainerState
   }
 
   Widget getData(List<Event> events) {
-    if (_currentUserId == null) {
+    if (_currentUserId == null  ) {
       return Container(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),
       );
-    } else {
+    } else if (events == null || events.length == 0){
+      return Text ('No events yet');
+    }
+    else {
       return ListView.builder(
-          scrollDirection: Axis.horizontal,
+          scrollDirection: Axis.vertical,
           itemCount: events.length,
           itemBuilder: (BuildContext context, int index) {
             return EventCard(events[index]);

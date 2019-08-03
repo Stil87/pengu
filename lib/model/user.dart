@@ -34,7 +34,7 @@ class User {
 
   Map eventListToJson(List<Event> eventList) {}
 
-  factory User.fromJson(Map<String, Object> doc) {
+  factory User.fromJson(Map doc) {
     User user = new User(
         userID: doc['userID'] ?? 'defaultId',
         firstName: doc['firstName'] ?? 'default name',
