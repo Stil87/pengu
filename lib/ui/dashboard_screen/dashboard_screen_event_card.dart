@@ -33,31 +33,46 @@ class _EventCardState extends State<EventCard> {
           padding: const EdgeInsets.all(15.0),
           child: Container(height: 2.0,color: Colors.black),
         ),
-        Row(
-          children: <Widget>[Text(event.eventName), Icon(Icons.event)],
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[Text(event.eventName), Icon(Icons.event)],
+          ),
         ),
-        Container(
-          height: 85.0,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: event.invitedUserObjectList.length,
-              itemBuilder: (_, index) {
-                return UserBubble(user: event.invitedUserObjectList[index]);
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: <Widget>[Text(event.dateTime.difference(DateTime.now()).inHours.toString()), Icon(Icons.event)],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: FutureBuilder<PlaceDetails>(
+              future: _bloc.getGooglePlaceObject(event.googlePlaceId),
+              builder: (_, snap) {
+                if (!snap.hasData) {
+                  return CircularProgressIndicator();
+                }
+                return Row(
+                  children: <Widget>[
+                    Text(snap.data.name),
+                    Image(image: NetworkImage(snap.data.icon))
+                  ],
+                );
               }),
         ),
-        FutureBuilder<PlaceDetails>(
-            future: _bloc.getGooglePlaceObject(event.googlePlaceId),
-            builder: (_, snap) {
-              if (!snap.hasData) {
-                return CircularProgressIndicator();
-              }
-              return Row(
-                children: <Widget>[
-                  Text(snap.data.name),
-                  Image(image: NetworkImage(snap.data.icon))
-                ],
-              );
-            })
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            height: 85.0,
+            child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: event.invitedUserObjectList.length,
+                itemBuilder: (_, index) {
+                  return UserBubble(user: event.invitedUserObjectList[index]);
+                }),
+          ),
+        )
       ],
     );
   }
