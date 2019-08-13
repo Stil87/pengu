@@ -13,6 +13,13 @@ class FirestoreProvider {
 
   /*-----------User friends related firebase provider operation*/
 
+  /// set firestore timestamp settings
+
+  Future setFirebaseTimestampSettings() async {
+    final Firestore firestore = Firestore();
+    await firestore.settings(timestampsInSnapshotsEnabled: true);
+  }
+
   /// stream to get global User list returning firestore snapshop
   ///
   Stream<QuerySnapshot> globalUserListFromFirestore() {
@@ -72,8 +79,7 @@ class FirestoreProvider {
         .collection('users')
         .document(userID)
         .get()
-        .then(
-            (snap) => User.fromJson(snap.data));
+        .then((snap) => User.fromJson(snap.data));
   }
 
   ///Future that adds a Userobeject to current users friends list in firestore
@@ -178,8 +184,6 @@ class FirestoreProvider {
         .collection(_userPersonalFriendslistCollectionName)
         .document(newUserID);
   }
-
-
 
 /*-----------User rooms related firebase provider operation*/
 

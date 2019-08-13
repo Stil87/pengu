@@ -143,7 +143,7 @@ class NewEventBloc {
     return results;
   }
 
-  Future<Event> changeEvent(String eventId) {}
+
 
   Stream<Event> streamDummyEvent(String eventId) {
     return _repository.streamDummyEventById(eventId: eventId);

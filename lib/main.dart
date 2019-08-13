@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
@@ -15,6 +16,12 @@ void main() {
   SharedPreferences.getInstance().then((prefs) {
     runApp(PengU(prefs: prefs));
   });
+  _setFirestoreTimestamp();
+}
+
+Future _setFirestoreTimestamp() async {
+  final Firestore firestore = Firestore();
+  await firestore.settings(timestampsInSnapshotsEnabled: true);
 }
 
 class PengU extends StatelessWidget {

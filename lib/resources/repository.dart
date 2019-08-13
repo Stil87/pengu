@@ -17,6 +17,9 @@ class Repository {
 
   /*--------repository based on User authentication and firestore collection "users"----------*/
 
+  ///set firestore timestamp settings to true
+  Future setFirebaseTimestampSettings()=>_firestoreProvider.setFirebaseTimestampSettings();
+
   ///Firebase authentification Sign in with email and password
   /// returns User Id
 

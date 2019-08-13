@@ -19,9 +19,11 @@ class Event {
   factory Event.fromFirestore(DocumentSnapshot doc) {
     Map data = doc.data;
 
-    DateTime _toDateTime(Timestamp timeStamp) {
-      DateTime dateTime = timeStamp.toDate();
-      return dateTime;
+    DateTime _toDateTime(timeStamp) {
+      if (timeStamp is Timestamp) {
+        DateTime dateTime = timeStamp.toDate();
+        return dateTime;
+      } return timeStamp;
     }
 
     List<User> _userListJsonToList(Map jsonUserList) {

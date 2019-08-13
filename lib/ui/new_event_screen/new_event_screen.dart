@@ -151,7 +151,10 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         if (snapshot.data == 3) ...[
                           Expanded(
                             child: FloatingActionButton(
-                              onPressed: () {_sendEvent(SidekickTeamBuilder.of(context).targetList);},
+                              onPressed: () {_sendEvent(SidekickTeamBuilder.of(context).targetList);
+                              _showSnackbar();
+                              Navigator.pop(context);
+                              },
                               child: Icon(Icons.send),
                             ),
                           )
@@ -362,6 +365,14 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
    await _bloc.setInvitedUserList(userList);
     print( userList);
     await _bloc.createEvent();
+  }
+
+  void _showSnackbar() {
+    final snackBar = SnackBar(content: Text('Sent!'));
+
+// Find the Scaffold in the widget tree and use it to show a SnackBar.
+    _scaffoldKey.currentState.showSnackBar(snackBar);
+
   }
 }
 

@@ -53,10 +53,17 @@ class _EventCardState extends State<EventCard> {
                 if (!snap.hasData) {
                   return CircularProgressIndicator();
                 }
-                return Row(
+                return Column(
                   children: <Widget>[
-                    Text(snap.data.name),
-                    Image(image: NetworkImage(snap.data.icon))
+
+                    Row(
+                      children: <Widget>[
+                        Text(snap.data.name),
+
+
+                        Image(image: NetworkImage(snap.data.icon))
+                      ],
+                    ),
                   ],
                 );
               }),
