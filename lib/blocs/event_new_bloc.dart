@@ -48,11 +48,10 @@ class NewEventBloc {
     await _repository
         .getUserFromFirestoreCollectionFuture(userID: currentFirebaseUser.uid)
         .then((user) {
+      user.eventRequestStatus = 'inviter';
       userList.add(user);
       _invitedUserList.add(userList);
     });
-
-
   }
 
   addPlace(PlacesSearchResult place) {
@@ -143,8 +142,6 @@ class NewEventBloc {
     return results;
   }
 
-
-
   Stream<Event> streamDummyEvent(String eventId) {
     return _repository.streamDummyEventById(eventId: eventId);
   }
@@ -156,8 +153,6 @@ class NewEventBloc {
   }
 
   Future<Event> createEvent() async {
-
-
     String uniqueRoomId =
         await _repository.createNewRoomWithUniqueIDAtFirestoreRoomCollection();
 

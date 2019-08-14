@@ -6,12 +6,11 @@ class EventExistingBloc {
   final _repository = Repository();
 
   forwardEventToAddedFriend(Event event, List<User> extendedUserList) {
-    event.invitedUserObjectList = extendedUserList;
 
-    event.invitedUserObjectList.forEach((user) async {
+    extendedUserList.forEach((user) async {
       await _repository.addRoomObjectToUsersPrivateRoomList(
           userID: user.userID, roomID: event.roomId, event: event);
-      print('event created');
+      print('event forwarded');
     });
   }
 }
