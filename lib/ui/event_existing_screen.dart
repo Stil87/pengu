@@ -23,7 +23,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   @override
   Widget build(BuildContext context) {
     List<User> _toRemove = [];
-    /* if (widget._friendList.isNotEmpty) {
+    if (widget._friendList.isNotEmpty) {
       widget.event.invitedUserObjectList.forEach((invitedUser) {
         widget._friendList.forEach((userFriends) {
           if (invitedUser.userID == userFriends.userID) {
@@ -32,11 +32,10 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
         });
       });
       widget._friendList.removeWhere((user) => _toRemove.contains(user));
-    }*/
+    }
 
     // TODO: implement build
     return Scaffold(
-
       appBar: AppBar(),
       body: SidekickTeamBuilder(
           initialTargetList: widget.event.invitedUserObjectList,
@@ -46,29 +45,30 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
               children: <Widget>[
                 Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(widget.event.eventName),
-                    )),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(widget.event.eventName),
+                )),
                 Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(widget.event.dateTime.toString()),
-                    )),
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(widget.event.dateTime.toString()),
+                )),
                 Expanded(
                   child: Wrap(
                     direction: Axis.vertical,
                     children: targetBuilderDelegates
-                        .map((builderDelegate) =>
-                        builderDelegate.build(
-                          context,
-                          WrapItem(widget._friendList, builderDelegate.message,
-                            false,),
-                          animationBuilder: (animation) =>
-                              CurvedAnimation(
+                        .map((builderDelegate) => builderDelegate.build(
+                              context,
+                              WrapItem(
+                                widget._friendList,
+                                builderDelegate.message,
+                                false,
+                              ),
+                              animationBuilder: (animation) => CurvedAnimation(
                                 parent: animation,
                                 curve: FlippedCurve(Curves.ease),
                               ),
-                        ))
+                            ))
                         .toList(),
                   ),
                 ),
@@ -80,33 +80,31 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: sourceBuilderDelegates
-                            .map((builderDelegate) =>
-                            builderDelegate.build(
-                              context,
-                              WrapItem(
-                                  widget._friendList, builderDelegate.message,
-                                  true),
-                              animationBuilder: (animation) =>
-                                  CurvedAnimation(
+                            .map((builderDelegate) => builderDelegate.build(
+                                  context,
+                                  WrapItem(widget._friendList,
+                                      builderDelegate.message, true),
+                                  animationBuilder: (animation) =>
+                                      CurvedAnimation(
                                     parent: animation,
                                     curve: Curves.ease,
                                   ),
-                            ))
+                                ))
                             .toList(),
                       ),
                     ),
                   )
                 ],
-                if(widget.event.invitedUserObjectList.length <
-                    SidekickTeamBuilder
-                        .of<User>(context)
+                if (widget.event.invitedUserObjectList.length <
+                    SidekickTeamBuilder.of<User>(context)
                         .targetList
-                        .length)...[
-                  Align(
-                    child: FloatingActionButton(onPressed: () => _bloc.forwardEventToAddedFriend(widget.event,
-                        SidekickTeamBuilder
-                            .of<User>(context)
-                            .targetList)), alignment: Alignment.bottomCenter,)
+                        .length) ...[
+                  Expanded(
+                    child: FloatingActionButton(
+                        onPressed: () => _bloc.forwardEventToAddedFriend(
+                            widget.event,
+                            SidekickTeamBuilder.of<User>(context).targetList)),
+                  )
                 ]
               ],
             );
@@ -116,14 +114,15 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
 }
 
 class WrapItem extends StatelessWidget {
-  const WrapItem(this.userList,
-      this.user,
-      this.isSource,) : size = isSource ? 40.0 : 70.0;
+  const WrapItem(
+    this.userList,
+    this.user,
+    this.isSource,
+  ) : size = isSource ? 40.0 : 70.0;
 
   final bool isSource;
   final double size;
   final List userList;
-
 
   //final Item item;
   final User user;

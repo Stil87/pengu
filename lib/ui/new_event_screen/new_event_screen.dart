@@ -311,8 +311,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
             ],
           ),
         ),
-        Container(
-          color: Colors.red,
+        Expanded(
+         // color: Colors.red,
           child: ListView.builder(
               shrinkWrap: true,
               itemCount: _placesList.length,
