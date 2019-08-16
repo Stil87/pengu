@@ -48,9 +48,21 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
             }
             User currentUser = snapshot.data.invitedUserObjectList
                 .firstWhere((user) => user.userID == widget.currentUserID);
+            List<User> _userInList = snapshot.data.invitedUserObjectList
+                .where((user) => user.eventRequestStatus == 'in')
+                .toList();
+            List<User> _userOutList = snapshot.data.invitedUserObjectList
+                .where((user) => user.eventRequestStatus == 'out')
+                .toList();
+            List<User> _userThereList = snapshot.data.invitedUserObjectList
+                .where((user) => user.eventRequestStatus == 'there')
+                .toList();
+            List<User> _userInvitedList = snapshot.data.invitedUserObjectList
+                .where((user) => user.eventRequestStatus == '')
+                .toList();
 
             return SidekickTeamBuilder(
-                initialTargetList: snapshot.data.invitedUserObjectList,
+                initialTargetList: _userInvitedList,
                 initialSourceList: widget._friendList,
                 builder:
                     (context, sourceBuilderDelegates, targetBuilderDelegates) {
@@ -71,6 +83,53 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(snapshot.data.dateTime.toString()),
                       )),
+                      if (_userThereList.length > 0) ...[
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Text('people already there'),
+                              Expanded(
+                                child: ListView.builder(scrollDirection: Axis.horizontal,
+                                    itemCount: _userThereList.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (_, index) =>
+                                        UserBubble(user: _userThereList[index])),
+                              )
+                            ],
+                          ),
+                        ),
+                      ], if (_userInList.length > 0) ...[
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Text('people in'),
+                              Expanded(
+                                child: ListView.builder(scrollDirection: Axis.horizontal,
+                                    itemCount: _userInList.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (_, index) =>
+                                        UserBubble(user: _userInList[index])),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                      if (_userOutList.length > 0) ...[
+                        Expanded(
+                          child: Column(
+                            children: <Widget>[
+                              Text('Boring people'),
+                              Expanded(
+                                child: ListView.builder(scrollDirection: Axis.horizontal,
+                                    itemCount: _userOutList.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (_, index) =>
+                                        UserBubble(user: _userOutList[index])),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
                       Expanded(
                         child: Wrap(
                           direction: Axis.vertical,
@@ -115,7 +174,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                           ),
                         )
                       ],
-                      if (snapshot.data.invitedUserObjectList.length <
+                      if (_userInvitedList.length <
                           SidekickTeamBuilder.of<User>(context)
                               .targetList
                               .length) ...[
@@ -124,7 +183,25 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               onPressed: () => _bloc.forwardEventToAddedFriend(
                                   snapshot.data,
                                   SidekickTeamBuilder.of<User>(context)
-                                      .targetList)),
+                                      .targetList).whenComplete((){
+                                List<User> _toRemove = [];
+                                if (widget._friendList.isNotEmpty) {
+                                  SidekickTeamBuilder.of<User>(context)
+                                      .targetList.forEach((invitedUser) {
+                                    widget._friendList.forEach((userFriends) {
+                                      if (invitedUser.userID == userFriends.userID) {
+                                        _toRemove.add(userFriends);
+                                      }
+                                    });
+                                  });
+
+                                  setState(() {
+                                    widget._friendList.removeWhere((user) => _toRemove.contains(user));
+                                  });
+                                }
+
+
+                              })),
                         )
                       ],
                       Expanded(
@@ -144,8 +221,6 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
         .firstWhere((user) => user.eventRequestStatus == 'inviter');
     return UserBubble(user: inviter);
   }
-
-
 }
 
 class WrapItem extends StatelessWidget {

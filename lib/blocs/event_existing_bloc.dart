@@ -5,8 +5,10 @@ import 'package:peng_u/resources/repository.dart';
 class EventExistingBloc {
   final _repository = Repository();
 
-  forwardEventToAddedFriend(Event event, List<User> extendedUserList) {
-    extendedUserList.forEach((user) async {
+  Future forwardEventToAddedFriend(Event event, List<User> extendedUserList) async {
+
+    event.invitedUserObjectList.addAll(extendedUserList);
+    event.invitedUserObjectList.forEach((user) async {
       await _repository.addRoomObjectToUsersPrivateRoomList(
           userID: user.userID, roomID: event.roomId, event: event);
       print('event forwarded');
