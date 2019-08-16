@@ -284,10 +284,13 @@ class FirestoreProvider {
 
   /// stream of the Event data in a specific room
 
-  Stream<DocumentSnapshot> getRoomDocumentSnapshotWithRoomID({String roomID}) {
+  Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId({String roomID, String userId}) {
     return _firestore
-        .collection(_roomCollectionNameAllRooms)
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(userId)
+        .collection(_userPersonalRoomsListCollectionName)
         .document(roomID)
-        .snapshots();
+        .snapshots()
+        .map((doc)=>Event.fromFirestore(doc));
   }
 }

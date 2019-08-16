@@ -72,7 +72,7 @@ class _DashboardScreenMyEventsContainerState
                 onTap: () {
                   Route route = MaterialPageRoute(
                       builder: (context) => EventExistingScreen(
-                          _justRealFriendsList, events[index]));
+                          _justRealFriendsList, events[index], _currentUserId));
                   Navigator.push(context, route);
                 },
                 child: Container(color: Colors.blueAccent, child: EventCard(events[index])));

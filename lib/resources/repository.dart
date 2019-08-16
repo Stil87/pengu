@@ -229,8 +229,8 @@ class Repository {
 
   /// stream of the Event data in a specific room
 
-  Stream<DocumentSnapshot> getRoomDocumentSnapshotWithRoomID({String roomID}) =>
-      _firestoreProvider.getRoomDocumentSnapshotWithRoomID(roomID: roomID);
+  Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId({String roomID, String userId}) =>
+      _firestoreProvider.getRoomDocumentSnapshotWithRoomIDAndUserId(roomID: roomID,userId: userId);
 
 /*-----------User location related firestore provider operation*/
 

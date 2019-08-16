@@ -28,17 +28,19 @@ class _UserBubbleState extends State<UserBubble>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        // Text(widget.user.firstName),
-        Center(
-            child: CircleAvatar(
-                foregroundColor: Colors.blue,
-                minRadius: 30.0,
-                child: CircleAvatar(
-                    backgroundImage: getProfileImage(widget.user)))),
-        Text(widget.user.firstName)
-      ],
+    return Container(
+      child: Column(
+        children: <Widget>[
+          // Text(widget.user.firstName),
+          Center(
+              child: CircleAvatar(
+                  backgroundColor: _setColor(),
+                  minRadius: 37.0,
+                  child: CircleAvatar(minRadius:30.0 ,maxRadius: 30.0,
+                      backgroundImage: getProfileImage(widget.user)))),
+          Text(widget.user.firstName)
+        ],
+      ),
     );
   }
 
@@ -53,5 +55,18 @@ class _UserBubbleState extends State<UserBubble>
         return Icon(Icons.error);
       }
     }
+  }
+
+  _setColor() {
+    String status = widget.user.eventRequestStatus;
+    if (status == '') {
+      return Colors.blue;
+    } else if (status == 'in') {
+      return Colors.green;
+    } else if (status == 'out') {
+      return Colors.red[100];
+    } else if (status == 'there') {
+      return Colors.tealAccent;
+    } else {return Colors.black;}
   }
 }
