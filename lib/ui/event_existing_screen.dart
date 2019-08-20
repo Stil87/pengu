@@ -21,6 +21,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   EventExistingBloc _bloc = EventExistingBloc();
   Color _backgroundColor = Colors.blueAccent;
 
+
   @override
   Widget build(BuildContext context) {
     List<User> _toRemove = [];

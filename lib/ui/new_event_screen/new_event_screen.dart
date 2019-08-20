@@ -337,7 +337,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
     _bloc.increment();
     DateTime todaySelectedDateTime;
 
-    Future<TimeOfDay> selectedTime = showTimePicker(
+     showTimePicker(
       initialTime: TimeOfDay.now(),
       context: context,
     ).then((time) {

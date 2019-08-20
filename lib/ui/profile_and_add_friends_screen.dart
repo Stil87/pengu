@@ -15,12 +15,13 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   AddFriendsBloc _bloc = AddFriendsBloc();
   String userId;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   _UserProfileScreenState(this.userId);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(key: _scaffoldKey,
       appBar: AppBar(),
       body: StreamBuilder<List>(
           stream: _bloc.tempSearchStoreStream,
@@ -33,17 +34,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       if (snapshot.hasData) {
                         return Padding(
                           padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            children: <Widget>[
-                              Align(
-                                alignment: Alignment.topCenter,
-                                child: Image(
-                                    image: NetworkImage(
-                                        snapshot.data.profilePictureURL)),
-                              ),
-                              Text(snapshot.data.firstName),
-                            ],
-                          ),
+                          child: UserBubble(user: snapshot.data),
                         );
                       }
                       return CircularProgressIndicator();
@@ -91,13 +82,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         itemCount: friendsList.length,
                                         itemBuilder: (_, index) {
                                           return GestureDetector(
-                                            onLongPress: (){ return showAlertDialog(
-                                                _,
-                                                friendsList[index]
-                                                    .userID);},
+                                            onLongPress: () {
+                                              return showAlertDialog(
+                                                  _, friendsList[index].userID);
+                                            },
                                             child: UserBubble(
-                                                user:
-                                                    friendsList[index]),
+                                                user: friendsList[index]),
                                           );
                                         }),
                                   ),
@@ -121,12 +111,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                                   requestedFriendList.length,
                                               itemBuilder: (_, index) {
                                                 return GestureDetector(
-                                                  onLongPress:(){ return
-                                                      showAlertDialog(
-                                                          _,
-                                                          requestedFriendList[
-                                                                  index]
-                                                              .userID);},
+                                                  onLongPress: () {
+                                                    return showAlertDialog(
+                                                        _,
+                                                        requestedFriendList[
+                                                                index]
+                                                            .userID);
+                                                  },
                                                   child: UserBubble(
                                                       user: requestedFriendList[
                                                           index]),
@@ -154,11 +145,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                               itemCount: friendRequested.length,
                                               itemBuilder: (_, index) {
                                                 return GestureDetector(
-                                                  onLongPress:(){ return
-                                                      showAlertDialog(
-                                                          _,
-                                                          friendRequested[index]
-                                                              .userID);},
+                                                  onLongPress: () {
+                                                    return showAlertDialog(
+                                                        _,
+                                                        friendRequested[index]
+                                                            .userID);
+                                                  },
                                                   onTap: () => _bloc
                                                       .acceptFriendshipRequest(
                                                           userId,
@@ -202,8 +194,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             return Container(
                               color: Colors.red,
                               child: ListTile(
-                                  onTap: () => _bloc.sendFriendshipRequest(
-                                      userId, snap.data[index]['userID']),
+                                  onTap: () => _sendInvitation(
+                                      snap.data[index]['userID']),
                                   leading: Image(
                                       image: getImage(snap.data[index]
                                           ['profilePictureUR'])),
@@ -219,7 +211,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-   showAlertDialog(BuildContext context, String userToDeleteId) {
+  showAlertDialog(BuildContext context, String userToDeleteId) {
     //set up the alerts buttons
     Widget cancelButton = FlatButton(
         onPressed: () {
@@ -229,10 +221,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     //New FirebaseAuth user
     Widget signUpButton = FlatButton(
         onPressed: () {
-            _bloc.deleteFriend(userId, userToDeleteId);
-              //todo: route to dashboard screen
-              return Navigator.pop(context);
-            },
+          _bloc.deleteFriend(userId, userToDeleteId);
+          //todo: route to dashboard screen
+          return Navigator.pop(context);
+        },
         child: Text('Yeah!'));
 
     //set up the alertDialog
@@ -261,5 +253,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       return NetworkImage(string);
     } else
       return AssetImage("assets/images/default.png");
+  }
+
+  _sendInvitation(String toInviteUserId) {
+    if (userId != toInviteUserId) {
+      _bloc.sendFriendshipRequest(userId, toInviteUserId);
+    } else {
+      final snackyBar = SnackBar(content: Text('Loving yourself is key!'));
+
+      _scaffoldKey.currentState.showSnackBar(snackyBar);
+    }
   }
 }
