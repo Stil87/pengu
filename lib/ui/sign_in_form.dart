@@ -25,7 +25,6 @@ class _SignInFormState extends State<SignInForm> {
   void dispose() {
     _bloc.dispose();
     super.dispose();
-
   }
 
   @override
@@ -33,6 +32,8 @@ class _SignInFormState extends State<SignInForm> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        userNameField(),
+        Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         emailField(),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         passwordField(),
@@ -42,6 +43,18 @@ class _SignInFormState extends State<SignInForm> {
         googleButton(),
       ],
     );
+  }
+
+  Widget userNameField() {
+    return StreamBuilder(
+        stream: _bloc.name,
+        builder: (_, AsyncSnapshot<String> snapshot) {
+          return TextField(
+            onChanged: _bloc.changeName,
+            decoration: InputDecoration(
+                hintText: 'Enter your Name', errorText: snapshot.error),
+          );
+        });
   }
 
   Widget passwordField() {
@@ -147,7 +160,6 @@ class _SignInFormState extends State<SignInForm> {
     });
   }
 
-
   showAlertDialog(BuildContext context) {
     //set up the alerts buttons
     Widget cancelButton = FlatButton(
@@ -163,7 +175,7 @@ class _SignInFormState extends State<SignInForm> {
 
           //todo: route to dashboard screen
           return Navigator.pop(context);
-        } ,
+        },
         child: Text('Yeah!'));
 
     //set up the alertDialog

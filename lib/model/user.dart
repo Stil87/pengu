@@ -3,12 +3,12 @@ import 'package:peng_u/model/event.dart';
 
 class User {
   final String userID;
-  final String firstName;
+   String firstName;
   final String email;
   final String profilePictureURL;
   final List<Event> eventList;
   final String requestStatus;
-  final String searchKey;
+   String searchKey;
    String eventRequestStatus;
 
   User(
