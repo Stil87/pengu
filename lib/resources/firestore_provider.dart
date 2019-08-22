@@ -68,7 +68,7 @@ class FirestoreProvider {
       {String searchKey}) async {
     return _firestore
         .collection(_firestoreCollectionNameAllUsers)
-        .where('searchKey', isEqualTo: searchKey.substring(0, 1).toUpperCase())
+        .where('searchKey', isEqualTo: searchKey)
         .getDocuments();
   }
 

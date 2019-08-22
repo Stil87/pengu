@@ -21,59 +21,61 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(key: _scaffoldKey,
+    return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(),
       body: StreamBuilder<List>(
           stream: _bloc.tempSearchStoreStream,
           builder: (_, snap) {
-            return Column(
-              children: <Widget>[
-                StreamBuilder<User>(
-                    stream: _bloc.getUserObject(userId),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: UserBubble(user: snapshot.data),
-                        );
-                      }
-                      return CircularProgressIndicator();
-                    }),
-                Expanded(
-                    flex: 0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Container(
-                          color: Colors.blue, child: Text('Your Friends')),
-                    )),
-                StreamBuilder<List<User>>(
-                    stream: _bloc.getUserFriendsList(userId),
-                    builder: (_, snap2) {
-                      if (snap2.hasData && snap2.data.length > 0) {
-                        List<User> friendsList = [];
-                        //requested by the current user
-                        List<User> requestedFriendList = [];
-                        //requested from other user to current user
-                        List<User> friendRequested = [];
-                        snap2.data.forEach((user) {
-                          if (user.requestStatus == 'requested') {
-                            requestedFriendList.add(user);
-                          } else if (user.requestStatus == 'friendRequested') {
-                            print(user.requestStatus);
-                            print(friendRequested.length);
-                            friendRequested.add(user);
-                            print(friendRequested.length);
-                          } else if (user.requestStatus == 'friend') {
-                            friendsList.add(user);
-                          }
-                        });
-                        return Expanded(
-                          flex: 2,
-                          child: Column(
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  StreamBuilder<User>(
+                      stream: _bloc.getUserObject(userId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: UserBubble(user: snapshot.data),
+                          );
+                        }
+                        return CircularProgressIndicator();
+                      }),
+                  SizedBox(
+                      height: 50.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Container(
+                            color: Colors.blue, child: Text('Your Friends')),
+                      )),
+                  StreamBuilder<List<User>>(
+                      stream: _bloc.getUserFriendsList(userId),
+                      builder: (_, snap2) {
+                        if (snap2.hasData && snap2.data.length > 0) {
+                          List<User> friendsList = [];
+                          //requested by the current user
+                          List<User> requestedFriendList = [];
+                          //requested from other user to current user
+                          List<User> friendRequested = [];
+                          snap2.data.forEach((user) {
+                            if (user.requestStatus == 'requested') {
+                              requestedFriendList.add(user);
+                            } else if (user.requestStatus ==
+                                'friendRequested') {
+                              print(user.requestStatus);
+                              print(friendRequested.length);
+                              friendRequested.add(user);
+                              print(friendRequested.length);
+                            } else if (user.requestStatus == 'friend') {
+                              friendsList.add(user);
+                            }
+                          });
+                          return Column(
                             children: <Widget>[
                               //Freunde
                               if (friendsList.length > 0) ...[
-                                Expanded(
+                                SizedBox(
+                                  height: 110.0,
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: ListView.builder(
@@ -95,35 +97,32 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ],
                               //from user requested freindship
                               if (requestedFriendList.length > 0) ...[
-                                Expanded(
+                                SizedBox(
+                                  height: 105.0,
                                   child: Column(
                                     children: <Widget>[
                                       Text(
                                           'You asked someone to be your friend'),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: ListView.builder(
-                                              shrinkWrap: true,
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount:
-                                                  requestedFriendList.length,
-                                              itemBuilder: (_, index) {
-                                                return GestureDetector(
-                                                  onLongPress: () {
-                                                    return showAlertDialog(
-                                                        _,
-                                                        requestedFriendList[
-                                                                index]
-                                                            .userID);
-                                                  },
-                                                  child: UserBubble(
-                                                      user: requestedFriendList[
-                                                          index]),
-                                                );
-                                              }),
-                                        ),
+                                      SizedBox(
+                                        height: 85.0,
+                                        child: ListView.builder(
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount:
+                                                requestedFriendList.length,
+                                            itemBuilder: (_, index) {
+                                              return GestureDetector(
+                                                onLongPress: () {
+                                                  return showAlertDialog(
+                                                      _,
+                                                      requestedFriendList[index]
+                                                          .userID);
+                                                },
+                                                child: UserBubble(
+                                                    user: requestedFriendList[
+                                                        index]),
+                                              );
+                                            }),
                                       ),
                                     ],
                                   ),
@@ -131,62 +130,53 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ],
                               // from other user requested
                               if (friendRequested.length > 0) ...[
-                                Expanded(
-                                  child: Column(
-                                    children: <Widget>[
-                                      Text('Someone wants you as a friend'),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5.0),
-                                          child: ListView.builder(
-                                              shrinkWrap: true,
-                                              scrollDirection: Axis.horizontal,
-                                              itemCount: friendRequested.length,
-                                              itemBuilder: (_, index) {
-                                                return GestureDetector(
-                                                  onLongPress: () {
-                                                    return showAlertDialog(
-                                                        _,
-                                                        friendRequested[index]
-                                                            .userID);
-                                                  },
-                                                  onTap: () => _bloc
-                                                      .acceptFriendshipRequest(
-                                                          userId,
-                                                          friendRequested[index]
-                                                              .userID),
-                                                  child: UserBubble(
-                                                      user: friendRequested[
-                                                          index]),
-                                                );
-                                              }),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                Column(
+                                  children: <Widget>[
+                                    Text('Someone wants you as a friend'),
+                                    SizedBox(
+                                      height: 105.0,
+                                      child: ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: friendRequested.length,
+                                          itemBuilder: (_, index) {
+                                            return GestureDetector(
+                                              onLongPress: () {
+                                                return showAlertDialog(
+                                                    _,
+                                                    friendRequested[index]
+                                                        .userID);
+                                              },
+                                              onTap: () =>
+                                                  _bloc.acceptFriendshipRequest(
+                                                      userId,
+                                                      friendRequested[index]
+                                                          .userID),
+                                              child: UserBubble(
+                                                  user: friendRequested[index]),
+                                            );
+                                          }),
+                                    ),
+                                  ],
                                 )
                               ],
                             ],
-                          ),
-                        );
-                      } else {
-                        return Expanded(child: Text('You dont have friends'));
-                      }
-                    }),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextField(
-                    decoration: InputDecoration(hintText: 'look for a friend'),
-                    onChanged: (value) => _bloc.initiateSearch(value),
+                          );
+                        } else {
+                          return Text('You dont have friends');
+                        }
+                      }),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      decoration:
+                          InputDecoration(hintText: 'look for a friend'),
+                      onChanged: (value) => _bloc.initiateSearch(value),
+                    ),
                   ),
-                ),
-                if (snap.hasData) ...[
-
-                  Expanded(
-                    flex: 2,
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
+                  if (snap.hasData) ...[
+                    SizedBox(
+                      height: 200.0,
                       child: ListView.builder(
                           shrinkWrap: true,
                           //itemExtent: 10.0,
@@ -196,17 +186,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               color: Colors.red,
                               child: ListTile(
                                   onTap: () => _sendInvitation(
-                                      snap.data[index]['userID']),
+                                      snap.data[index]),
                                   leading: Image(
                                       image: getImage(snap.data[index]
                                           ['profilePictureURL'])),
                                   title: Text(snap.data[index]['firstName'])),
                             );
                           }),
-                    ),
-                  )
-                ]
-              ],
+                    )
+                  ]
+                ],
+              ),
             );
           }),
     );
@@ -256,11 +246,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       return AssetImage("assets/images/default.png");
   }
 
-  _sendInvitation(String toInviteUserId) {
-    if (userId != toInviteUserId) {
-      _bloc.sendFriendshipRequest(userId, toInviteUserId);
-    } else {
-      final snackyBar = SnackBar(content: Text('Loving yourself is ke'));
+  _sendInvitation(User toInviteUser) {
+    if (userId != toInviteUser.userID) {
+      _bloc.sendFriendshipRequest(userId, toInviteUser.userID);
+    } else {}
+    if (userId == toInviteUser.userID) {
+      final snackyBar = SnackBar(content: Text('Loving yourself is key'));
 
       _scaffoldKey.currentState.showSnackBar(snackyBar);
     }

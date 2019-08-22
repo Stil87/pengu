@@ -76,6 +76,7 @@ class AddFriendsBloc {
         });
       });
     } else {
+
       _tempSearchStore.add([]);
       var list = [];
       resultSearchStore.forEach((element) {
@@ -84,6 +85,8 @@ class AddFriendsBloc {
           _tempSearchStore.add(list);
         }
       });
+
+
     }
   }
 }
