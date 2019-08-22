@@ -67,150 +67,163 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                 initialSourceList: widget._friendList,
                 builder:
                     (context, sourceBuilderDelegates, targetBuilderDelegates) {
-                  return Column(
-                    children: <Widget>[
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: <Widget>[
-                            _getInviterBubble(),
-                            Text(snapshot.data.eventName),
-                          ],
-                        ),
-                      )),
-                      Expanded(
-                          child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(snapshot.data.dateTime.toString()),
-                      )),
-                      if (_userThereList.length > 0) ...[
-                        Expanded(
-                          child: Column(
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(flex:0,
+                            child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
                             children: <Widget>[
-                              Text('people already there'),
-                              Expanded(
-                                child: ListView.builder(scrollDirection: Axis.horizontal,
-                                    itemCount: _userThereList.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (_, index) =>
-                                        UserBubble(user: _userThereList[index])),
-                              )
+                              _getInviterBubble(),
+                              Text(snapshot.data.eventName),
                             ],
                           ),
-                        ),
-                      ], if (_userInList.length > 0) ...[
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text('people in'),
-                              Expanded(
-                                child: ListView.builder(scrollDirection: Axis.horizontal,
-                                    itemCount: _userInList.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (_, index) =>
-                                        UserBubble(user: _userInList[index])),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                      if (_userOutList.length > 0) ...[
-                        Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Text('Boring people'),
-                              Expanded(
-                                child: ListView.builder(scrollDirection: Axis.horizontal,
-                                    itemCount: _userOutList.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (_, index) =>
-                                        UserBubble(user: _userOutList[index])),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                      Expanded(
-                        child: Wrap(
-                          direction: Axis.vertical,
-                          children: targetBuilderDelegates
-                              .map((builderDelegate) => builderDelegate.build(
-                                    context,
-                                    WrapItem(
-                                      widget._friendList,
-                                      builderDelegate.message,
-                                      false,
-                                    ),
-                                    animationBuilder: (animation) =>
-                                        CurvedAnimation(
-                                      parent: animation,
-                                      curve: FlippedCurve(Curves.ease),
-                                    ),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                      if (widget._friendList.length > 0) ...[
-                        Expanded(
-                          //height: 50.0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: sourceBuilderDelegates
-                                  .map((builderDelegate) =>
-                                      builderDelegate.build(
-                                        context,
-                                        WrapItem(widget._friendList,
-                                            builderDelegate.message, true),
-                                        animationBuilder: (animation) =>
-                                            CurvedAnimation(
-                                          parent: animation,
-                                          curve: Curves.ease,
-                                        ),
-                                      ))
-                                  .toList(),
+                        )),
+                        Container(height: 1.0,color: Colors.black,),
+                        Expanded(flex: 0,
+                            child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(snapshot.data.dateTime.toString()),
+                        )),
+                        if (_userThereList.length > 0) ...[
+                          Expanded(
+                            child: Column(
+                              children: <Widget>[
+                                Text('people already there'),
+                                Expanded(
+                                  child: ListView.builder(scrollDirection: Axis.horizontal,
+                                      itemCount: _userThereList.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, index) =>
+                                          UserBubble(user: _userThereList[index])),
+                                )
+                              ],
                             ),
                           ),
-                        )
-                      ],
-                      if (_userInvitedList.length <
-                          SidekickTeamBuilder.of<User>(context)
-                              .targetList
-                              .length) ...[
+                        ], if (_userInList.length > 0) ...[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Text('people in'),
+                                  Expanded(
+                                    child: ListView.builder(scrollDirection: Axis.horizontal,
+                                        itemCount: _userInList.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (_, index) =>
+                                            UserBubble(user: _userInList[index])),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (_userOutList.length > 0) ...[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: <Widget>[
+                                  Text('Boring people'),
+                                  Expanded(
+                                    child: ListView.builder(scrollDirection: Axis.horizontal,
+                                        itemCount: _userOutList.length,
+                                        shrinkWrap: true,
+                                        itemBuilder: (_, index) =>
+                                            UserBubble(user: _userOutList[index])),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                        if(_userInvitedList.length > 0)...[
+                          Text('invited people')
+
+                        ],
                         Expanded(
-                          child: FloatingActionButton(
-                              onPressed: () => _bloc.forwardEventToAddedFriend(
-                                  snapshot.data,
-                                  SidekickTeamBuilder.of<User>(context)
-                                      .targetList).whenComplete((){
-                                List<User> _toRemove = [];
-                                if (widget._friendList.isNotEmpty) {
-                                  SidekickTeamBuilder.of<User>(context)
-                                      .targetList.forEach((invitedUser) {
-                                    widget._friendList.forEach((userFriends) {
-                                      if (invitedUser.userID == userFriends.userID) {
-                                        _toRemove.add(userFriends);
-                                      }
+                          child: Wrap(
+                            direction: Axis.vertical,
+                            children: targetBuilderDelegates
+                                .map((builderDelegate) => builderDelegate.build(
+                                      context,
+                                      WrapItem(
+                                        widget._friendList,
+                                        builderDelegate.message,
+                                        false,
+                                      ),
+                                      animationBuilder: (animation) =>
+                                          CurvedAnimation(
+                                        parent: animation,
+                                        curve: FlippedCurve(Curves.ease),
+                                      ),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                        if (widget._friendList.length > 0) ...[
+                          Expanded(
+                            //height: 50.0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: sourceBuilderDelegates
+                                    .map((builderDelegate) =>
+                                        builderDelegate.build(
+                                          context,
+                                          WrapItem(widget._friendList,
+                                              builderDelegate.message, true),
+                                          animationBuilder: (animation) =>
+                                              CurvedAnimation(
+                                            parent: animation,
+                                            curve: Curves.ease,
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                            ),
+                          )
+                        ],
+                        if (_userInvitedList.length <
+                            SidekickTeamBuilder.of<User>(context)
+                                .targetList
+                                .length) ...[
+                          Expanded(
+                            child: FloatingActionButton(
+                                onPressed: () => _bloc.forwardEventToAddedFriend(
+                                    snapshot.data,
+                                    SidekickTeamBuilder.of<User>(context)
+                                        .targetList).whenComplete((){
+                                  List<User> _toRemove = [];
+                                  if (widget._friendList.isNotEmpty) {
+                                    SidekickTeamBuilder.of<User>(context)
+                                        .targetList.forEach((invitedUser) {
+                                      widget._friendList.forEach((userFriends) {
+                                        if (invitedUser.userID == userFriends.userID) {
+                                          _toRemove.add(userFriends);
+                                        }
+                                      });
                                     });
-                                  });
 
-                                  setState(() {
-                                    widget._friendList.removeWhere((user) => _toRemove.contains(user));
-                                  });
-                                }
+                                    setState(() {
+                                      widget._friendList.removeWhere((user) => _toRemove.contains(user));
+                                    });
+                                  }
 
 
-                              })),
-                        )
+                                })),
+                          )
+                        ],
+                        Expanded(
+                            child: GestureDetector(
+                                onTap: () => _bloc.changeEventRequestStatus(
+                                    snapshot.data, widget.currentUserID),
+                                child: UserBubble(user: currentUser)))
                       ],
-                      Expanded(
-                          child: GestureDetector(
-                              onTap: () => _bloc.changeEventRequestStatus(
-                                  snapshot.data, widget.currentUserID),
-                              child: UserBubble(user: currentUser)))
-                    ],
+                    ),
                   );
                 });
           }),

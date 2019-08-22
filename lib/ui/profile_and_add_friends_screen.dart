@@ -182,13 +182,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
                 if (snap.hasData) ...[
+
                   Expanded(
-                    flex: 1,
+                    flex: 2,
                     child: Padding(
                       padding: const EdgeInsets.all(15.0),
                       child: ListView.builder(
                           shrinkWrap: true,
-                          itemExtent: 20.0,
+                          //itemExtent: 10.0,
                           itemCount: snap.data.length,
                           itemBuilder: (_, index) {
                             return Container(
@@ -198,7 +199,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       snap.data[index]['userID']),
                                   leading: Image(
                                       image: getImage(snap.data[index]
-                                          ['profilePictureUR'])),
+                                          ['profilePictureURL'])),
                                   title: Text(snap.data[index]['firstName'])),
                             );
                           }),
@@ -259,7 +260,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     if (userId != toInviteUserId) {
       _bloc.sendFriendshipRequest(userId, toInviteUserId);
     } else {
-      final snackyBar = SnackBar(content: Text('Loving yourself is key!'));
+      final snackyBar = SnackBar(content: Text('Loving yourself is ke'));
 
       _scaffoldKey.currentState.showSnackBar(snackyBar);
     }

@@ -28,18 +28,23 @@ class _UserBubbleState extends State<UserBubble>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          // Text(widget.user.firstName),
-          Center(
-              child: CircleAvatar(
-                  backgroundColor: _setColor(),
-                  minRadius: 37.0,
-                  child: CircleAvatar(minRadius:30.0 ,maxRadius: 30.0,
-                      backgroundImage: getProfileImage(widget.user)))),
-          Text(widget.user.firstName)
-        ],
+    return Padding(
+      padding: const EdgeInsets.only(left: 1.5, right: 1.5),
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Container(child: Text(_getName())),
+            // Text(widget.user.firstName),
+            Container(
+                child: CircleAvatar(
+                    backgroundColor: _setColor(),
+                    minRadius: 33.0,
+                    child: CircleAvatar(
+                        minRadius: 26.0,
+                        maxRadius: 29.0,
+                        backgroundImage: getProfileImage(widget.user)))),
+          ],
+        ),
       ),
     );
   }
@@ -60,13 +65,24 @@ class _UserBubbleState extends State<UserBubble>
   _setColor() {
     String status = widget.user.eventRequestStatus;
     if (status == '') {
-      return Colors.blue;
+      return Colors.black;
     } else if (status == 'in') {
       return Colors.green;
     } else if (status == 'out') {
       return Colors.red[100];
     } else if (status == 'there') {
       return Colors.tealAccent;
-    } else {return Colors.black;}
+    } else {
+      return Colors.black;
+    }
+  }
+
+  String _getName() {
+    int max = 7;
+    String name = widget.user.firstName;
+    if (name.length < max) {
+      return name;
+    }
+    return name.substring(0, max);
   }
 }
