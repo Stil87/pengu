@@ -70,7 +70,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                   return SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        Expanded(flex:0,
+                        Expanded(flex:1,
                             child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
