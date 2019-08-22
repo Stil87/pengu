@@ -21,7 +21,6 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   EventExistingBloc _bloc = EventExistingBloc();
   Color _backgroundColor = Colors.blueAccent;
 
-
   @override
   Widget build(BuildContext context) {
     List<User> _toRemove = [];
@@ -70,82 +69,98 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                   return SingleChildScrollView(
                     child: Column(
                       children: <Widget>[
-                        Expanded(flex:1,
+                        SizedBox(
+                            height: 100.0,
                             child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: <Widget>[
-                              _getInviterBubble(),
-                              Text(snapshot.data.eventName),
-                            ],
-                          ),
-                        )),
-                        Container(height: 1.0,color: Colors.black,),
-                        Expanded(flex: 0,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: <Widget>[
+                                  _getInviterBubble(),
+                                  Text(snapshot.data.eventName),
+                                ],
+                              ),
+                            )),
+                        Container(
+                          height: 1.0,
+                          color: Colors.black,
+                        ),
+                        SizedBox(
+                            height: 50.0,
                             child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(snapshot.data.dateTime.toString()),
-                        )),
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(snapshot.data.dateTime.toString()),
+                            )),
                         if (_userThereList.length > 0) ...[
-                          Expanded(
+                          SizedBox(
+                            height: 105.0,
+                            child: Container(
+                              color: Colors.red,
+                              child: Column(
+                                children: <Widget>[
+                                  Text('people already there'),
+                                  SizedBox(
+                                    height: 85.0,
+                                    child: Container(
+                                      color: Colors.blue,
+                                      child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: _userThereList.length,
+                                          shrinkWrap: true,
+                                          itemBuilder: (_, index) => UserBubble(
+                                              user: _userThereList[index])),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (_userInList.length > 0) ...[
+                          SizedBox(
+                            height: 105.0,
                             child: Column(
                               children: <Widget>[
-                                Text('people already there'),
-                                Expanded(
-                                  child: ListView.builder(scrollDirection: Axis.horizontal,
-                                      itemCount: _userThereList.length,
+                                Text('people in'),
+                                SizedBox(
+                                  height: 85.0,
+                                  child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: _userInList.length,
                                       shrinkWrap: true,
                                       itemBuilder: (_, index) =>
-                                          UserBubble(user: _userThereList[index])),
+                                          UserBubble(user: _userInList[index])),
                                 )
                               ],
                             ),
                           ),
-                        ], if (_userInList.length > 0) ...[
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: <Widget>[
-                                  Text('people in'),
-                                  Expanded(
-                                    child: ListView.builder(scrollDirection: Axis.horizontal,
-                                        itemCount: _userInList.length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (_, index) =>
-                                            UserBubble(user: _userInList[index])),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
                         ],
                         if (_userOutList.length > 0) ...[
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                children: <Widget>[
-                                  Text('Boring people'),
-                                  Expanded(
-                                    child: ListView.builder(scrollDirection: Axis.horizontal,
-                                        itemCount: _userOutList.length,
-                                        shrinkWrap: true,
-                                        itemBuilder: (_, index) =>
-                                            UserBubble(user: _userOutList[index])),
-                                  )
-                                ],
-                              ),
+                          SizedBox(
+                            height: 105.0,
+                            child: Column(
+                              children: <Widget>[
+                                Text('Boring people'),
+                                SizedBox(
+                                  height: 85.0,
+                                  child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: _userOutList.length,
+                                      shrinkWrap: true,
+                                      itemBuilder: (_, index) => UserBubble(
+                                          user: _userOutList[index])),
+                                )
+                              ],
                             ),
                           ),
                         ],
-                        if(_userInvitedList.length > 0)...[
+                        if (_userInvitedList.length > 0) ...[
                           Text('invited people')
-
                         ],
-                        Expanded(
-                          child: Wrap(
-                            direction: Axis.vertical,
+                        SizedBox(
+                          height: 105.0,
+                          child: ListView(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
                             children: targetBuilderDelegates
                                 .map((builderDelegate) => builderDelegate.build(
                                       context,
@@ -163,27 +178,25 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                 .toList(),
                           ),
                         ),
-                        if (widget._friendList.length > 0) ...[
-                          Expanded(
+                        if (sourceBuilderDelegates.length > 0) ...[
+                          SizedBox(
+                            height: 105.0,
                             //height: 50.0,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListView(
-                                scrollDirection: Axis.horizontal,
-                                children: sourceBuilderDelegates
-                                    .map((builderDelegate) =>
-                                        builderDelegate.build(
-                                          context,
-                                          WrapItem(widget._friendList,
-                                              builderDelegate.message, true),
-                                          animationBuilder: (animation) =>
-                                              CurvedAnimation(
-                                            parent: animation,
-                                            curve: Curves.ease,
-                                          ),
-                                        ))
-                                    .toList(),
-                              ),
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: sourceBuilderDelegates
+                                  .map((builderDelegate) =>
+                                      builderDelegate.build(
+                                        context,
+                                        WrapItem(widget._friendList,
+                                            builderDelegate.message, true),
+                                        animationBuilder: (animation) =>
+                                            CurvedAnimation(
+                                          parent: animation,
+                                          curve: Curves.ease,
+                                        ),
+                                      ))
+                                  .toList(),
                             ),
                           )
                         ],
@@ -191,37 +204,46 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             SidekickTeamBuilder.of<User>(context)
                                 .targetList
                                 .length) ...[
-                          Expanded(
+                          SizedBox(
+                            height: 85.0,
                             child: FloatingActionButton(
-                                onPressed: () => _bloc.forwardEventToAddedFriend(
-                                    snapshot.data,
-                                    SidekickTeamBuilder.of<User>(context)
-                                        .targetList).whenComplete((){
-                                  List<User> _toRemove = [];
-                                  if (widget._friendList.isNotEmpty) {
-                                    SidekickTeamBuilder.of<User>(context)
-                                        .targetList.forEach((invitedUser) {
-                                      widget._friendList.forEach((userFriends) {
-                                        if (invitedUser.userID == userFriends.userID) {
-                                          _toRemove.add(userFriends);
-                                        }
-                                      });
-                                    });
+                                onPressed: () => _bloc
+                                        .forwardEventToAddedFriend(
+                                            snapshot.data,
+                                            SidekickTeamBuilder.of<User>(
+                                                    context)
+                                                .targetList)
+                                        .whenComplete(() {
+                                      List<User> _toRemove = [];
+                                      if (widget._friendList.isNotEmpty) {
+                                        SidekickTeamBuilder.of<User>(context)
+                                            .targetList
+                                            .forEach((invitedUser) {
+                                          widget._friendList
+                                              .forEach((userFriends) {
+                                            if (invitedUser.userID ==
+                                                userFriends.userID) {
+                                              _toRemove.add(userFriends);
+                                            }
+                                          });
+                                        });
 
-                                    setState(() {
-                                      widget._friendList.removeWhere((user) => _toRemove.contains(user));
-                                    });
-                                  }
-
-
-                                })),
+                                        setState(() {
+                                          widget._friendList.removeWhere(
+                                              (user) =>
+                                                  _toRemove.contains(user));
+                                        });
+                                      }
+                                    })),
                           )
+                        ] else ...[
+                          SizedBox(
+                              height: 85.0,
+                              child: GestureDetector(
+                                  onTap: () => _bloc.changeEventRequestStatus(
+                                      snapshot.data, widget.currentUserID),
+                                  child: UserBubble(user: currentUser)))
                         ],
-                        Expanded(
-                            child: GestureDetector(
-                                onTap: () => _bloc.changeEventRequestStatus(
-                                    snapshot.data, widget.currentUserID),
-                                child: UserBubble(user: currentUser)))
                       ],
                     ),
                   );
