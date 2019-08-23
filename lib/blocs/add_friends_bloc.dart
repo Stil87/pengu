@@ -7,19 +7,21 @@ import 'package:rxdart/rxdart.dart';
 class AddFriendsBloc {
   final _repository = Repository();
 
-  BehaviorSubject<List> _tempSearchStore = BehaviorSubject(seedValue: []);
-  BehaviorSubject<List> _resultSearchStore = BehaviorSubject(seedValue: []);
+  BehaviorSubject<List<User>> _tempSearchStore = BehaviorSubject(seedValue: []);
+  BehaviorSubject<List<User>> _resultSearchStore = BehaviorSubject(seedValue: []);
   BehaviorSubject<List<User>> _userFriendsList = BehaviorSubject(seedValue: []);
 
-  Observable<List> get tempSearchStoreStream => _tempSearchStore.stream;
+  Observable<List<User>> get tempSearchStoreStream => _tempSearchStore.stream;
 
   List get tempSearchStore => _tempSearchStore.value;
 
   Observable<List> get resultSearchStoreStream => _resultSearchStore.stream;
 
-  List get resultSearchStore => _resultSearchStore.value;
+  List<User> get resultSearchStore => _resultSearchStore.value;
 
-  List get friendsList => _userFriendsList.value;
+  List<User> get friendsList => _userFriendsList.value;
+
+  set setfriendsList(List<User> list ) => _userFriendsList.add(list);
 
   Stream getUserFriendsList(String userID) =>
       _repository.streamUserPersonalFriendsObjectList(currentUserID: userID);
@@ -57,7 +59,7 @@ class AddFriendsBloc {
   }
 
   initiateSearch(value) {
-    var list = [];
+    List<User> list = [];
     if (value.length == 0) {
       _tempSearchStore.add([]);
       _resultSearchStore.add([]);
@@ -71,17 +73,20 @@ class AddFriendsBloc {
           .getUserDocumentsFromFirestoreBySearchKey(searchKey: value)
           .then((QuerySnapshot docs) {
         docs.documents.forEach((snap) {
-          list.add(snap.data);
+          list.add(User.fromDocument(snap));
           _resultSearchStore.add(list);
         });
       });
     } else {
 
       _tempSearchStore.add([]);
-      var list = [];
-      resultSearchStore.forEach((element) {
-        if (element['firstName'].startsWith(capitalizedValue)) {
-          list.add(element);
+      List<User> list = [];
+      resultSearchStore.forEach((user) {
+      List  _friendsIdList = friendsList.map((user)=> user.userID).toList() ;
+
+        bool alreadyFriend = _friendsIdList.contains(user.userID);
+        if (alreadyFriend == false && user.firstName.startsWith(capitalizedValue) ) {
+          list.add(user);
           _tempSearchStore.add(list);
         }
       });

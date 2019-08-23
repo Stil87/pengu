@@ -7,7 +7,7 @@ class User {
   final String email;
   final String profilePictureURL;
   final List<Event> eventList;
-  final String requestStatus;
+   String requestStatus;
    String searchKey;
    String eventRequestStatus;
 

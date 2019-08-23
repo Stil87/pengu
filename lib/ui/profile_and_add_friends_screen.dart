@@ -24,7 +24,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(),
-      body: StreamBuilder<List>(
+      body: StreamBuilder<List<User>>(
           stream: _bloc.tempSearchStoreStream,
           builder: (_, snap) {
             return SingleChildScrollView(
@@ -51,7 +51,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   StreamBuilder<List<User>>(
                       stream: _bloc.getUserFriendsList(userId),
                       builder: (_, snap2) {
+
                         if (snap2.hasData && snap2.data.length > 0) {
+                          _bloc.setfriendsList = snap2.data;
                           List<User> friendsList = [];
                           //requested by the current user
                           List<User> requestedFriendList = [];
@@ -189,8 +191,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       snap.data[index]),
                                   leading: Image(
                                       image: getImage(snap.data[index]
-                                          ['profilePictureURL'])),
-                                  title: Text(snap.data[index]['firstName'])),
+                                         )),
+                                  title: Text(snap.data[index].firstName)),
                             );
                           }),
                     )
@@ -239,9 +241,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     _bloc.dispose();
   }
 
-  getImage(string) {
-    if (string != null) {
-      return NetworkImage(string);
+  getImage(User user) {
+    if (user.profilePictureURL != null) {
+      return NetworkImage(user.profilePictureURL);
     } else
       return AssetImage("assets/images/default.png");
   }
