@@ -283,7 +283,7 @@ class WrapItem extends StatelessWidget {
         }
       },
       child: Padding(
-          padding: const EdgeInsets.all(2.0), child: UserBubble(user: user)),
+          padding: const EdgeInsets.all(2.0), child: Material(color: Colors.blueAccent,child: UserBubble(user: user))),
     );
   }
 

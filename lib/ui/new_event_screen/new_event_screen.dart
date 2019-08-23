@@ -393,7 +393,7 @@ class WrapItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => SidekickTeamBuilder.of<User>(context).move(user),
       child: Padding(
-          padding: const EdgeInsets.all(2.0), child: UserBubble(user: user)),
+          padding: const EdgeInsets.all(2.0), child: Material(child: UserBubble(user: user))),
     );
   }
 

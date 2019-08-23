@@ -33,7 +33,7 @@ class _UserBubbleState extends State<UserBubble>
       child: Container(
         child: Column(
           children: <Widget>[
-            Container(child: Text(_getName())),
+            SizedBox(height: 16.0,child: Text(_getName())),
             // Text(widget.user.firstName),
             Container(
                 child: CircleAvatar(
