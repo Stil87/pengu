@@ -46,8 +46,10 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
             if (!snapshot.hasData) {
               return CircularProgressIndicator();
             }
-            User inviter = snapshot.data.invitedUserObjectList
-                .firstWhere((user) => user.eventRequestStatus == 'inviter' || user.eventRequestStatus == 'inviterThere');
+            User inviter = snapshot.data.invitedUserObjectList.firstWhere(
+                (user) =>
+                    user.eventRequestStatus == 'inviter' ||
+                    user.eventRequestStatus == 'inviterThere');
             User currentUser = snapshot.data.invitedUserObjectList
                 .firstWhere((user) => user.userID == widget.currentUserID);
             List<User> _userInList = snapshot.data.invitedUserObjectList
@@ -82,6 +84,15 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                 ],
                               ),
                             )),
+                        GestureDetector(
+                          onTap: () => _bloc.launchMapsUrl(
+                              snapshot.data.eventPlace.placeId,
+                              snapshot.data.eventPlace.placeName),
+                          child: SizedBox(
+                            height: 50.0,
+                            child: Text(snapshot.data.eventPlace.placeName),
+                          ),
+                        ),
                         Container(
                           height: 1.0,
                           color: Colors.black,
@@ -243,7 +254,9 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               height: 85.0,
                               child: GestureDetector(
                                   onTap: () => _bloc.changeEventRequestStatus(
-                                      snapshot.data, widget.currentUserID,inviter.userID),
+                                      snapshot.data,
+                                      widget.currentUserID,
+                                      inviter.userID),
                                   child: UserBubble(user: currentUser)))
                         ],
                       ],
@@ -255,7 +268,6 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   }
 
   _getInviterBubble(User inviter) {
-
     return UserBubble(user: inviter);
   }
 }
