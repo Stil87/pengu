@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:meta/meta.dart';
 import 'package:peng_u/model/event.dart';
+import 'package:peng_u/model/event_place.dart';
 import 'package:peng_u/model/user.dart';
 
 import 'package:peng_u/resources/repository.dart';
@@ -159,7 +160,8 @@ class NewEventBloc {
     Event event = Event(
         eventName: currentThreeWordList.toString(),
         dateTime: selectedDateTime,
-        googlePlaceId: pickedPlace.placeId,
+        eventPlace: EventPlace(
+            placeName: pickedPlace.name, placeId: pickedPlace.placeId),
         invitedUserObjectList: invitedUserList,
         roomId: uniqueRoomId);
     spreadEventToFriends(event);

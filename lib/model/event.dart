@@ -1,18 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peng_u/model/user.dart';
 
+import 'event_place.dart';
+
 class Event {
   String roomId;
   String eventName;
   DateTime dateTime;
-  String googlePlaceId;
+  EventPlace eventPlace;
   List<User> invitedUserObjectList;
 
   Event({
     this.roomId,
     this.eventName,
     this.dateTime,
-    this.googlePlaceId,
+    this.eventPlace,
     this.invitedUserObjectList,
   });
 
@@ -38,7 +40,7 @@ class Event {
         roomId: doc.documentID ?? '',
         eventName: data['eventName'] ?? 'we need a name',
         dateTime: _toDateTime(data['dateTime']) ?? DateTime.now(),
-        googlePlaceId: data['googlePlaceId'] ?? ' we need a place',
+        eventPlace: EventPlace.fromJson(data['eventPlace']) ?? ' we need a place',
         invitedUserObjectList:
             _userListJsonToList(data['invitedUserObjectList']) ?? null);
   }
@@ -48,7 +50,7 @@ class Event {
       'roomId': roomId,
       'eventName': eventName,
       'dateTime': dateTime,
-      'googlePlaceId': googlePlaceId,
+      'eventPlace': eventPlace.toJson(),
       'invitedUserObjectList': _userListToJson(invitedUserObjectList),
     };
   }

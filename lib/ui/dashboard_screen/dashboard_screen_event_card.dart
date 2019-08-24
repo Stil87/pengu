@@ -59,7 +59,7 @@ class _EventCardState extends State<EventCard> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: FutureBuilder<PlaceDetails>(
-              future: _bloc.getGooglePlaceObject(event.googlePlaceId),
+              future: _bloc.getGooglePlaceObject(event.eventPlace.placeId),
               builder: (_, snap) {
                 if (!snap.hasData) {
                   return CircularProgressIndicator();
