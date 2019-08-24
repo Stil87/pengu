@@ -75,7 +75,9 @@ class _DashboardScreenMyEventsContainerState
                           _justRealFriendsList, events[index], _currentUserId));
                   Navigator.push(context, route);
                 },
-                child: Container(color: Colors.blueAccent, child: EventCard(events[index])));
+                child: Container(
+                    color: Colors.blueAccent,
+                    child: EventCard(events[index], _currentUserId)));
           });
     }
   }

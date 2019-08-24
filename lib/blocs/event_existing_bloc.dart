@@ -19,12 +19,16 @@ class EventExistingBloc {
       _repository.getRoomDocumentSnapshotWithRoomIDAndUserId(
           roomID: roomId, userId: currentUserId);
 
-  Future changeEventRequestStatus(Event event, String currentUserId) async {
+  Future changeEventRequestStatus(Event event, String currentUserId, String inviterId) async {
     User _oldCurrentUser = event.invitedUserObjectList
         .firstWhere((user) => user.userID == currentUserId);
 
     String status = _oldCurrentUser.eventRequestStatus;
     print('alter Status $status');
+    if(currentUserId == inviterId) {
+
+
+    }
     if (status == 'in') {
       status = 'there';
     } else if (status == 'there') {

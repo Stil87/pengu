@@ -28,15 +28,12 @@ class DashboardScreen extends StatelessWidget {
         Stack(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Align(
-                  alignment: Alignment.bottomCenter, child: NewEventButton()),
-            ),
-            Padding(
               padding: const EdgeInsets.only(bottom: 20.0, right: 30.0),
               child: Align(
-                  alignment: Alignment.bottomRight, child: FriendsButton()),
+                  alignment: Alignment.bottomRight, child: NewEventButton()),
             ),
+
+
             Padding(
               padding: const EdgeInsets.only(bottom: 20.0, left: 30.0),
               child: Align(

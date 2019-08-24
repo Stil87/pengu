@@ -275,6 +275,9 @@ class FirestoreProvider {
         .collection(_firestoreCollectionNameAllUsers)
         .document(currentUserID)
         .collection(_userPersonalRoomsListCollectionName)
+        .where('dateTime',
+            isGreaterThanOrEqualTo: Timestamp.fromDate(
+                DateTime.now().subtract(Duration(hours: 6))))
         .snapshots()
         .map((list) =>
             list.documents.map((doc) => Event.fromFirestore(doc)).toList());
@@ -284,13 +287,14 @@ class FirestoreProvider {
 
   /// stream of the Event data in a specific room
 
-  Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId({String roomID, String userId}) {
+  Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId(
+      {String roomID, String userId}) {
     return _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(userId)
         .collection(_userPersonalRoomsListCollectionName)
         .document(roomID)
         .snapshots()
-        .map((doc)=>Event.fromFirestore(doc));
+        .map((doc) => Event.fromFirestore(doc));
   }
 }

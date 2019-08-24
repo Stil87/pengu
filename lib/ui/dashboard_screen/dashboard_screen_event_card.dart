@@ -6,9 +6,10 @@ import 'package:peng_u/model/user.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 
 class EventCard extends StatefulWidget {
-  Event event;
+  final Event event;
+  final String currentUserId;
 
-  EventCard(this.event);
+  EventCard(this.event, this.currentUserId);
 
   @override
   _EventCardState createState() => _EventCardState();
@@ -19,10 +20,21 @@ class _EventCardState extends State<EventCard> {
 
   @override
   Widget build(BuildContext context) {
-    return MyDashboardEventCard(widget.event);
+    return MyDashboardEventCard(
+      widget.event,
+    );
   }
 
-  Widget MyDashboardEventCard(Event event) {
+  Widget MyDashboardEventCard(
+    Event event,
+  ) {
+    List<User> _correctedFriendsList = [];
+    event.invitedUserObjectList.forEach((user){
+      if(user.userID != widget.currentUserId)
+        _correctedFriendsList.add(user);
+    }
+    );
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
@@ -69,15 +81,22 @@ class _EventCardState extends State<EventCard> {
           child: Container(
             height: 85.0,
             child: ListView.builder(
+                shrinkWrap: true,
                 scrollDirection: Axis.horizontal,
-                itemCount: event.invitedUserObjectList.length,
+                itemCount: _correctedFriendsList.length,
                 itemBuilder: (_, index) {
-                  return UserBubble(user: event.invitedUserObjectList[index]);
+                  return UserBubble(user: _correctedFriendsList[index]);
                 }),
           ),
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _bloc.dispose();
   }
 
   _showInviterUserBubble() {

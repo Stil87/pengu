@@ -46,6 +46,8 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
             if (!snapshot.hasData) {
               return CircularProgressIndicator();
             }
+            User inviter = snapshot.data.invitedUserObjectList
+                .firstWhere((user) => user.eventRequestStatus == 'inviter');
             User currentUser = snapshot.data.invitedUserObjectList
                 .firstWhere((user) => user.userID == widget.currentUserID);
             List<User> _userInList = snapshot.data.invitedUserObjectList
@@ -75,7 +77,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               padding: const EdgeInsets.all(8.0),
                               child: Row(
                                 children: <Widget>[
-                                  _getInviterBubble(),
+                                  _getInviterBubble(inviter),
                                   Text(snapshot.data.eventName),
                                 ],
                               ),
@@ -241,7 +243,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               height: 85.0,
                               child: GestureDetector(
                                   onTap: () => _bloc.changeEventRequestStatus(
-                                      snapshot.data, widget.currentUserID),
+                                      snapshot.data, widget.currentUserID,inviter.userID),
                                   child: UserBubble(user: currentUser)))
                         ],
                       ],
@@ -252,9 +254,8 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
     );
   }
 
-  _getInviterBubble() {
-    User inviter = widget.event.invitedUserObjectList
-        .firstWhere((user) => user.eventRequestStatus == 'inviter');
+  _getInviterBubble(User inviter) {
+
     return UserBubble(user: inviter);
   }
 }
@@ -283,7 +284,9 @@ class WrapItem extends StatelessWidget {
         }
       },
       child: Padding(
-          padding: const EdgeInsets.all(2.0), child: Material(color: Colors.blueAccent,child: UserBubble(user: user))),
+          padding: const EdgeInsets.all(2.0),
+          child: Material(
+              color: Colors.blueAccent, child: UserBubble(user: user))),
     );
   }
 

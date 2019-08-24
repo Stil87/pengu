@@ -26,6 +26,7 @@ class LocationProvider {
   Future<PlaceDetails> getPlaceById(String id) async {
     PlacesDetailsResponse placeDetailRespond =
         await _places.getDetailsByPlaceId(id);
+    print('Cost----use of placeAPI getDetailsByPLaceId');
     PlaceDetails placeDetails = placeDetailRespond.result;
     return placeDetails;
   }
@@ -38,7 +39,7 @@ class LocationProvider {
       searchString,
       location: location,
     );
-    print(_result.status);
+    print('Cost:-----use of PlacesAPI searchByText');
     return _result;
   }
 }
