@@ -47,7 +47,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
               return CircularProgressIndicator();
             }
             User inviter = snapshot.data.invitedUserObjectList
-                .firstWhere((user) => user.eventRequestStatus == 'inviter');
+                .firstWhere((user) => user.eventRequestStatus == 'inviter' || user.eventRequestStatus == 'inviterThere');
             User currentUser = snapshot.data.invitedUserObjectList
                 .firstWhere((user) => user.userID == widget.currentUserID);
             List<User> _userInList = snapshot.data.invitedUserObjectList

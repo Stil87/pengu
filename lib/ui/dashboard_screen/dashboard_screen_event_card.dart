@@ -101,7 +101,7 @@ class _EventCardState extends State<EventCard> {
 
   _showInviterUserBubble() {
     User inviter = widget.event.invitedUserObjectList
-        .firstWhere((e) => e.eventRequestStatus == 'inviter');
+        .firstWhere((e) => e.eventRequestStatus == 'inviter' || e.eventRequestStatus == 'inviterThere');
     return UserBubble(user: inviter);
   }
 }

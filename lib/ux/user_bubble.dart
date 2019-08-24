@@ -66,11 +66,11 @@ class _UserBubbleState extends State<UserBubble>
     String status = widget.user.eventRequestStatus;
     if (status == '') {
       return Colors.black;
-    } else if (status == 'in') {
+    } else if (status == 'in' || status == 'inviter') {
       return Colors.green;
     } else if (status == 'out') {
       return Colors.red[100];
-    } else if (status == 'there') {
+    } else if (status == 'there' || status == 'inviterThere') {
       return Colors.tealAccent;
     } else {
       return Colors.black;
