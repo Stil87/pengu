@@ -297,6 +297,10 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
           child: Wrap(
             children: <Widget>[
               IconButton(
+                icon: Icon(Icons.my_location),
+                onPressed: () => _updatePlacesList('My location'),
+              ),
+              IconButton(
                 icon: Icon(Icons.restaurant),
                 onPressed: () => _updatePlacesList('Restaurant'),
               ),

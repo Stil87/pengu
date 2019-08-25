@@ -24,7 +24,7 @@ class EventExistingBloc {
     placeName= placeName.replaceAll(' ',"");
     print('launchMap tapped');
     final url =
-        'https://www.google.com/maps/search/?api=1&query=$placeName&query_place_id=ChIJLU7jZClu5kcR4PcOOO6p3I0$placeId';
+        'https://www.google.com/maps/search/?api=1&query=$placeName&query_place_id=$placeId';
     if (await canLaunch(url)) {
       await launch(url);
     } else {

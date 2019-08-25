@@ -58,23 +58,7 @@ class _EventCardState extends State<EventCard> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: FutureBuilder<PlaceDetails>(
-              future: _bloc.getGooglePlaceObject(event.eventPlace.placeId),
-              builder: (_, snap) {
-                if (!snap.hasData) {
-                  return CircularProgressIndicator();
-                }
-                return Column(
-                  children: <Widget>[
-                    Row(
-                      children: <Widget>[
-                        Text(snap.data.name),
-                        Image(image: NetworkImage(snap.data.icon))
-                      ],
-                    ),
-                  ],
-                );
-              }),
+          child: Text(event.eventPlace.placeName)
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
