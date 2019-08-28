@@ -36,7 +36,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         if (snapshot.hasData) {
                           return Padding(
                             padding: const EdgeInsets.all(15.0),
-                            child: UserBubble(user: snapshot.data),
+                            child: GestureDetector(
+                                onTap: () => _launchProfilePictureChangeAlert(
+                                    context, userId),
+                                child: UserBubble(user: snapshot.data)),
                           );
                         }
                         return CircularProgressIndicator();
@@ -51,7 +54,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   StreamBuilder<List<User>>(
                       stream: _bloc.getUserFriendsList(userId),
                       builder: (_, snap2) {
-
                         if (snap2.hasData && snap2.data.length > 0) {
                           _bloc.setfriendsList = snap2.data;
                           List<User> friendsList = [];
@@ -187,11 +189,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             return Container(
                               color: Colors.red,
                               child: ListTile(
-                                  onTap: () => _sendInvitation(
-                                      snap.data[index]),
-                                  leading: Image(
-                                      image: getImage(snap.data[index]
-                                         )),
+                                  onTap: () =>
+                                      _sendInvitation(snap.data[index]),
+                                  leading:
+                                      Image(image: getImage(snap.data[index])),
                                   title: Text(snap.data[index].firstName)),
                             );
                           }),
@@ -257,5 +258,43 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
       _scaffoldKey.currentState.showSnackBar(snackyBar);
     }
+  }
+
+  _launchProfilePictureChangeAlert(BuildContext context, String userId) {
+    //set up the alerts buttons
+    Widget cancelButton = FlatButton(
+        onPressed: () {
+          return Navigator.pop(context);
+        },
+        child: Text('Nea!'));
+    //New FirebaseAuth user
+    Widget gallery = FlatButton(
+        onPressed: () {
+          _bloc.changeUserProfileImage(0, userId);
+          //todo: route to dashboard screen
+          return Navigator.pop(context);
+        },
+        child: Text('Use Gallery!'));
+    Widget camera = FlatButton(
+        onPressed: () {
+          _bloc.changeUserProfileImage(1, userId);
+          //todo: route to dashboard screen
+          return Navigator.pop(context);
+        },
+        child: Text('use camera!!'));
+
+    //set up the alertDialog
+    AlertDialog alertDialog = AlertDialog(
+      title: Text('You are a beauty!'),
+      content: Text('Do u wanna change your profile image?'),
+      actions: <Widget>[cancelButton, gallery, camera],
+    );
+
+    //show the dialog
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
   }
 }

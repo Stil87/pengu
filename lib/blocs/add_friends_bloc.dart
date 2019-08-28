@@ -1,14 +1,19 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:peng_u/model/user.dart';
 import 'package:peng_u/resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 class AddFriendsBloc {
   final _repository = Repository();
 
   BehaviorSubject<List<User>> _tempSearchStore = BehaviorSubject(seedValue: []);
-  BehaviorSubject<List<User>> _resultSearchStore = BehaviorSubject(seedValue: []);
+  BehaviorSubject<List<User>> _resultSearchStore =
+      BehaviorSubject(seedValue: []);
   BehaviorSubject<List<User>> _userFriendsList = BehaviorSubject(seedValue: []);
 
   Observable<List<User>> get tempSearchStoreStream => _tempSearchStore.stream;
@@ -21,7 +26,7 @@ class AddFriendsBloc {
 
   List<User> get friendsList => _userFriendsList.value;
 
-  set setfriendsList(List<User> list ) => _userFriendsList.add(list);
+  set setfriendsList(List<User> list) => _userFriendsList.add(list);
 
   Stream getUserFriendsList(String userID) =>
       _repository.streamUserPersonalFriendsObjectList(currentUserID: userID);
@@ -31,6 +36,29 @@ class AddFriendsBloc {
     User user =
         await _repository.getUserFromFirestoreCollectionFuture(userID: userID);
     return user;
+  }
+
+  Future changeUserProfileImage(int sourceId, String userId) async {
+    File image;
+    if (sourceId == 1) {
+      image = await ImagePicker.pickImage(source: ImageSource.camera);
+    }
+    image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+
+    File compressedImage =
+        await FlutterImageCompress.compressAndGetFile(image.path, image.path);
+
+    String uploadUrl = await _repository.uploadUserImage(compressedImage, userId);
+
+    _spreadUserImage(uploadUrl, userId);
+  }
+
+  Future _spreadUserImage(String imageURL, String userId) async {
+    List<User> friendsList = await _repository
+        .futureUserPersonalFriendsObjectList(currentUserID: userId);
+    await _repository.setUserImageAllUserandUserFriends(
+        userId, imageURL, friendsList);
   }
 
   Stream<User> getUserObject(String userId) =>
@@ -78,20 +106,18 @@ class AddFriendsBloc {
         });
       });
     } else {
-
       _tempSearchStore.add([]);
       List<User> list = [];
       resultSearchStore.forEach((user) {
-      List  _friendsIdList = friendsList.map((user)=> user.userID).toList() ;
+        List _friendsIdList = friendsList.map((user) => user.userID).toList();
 
         bool alreadyFriend = _friendsIdList.contains(user.userID);
-        if (alreadyFriend == false && user.firstName.startsWith(capitalizedValue) ) {
+        if (alreadyFriend == false &&
+            user.firstName.startsWith(capitalizedValue)) {
           list.add(user);
           _tempSearchStore.add(list);
         }
       });
-
-
     }
   }
 }

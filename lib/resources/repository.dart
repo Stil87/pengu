@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,7 +20,8 @@ class Repository {
   /*--------repository based on User authentication and firestore collection "users"----------*/
 
   ///set firestore timestamp settings to true
-  Future setFirebaseTimestampSettings()=>_firestoreProvider.setFirebaseTimestampSettings();
+  Future setFirebaseTimestampSettings() =>
+      _firestoreProvider.setFirebaseTimestampSettings();
 
   ///Firebase authentification Sign in with email and password
   /// returns User Id
@@ -131,6 +134,11 @@ class Repository {
       _firestoreProvider.streamUserPersonalFriendsObjectList(
           currentUserID: currentUserID);
 
+  /// future to get Users personal friends list returning  List of user objects
+
+  Future<List<User>> futureUserPersonalFriendsObjectList(
+      {String currentUserID}) =>_firestoreProvider.futureUserPersonalFriendsObjectList(currentUserID: currentUserID);
+
   /// stream to get Users personal friends event list returning  List of Events objects
   /// currentUser/userFriends(snapshot)/userObject/Eventlists/
   ///
@@ -172,6 +180,12 @@ class Repository {
       _firestoreProvider.deleteFriend(currentUserId, userToDeleteId);
 
   /// Delete User Friend to users personal friends list create to fire
+  ///
+  /// change profile image of user user info plus friends
+  ///
+  setUserImageAllUserandUserFriends(
+      String userId, String imageURL, List<User> friendsList) =>
+  _firestoreProvider.setUserImageAllUserandUserFriends(userId, imageURL, friendsList);
 
 /*-----------User rooms related firestore provider operation*/
 
@@ -229,8 +243,10 @@ class Repository {
 
   /// stream of the Event data in a specific room
 
-  Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId({String roomID, String userId}) =>
-      _firestoreProvider.getRoomDocumentSnapshotWithRoomIDAndUserId(roomID: roomID,userId: userId);
+  Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId(
+          {String roomID, String userId}) =>
+      _firestoreProvider.getRoomDocumentSnapshotWithRoomIDAndUserId(
+          roomID: roomID, userId: userId);
 
 /*-----------User location related firestore provider operation*/
 
@@ -248,4 +264,9 @@ class Repository {
   ///returns a google PlaceDetail object by id
   Future<PlaceDetails> getPlaceById(String id) =>
       _locationProvider.getPlaceById(id);
+
+/*-----------User location related firebase storage provider operation*/
+
+  Future<String> uploadUserImage(File image, String userId) async =>
+      _firestoreProvider.uploadUserImage(image, userId);
 }

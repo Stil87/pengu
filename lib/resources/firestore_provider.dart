@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/user.dart';
 
 class FirestoreProvider {
   Firestore _firestore = Firestore.instance;
+  FirebaseStorage _storage = FirebaseStorage.instance;
   final String _firestoreCollectionNameAllUsers = 'users';
   final String _userPersonalFriendslistCollectionName = 'userFriends';
   final String _userPersonalFriendIdFieldInDocument = 'userFriendsId';
@@ -61,6 +65,20 @@ class FirestoreProvider {
         .map((list) =>
             list.documents.map((doc) => User.fromDocument(doc)).toList());
   }
+
+  /// Future to get Users personal friends list returning  List of user objects
+  ///
+  Future<List<User>> futureUserPersonalFriendsObjectList(
+      {String currentUserID}) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserID)
+        .collection(_userPersonalFriendslistCollectionName)
+        .getDocuments()
+        .then((list) =>
+        list.documents.map((doc) => User.fromDocument(doc)).toList());
+  }
+
 
   ///Future to search the firestore user list by searchKeyword
   ///
@@ -174,6 +192,10 @@ class FirestoreProvider {
             }).toList());
   }
 
+
+
+
+
   /// Add User Friend to users personal friends list create to fire
 
   Future<void> addUserIdToUsersPersonalFriendsListToFirestore(
@@ -183,6 +205,28 @@ class FirestoreProvider {
         .document(currentUserID)
         .collection(_userPersonalFriendslistCollectionName)
         .document(newUserID);
+  }
+
+  ///Change User Profile data
+  ///
+
+  /// change user Image in firestore collection of the userobject including userfriends
+
+  Future setUserImageAllUserandUserFriends(
+      String userId, String imageURL, List<User> friendsList) async {
+    _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(userId)
+        .setData({'profilePictureURL': imageURL}, merge: true).whenComplete(() {
+      friendsList.forEach((user) {
+        _firestore
+            .collection(_firestoreCollectionNameAllUsers)
+            .document(user.userID)
+            .collection(_userPersonalFriendslistCollectionName)
+            .document(userId)
+            .setData({'profilePictureURL': imageURL}, merge: true);
+      });
+    });
   }
 
 /*-----------User rooms related firebase provider operation*/
@@ -276,8 +320,9 @@ class FirestoreProvider {
         .document(currentUserID)
         .collection(_userPersonalRoomsListCollectionName)
         .where('dateTime',
-            isGreaterThanOrEqualTo: Timestamp.fromDate(
-                DateTime.now().subtract(Duration(hours: 6))))
+            isGreaterThanOrEqualTo:
+                Timestamp.fromDate(DateTime.now().subtract(Duration(hours: 6))))
+        .orderBy('dateTime', descending: false)
         .snapshots()
         .map((list) =>
             list.documents.map((doc) => Event.fromFirestore(doc)).toList());
@@ -285,6 +330,24 @@ class FirestoreProvider {
     //Event.fromFirestore(doc)).toList());
   }
 
+  /// stream to get Users personal rooms list returning  List of event objects
+  ///
+  Future<List<Event>> futureUserPersonalEventsObjectList(
+      {String currentUserID}) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserID)
+        .collection(_userPersonalRoomsListCollectionName)
+        .where('dateTime',
+        isGreaterThanOrEqualTo:
+        Timestamp.fromDate(DateTime.now().subtract(Duration(hours: 6))))
+        .orderBy('dateTime', descending: false)
+        .getDocuments()
+        .then((list) =>
+        list.documents.map((doc) => Event.fromFirestore(doc)).toList());
+
+    //Event.fromFirestore(doc)).toList());
+  }
   /// stream of the Event data in a specific room
 
   Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId(
@@ -296,5 +359,23 @@ class FirestoreProvider {
         .document(roomID)
         .snapshots()
         .map((doc) => Event.fromFirestore(doc));
+  }
+
+  /// Firebasestorage methods
+  ///
+  /// uploads file to storage in file 'images/'
+
+  Future<String> uploadUserImage(File image, String userId) async {
+    //Create a reference to the location you want to upload to in firebase
+    StorageReference ref = await _storage.ref().child("images/$userId/");
+
+    //Upload the file to firebase
+    StorageUploadTask uploadTask = await ref.putFile(image);
+
+    // Waits till the file is uploaded then stores the download url
+    var dowurl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    String url = dowurl.toString();
+
+    return url;
   }
 }

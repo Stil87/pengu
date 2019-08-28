@@ -18,6 +18,7 @@ class DashboardScreen extends StatelessWidget {
     print('user from provider with: ${user.displayName}');
     _bloc.createNewFirestoreCollectionUser(currentUserId: user.uid);
 
+
     return Column(
       children: <Widget>[
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
