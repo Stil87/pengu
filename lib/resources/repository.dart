@@ -248,6 +248,17 @@ class Repository {
       _firestoreProvider.getRoomDocumentSnapshotWithRoomIDAndUserId(
           roomID: roomID, userId: userId);
 
+  /// change user Image in firestore collection of the userobject in all events
+
+  Future setUserImageAllEvents(
+      String userId, String imageURL, List<Event> userEventList)=>
+  _firestoreProvider.setUserImageAllEvents(userId, imageURL, userEventList);
+
+  ///get user Personal Event List as a future
+
+  Future<List<Event>> futureUserPersonalEventsObjectList(
+      {String currentUserID})=>_firestoreProvider.futureUserPersonalEventsObjectList(currentUserID: currentUserID);
+
 /*-----------User location related firestore provider operation*/
 
   ///method get User location returns a LatLng

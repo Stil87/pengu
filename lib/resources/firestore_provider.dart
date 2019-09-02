@@ -76,9 +76,8 @@ class FirestoreProvider {
         .collection(_userPersonalFriendslistCollectionName)
         .getDocuments()
         .then((list) =>
-        list.documents.map((doc) => User.fromDocument(doc)).toList());
+            list.documents.map((doc) => User.fromDocument(doc)).toList());
   }
-
 
   ///Future to search the firestore user list by searchKeyword
   ///
@@ -192,10 +191,6 @@ class FirestoreProvider {
             }).toList());
   }
 
-
-
-
-
   /// Add User Friend to users personal friends list create to fire
 
   Future<void> addUserIdToUsersPersonalFriendsListToFirestore(
@@ -228,8 +223,29 @@ class FirestoreProvider {
       });
     });
   }
+  /*-----------User rooms related firebase provider operation*/
 
-/*-----------User rooms related firebase provider operation*/
+  /// change user Image in firestore collection of the userobject in all events
+
+  Future setUserImageAllEvents(
+      String userId, String imageURL, List<Event> userEventList) async {
+    userEventList.forEach((event) {
+      User userToChange = event.invitedUserObjectList.singleWhere((user)=> user.userID == userId);
+      event.invitedUserObjectList.removeWhere((user) => user.userID == userId);
+      userToChange.profilePictureURL = imageURL;
+      event.invitedUserObjectList.add(userToChange);
+      event.invitedUserObjectList.forEach((user) {
+        _firestore
+            .collection(_firestoreCollectionNameAllUsers)
+            .document(user.userID)
+            .collection(_userPersonalRoomsListCollectionName)
+            .document(event.roomId)
+           .setData(event.toJson(),merge: true);
+      });
+    });
+  }
+
+
 
   /// Creating a new unique room at Firestore rooms Collection and returns roomId as a String
 
@@ -333,21 +349,22 @@ class FirestoreProvider {
   /// stream to get Users personal rooms list returning  List of event objects
   ///
   Future<List<Event>> futureUserPersonalEventsObjectList(
-      {String currentUserID}) {
+      {String currentUserID}) async {
     return _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(currentUserID)
         .collection(_userPersonalRoomsListCollectionName)
         .where('dateTime',
-        isGreaterThanOrEqualTo:
-        Timestamp.fromDate(DateTime.now().subtract(Duration(hours: 6))))
+            isGreaterThanOrEqualTo:
+                Timestamp.fromDate(DateTime.now().subtract(Duration(hours: 6))))
         .orderBy('dateTime', descending: false)
         .getDocuments()
         .then((list) =>
-        list.documents.map((doc) => Event.fromFirestore(doc)).toList());
+            list.documents.map((doc) => Event.fromFirestore(doc)).toList());
 
     //Event.fromFirestore(doc)).toList());
   }
+
   /// stream of the Event data in a specific room
 
   Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId(
@@ -360,6 +377,8 @@ class FirestoreProvider {
         .snapshots()
         .map((doc) => Event.fromFirestore(doc));
   }
+
+
 
   /// Firebasestorage methods
   ///

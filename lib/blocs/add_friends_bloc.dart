@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/user.dart';
 import 'package:peng_u/resources/repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -45,11 +46,11 @@ class AddFriendsBloc {
     }
     image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
-
     File compressedImage =
         await FlutterImageCompress.compressAndGetFile(image.path, image.path);
 
-    String uploadUrl = await _repository.uploadUserImage(compressedImage, userId);
+    String uploadUrl =
+        await _repository.uploadUserImage(compressedImage, userId);
 
     _spreadUserImage(uploadUrl, userId);
   }
@@ -57,8 +58,13 @@ class AddFriendsBloc {
   Future _spreadUserImage(String imageURL, String userId) async {
     List<User> friendsList = await _repository
         .futureUserPersonalFriendsObjectList(currentUserID: userId);
+    List<Event> userEventList = await _repository
+        .futureUserPersonalEventsObjectList(currentUserID: userId);
+
     await _repository.setUserImageAllUserandUserFriends(
         userId, imageURL, friendsList);
+
+    await _repository.setUserImageAllEvents(userId, imageURL, userEventList);
   }
 
   Stream<User> getUserObject(String userId) =>

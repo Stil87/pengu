@@ -51,11 +51,11 @@ class Event {
       'eventName': eventName,
       'dateTime': dateTime,
       'eventPlace': eventPlace.toJson(),
-      'invitedUserObjectList': _userListToJson(invitedUserObjectList),
+      'invitedUserObjectList': userListToJson(invitedUserObjectList),
     };
   }
 
-  Map<String, Object> _userListToJson(List<User> list) {
+  Map<String, Object> userListToJson(List<User> list) {
     Map<String, Object> userMap = {};
     if (list.length > 0) {
       list.forEach((user) {
