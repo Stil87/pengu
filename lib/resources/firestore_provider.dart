@@ -223,6 +223,46 @@ class FirestoreProvider {
       });
     });
   }
+  /// change user name in firestore collection of the userobject including userfriends
+
+  Future setUserNameAllUserandUserFriends(
+      String userId, String changedName, List<User> friendsList) async {
+    _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(userId)
+        .setData({'firstName': changedName}, merge: true).whenComplete(() {
+      friendsList.forEach((user) {
+        _firestore
+            .collection(_firestoreCollectionNameAllUsers)
+            .document(user.userID)
+            .collection(_userPersonalFriendslistCollectionName)
+            .document(userId)
+            .setData({'firstName': changedName}, merge: true);
+      });
+    });
+  }
+
+  /// change user Name in firestore collection of the userobject in all events
+
+  Future setUserNameAllEvents(
+      String userId, String changedName, List<Event> userEventList) async {
+    userEventList.forEach((event) {
+      User userToChange = event.invitedUserObjectList
+          .singleWhere((user) => user.userID == userId);
+      event.invitedUserObjectList.removeWhere((user) => user.userID == userId);
+      userToChange.firstName = changedName;
+      event.invitedUserObjectList.add(userToChange);
+      event.invitedUserObjectList.forEach((user) {
+        _firestore
+            .collection(_firestoreCollectionNameAllUsers)
+            .document(user.userID)
+            .collection(_userPersonalRoomsListCollectionName)
+            .document(event.roomId)
+            .setData(event.toJson(), merge: true);
+      });
+    });
+  }
+
   /*-----------User rooms related firebase provider operation*/
 
   /// change user Image in firestore collection of the userobject in all events
@@ -230,7 +270,8 @@ class FirestoreProvider {
   Future setUserImageAllEvents(
       String userId, String imageURL, List<Event> userEventList) async {
     userEventList.forEach((event) {
-      User userToChange = event.invitedUserObjectList.singleWhere((user)=> user.userID == userId);
+      User userToChange = event.invitedUserObjectList
+          .singleWhere((user) => user.userID == userId);
       event.invitedUserObjectList.removeWhere((user) => user.userID == userId);
       userToChange.profilePictureURL = imageURL;
       event.invitedUserObjectList.add(userToChange);
@@ -240,12 +281,50 @@ class FirestoreProvider {
             .document(user.userID)
             .collection(_userPersonalRoomsListCollectionName)
             .document(event.roomId)
-           .setData(event.toJson(),merge: true);
+            .setData(event.toJson(), merge: true);
       });
     });
   }
 
 
+
+  ///stream user friends events
+  ///
+  Stream<List<Event>> streamUserFriendsEvent(String currentUserId) {
+    return _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserId)
+        .collection(_userPersonalFriendslistCollectionName)
+        .snapshots()
+        .map((snap) => snap.documents
+                .map((doc) => User.fromJson(doc.data))
+                .toList()
+                .map((user) {
+              _firestore
+                  .collection(_firestoreCollectionNameAllUsers)
+                  .document(user.userID)
+                  .collection(_userPersonalRoomsListCollectionName)
+                    ..where('dateTime',
+                            isGreaterThanOrEqualTo: Timestamp.fromDate(
+                                DateTime.now().subtract(Duration(hours: 6))))
+                        .orderBy('dateTime', descending: false)
+                        .snapshots()
+                        .map((snap) => snap.documents
+                            .map((doc) => Event.fromFirestore(doc)));
+            }).toList());
+
+    /*_firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(user.userID)
+        .collection(_userPersonalRoomsListCollectionName)
+        .where('dateTime',
+        isGreaterThanOrEqualTo:
+        Timestamp.fromDate(DateTime.now().subtract(Duration(hours: 6))))
+        .orderBy('dateTime', descending: false)
+        .snapshots()
+        .map((snap) => snap.documents.map((doc) => Event.fromFirestore(doc)))
+        .toList();*/
+  }
 
   /// Creating a new unique room at Firestore rooms Collection and returns roomId as a String
 
@@ -377,8 +456,6 @@ class FirestoreProvider {
         .snapshots()
         .map((doc) => Event.fromFirestore(doc));
   }
-
-
 
   /// Firebasestorage methods
   ///

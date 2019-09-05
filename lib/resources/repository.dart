@@ -137,7 +137,9 @@ class Repository {
   /// future to get Users personal friends list returning  List of user objects
 
   Future<List<User>> futureUserPersonalFriendsObjectList(
-      {String currentUserID}) =>_firestoreProvider.futureUserPersonalFriendsObjectList(currentUserID: currentUserID);
+          {String currentUserID}) =>
+      _firestoreProvider.futureUserPersonalFriendsObjectList(
+          currentUserID: currentUserID);
 
   /// stream to get Users personal friends event list returning  List of Events objects
   /// currentUser/userFriends(snapshot)/userObject/Eventlists/
@@ -146,6 +148,11 @@ class Repository {
           {String currentUserID}) =>
       _firestoreProvider.streamUserPersonalFriendsEventsObjectList(
           currentUserID: currentUserID);
+
+  ///stream user friends events
+  ///
+  Stream<List<Event>> streamUserFriendsEvent(String currentUserId) =>
+      _firestoreProvider.streamUserFriendsEvent(currentUserId);
 
   ///Future to search the firestore user list by searchKeyword
   ///
@@ -184,8 +191,19 @@ class Repository {
   /// change profile image of user user info plus friends
   ///
   setUserImageAllUserandUserFriends(
-      String userId, String imageURL, List<User> friendsList) =>
-  _firestoreProvider.setUserImageAllUserandUserFriends(userId, imageURL, friendsList);
+          String userId, String imageURL, List<User> friendsList) =>
+      _firestoreProvider.setUserImageAllUserandUserFriends(
+          userId, imageURL, friendsList);
+
+  Future setUserNameAllUserandUserFriends(
+          String userId, String changedName, List<User> friendsList) =>
+      _firestoreProvider.setUserNameAllUserandUserFriends(
+          userId, changedName, friendsList);
+
+  /// change user Name in firestore collection of the userobject in all events
+
+  Future setUserNameAllEvents(
+      String userId, String changedName, List<Event> userEventList)=>_firestoreProvider.setUserNameAllEvents(userId, changedName, userEventList);
 
 /*-----------User rooms related firestore provider operation*/
 
@@ -251,13 +269,15 @@ class Repository {
   /// change user Image in firestore collection of the userobject in all events
 
   Future setUserImageAllEvents(
-      String userId, String imageURL, List<Event> userEventList)=>
-  _firestoreProvider.setUserImageAllEvents(userId, imageURL, userEventList);
+          String userId, String imageURL, List<Event> userEventList) =>
+      _firestoreProvider.setUserImageAllEvents(userId, imageURL, userEventList);
 
   ///get user Personal Event List as a future
 
   Future<List<Event>> futureUserPersonalEventsObjectList(
-      {String currentUserID})=>_firestoreProvider.futureUserPersonalEventsObjectList(currentUserID: currentUserID);
+          {String currentUserID}) =>
+      _firestoreProvider.futureUserPersonalEventsObjectList(
+          currentUserID: currentUserID);
 
 /*-----------User location related firestore provider operation*/
 

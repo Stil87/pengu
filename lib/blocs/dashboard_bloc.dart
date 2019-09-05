@@ -42,8 +42,7 @@ class DashboardBloc {
   ///
   Stream<List<Event>> streamUserPersonalFriendsEventObjectList(
           {String currentUserID}) =>
-      _repository.streamUserPersonalFriendsEventsObjectList(
-          currentUserID: currentUserID);
+      _repository.streamUserFriendsEvent(currentUserID);
 
   Future<String> getCurrentUserId() {
     return _repository.getCurrentFirebaseUserId();

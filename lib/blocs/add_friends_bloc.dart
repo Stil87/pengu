@@ -39,6 +39,18 @@ class AddFriendsBloc {
     return user;
   }
 
+  Future changeUserName(String userId, String changedName) async {
+    List<User> friendsList = await _repository
+        .futureUserPersonalFriendsObjectList(currentUserID: userId);
+    List<Event> userEventList = await _repository
+        .futureUserPersonalEventsObjectList(currentUserID: userId);
+
+    await _repository.setUserNameAllUserandUserFriends(userId, changedName, friendsList);
+
+    await _repository.setUserNameAllEvents(userId, changedName, userEventList);
+
+  }
+
   Future changeUserProfileImage(int sourceId, String userId) async {
     File image;
     if (sourceId == 1) {
@@ -46,8 +58,9 @@ class AddFriendsBloc {
     }
     image = await ImagePicker.pickImage(source: ImageSource.gallery);
 
-    File compressedImage =
-        await FlutterImageCompress.compressAndGetFile(image.path, image.path);
+    File compressedImage = await FlutterImageCompress.compressAndGetFile(
+        image.path, image.path,
+        quality: 1);
 
     String uploadUrl =
         await _repository.uploadUserImage(compressedImage, userId);

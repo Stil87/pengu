@@ -34,12 +34,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       stream: _bloc.getUserObject(userId),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-                          return Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: GestureDetector(
-                                onTap: () => _launchProfilePictureChangeAlert(
-                                    context, userId),
-                                child: UserBubble(user: snapshot.data)),
+                          return Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: GestureDetector(
+                                    onTap: () =>
+                                        _launchProfilePictureChangeAlert(
+                                            context, userId),
+                                    child: UserBubble(user: snapshot.data)),
+                              ),
+                              GestureDetector(
+                                onTap: () => launchNameChanger(_, userId),
+                                child: Text(snapshot.data.firstName),
+                              )
+                            ],
                           );
                         }
                         return CircularProgressIndicator();
@@ -266,7 +275,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         onPressed: () {
           return Navigator.pop(context);
         },
-        child: Text('Nea!'));
+        child: Text('Nay!'));
     //New FirebaseAuth user
     Widget gallery = FlatButton(
         onPressed: () {
@@ -288,6 +297,40 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       title: Text('You are a beauty!'),
       content: Text('Do u wanna change your profile image?'),
       actions: <Widget>[cancelButton, gallery, camera],
+    );
+
+    //show the dialog
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
+  }
+
+  launchNameChanger(BuildContext context, String userId) {
+    //set up the alerts buttons
+    Widget cancelButton = FlatButton(
+        onPressed: () {
+          return Navigator.pop(context);
+        },
+        child: Text('Nay!'));
+    //New FirebaseAuth user
+    Widget textField = SizedBox(height: 150, width: 220,
+      child: TextField(
+        decoration: InputDecoration(hintText: 'enter your name'),
+        onSubmitted: (v) {
+          print('change name to $v');
+          _bloc.changeUserName(userId, v);
+          return Navigator.pop(context);
+        },
+      ),
+    );
+
+    //set up the alertDialog
+    AlertDialog alertDialog = AlertDialog(
+      title: Text('We love your name!'),
+      content: Text('Do u wanna change your profile name?'),
+      actions: <Widget>[ textField, cancelButton],
     );
 
     //show the dialog
