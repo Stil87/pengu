@@ -212,7 +212,7 @@ class _SignInFormState extends State<SignInForm> {
     _bloc.signInWithFirebaseAndEmail().then((userId) {
       //Already registered
       print('firebaseAuth user signed in: userId: $userId');
-      Navigator.pop(context);
+    
       //todo:root to dasboard screen
     }).catchError((e) {
       _bloc.setSignInStatus(null);
