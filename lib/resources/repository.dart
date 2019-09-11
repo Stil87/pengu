@@ -203,7 +203,9 @@ class Repository {
   /// change user Name in firestore collection of the userobject in all events
 
   Future setUserNameAllEvents(
-      String userId, String changedName, List<Event> userEventList)=>_firestoreProvider.setUserNameAllEvents(userId, changedName, userEventList);
+          String userId, String changedName, List<Event> userEventList) =>
+      _firestoreProvider.setUserNameAllEvents(
+          userId, changedName, userEventList);
 
 /*-----------User rooms related firestore provider operation*/
 
@@ -278,6 +280,10 @@ class Repository {
           {String currentUserID}) =>
       _firestoreProvider.futureUserPersonalEventsObjectList(
           currentUserID: currentUserID);
+
+  ///delete room and event (!! delete in allrooms collection and in each invited users userroomslist )
+  ///
+  Future deleteEvent(Event event) => _firestoreProvider.deleteEvent(event);
 
 /*-----------User location related firestore provider operation*/
 

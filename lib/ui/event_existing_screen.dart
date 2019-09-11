@@ -6,6 +6,8 @@ import 'package:peng_u/model/user.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'dashboard_screen/dashboard_screen.dart';
+
 class EventExistingScreen extends StatefulWidget {
   List<User> _friendList;
   String currentUserID;
@@ -259,6 +261,9 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                       inviter.userID),
                                   child: UserBubble(user: currentUser)))
                         ],
+                        if (inviter.userID == currentUser.userID) ...[
+                          _deleteIconButton(context, widget.event)
+                        ]
                       ],
                     ),
                   );
@@ -269,6 +274,45 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
 
   _getInviterBubble(User inviter) {
     return UserBubble(user: inviter);
+  }
+
+  _deleteIconButton(_, Event event) {
+    return IconButton(
+        icon: Icon(Icons.delete),
+        onPressed: () => launchDeleteAlert(context, event));
+  }
+
+  launchDeleteAlert(BuildContext context, Event event) {
+    //set up the alerts buttons
+    Widget cancelButton = FlatButton(
+        onPressed: () {
+          return Navigator.pop(context);
+        },
+        child: Text('Nay!'));
+    //New FirebaseAuth user
+    Widget deleteButton = FlatButton(
+        child: Text('Delete it'),
+        onPressed: () {
+          _bloc.deleteEvent(event);
+          // Route route =
+          // MaterialPageRoute(builder: (context) => DashboardScreen());
+          Navigator.pop(context);
+          return Navigator.pop(context);
+        });
+
+    //set up the alertDialog
+    AlertDialog alertDialog = AlertDialog(
+      title: Text('We love events!'),
+      content: Text('Do u want to delete this event? People love events!'),
+      actions: <Widget>[deleteButton, cancelButton],
+    );
+
+    //show the dialog
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
   }
 }
 

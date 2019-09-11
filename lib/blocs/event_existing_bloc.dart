@@ -6,6 +6,10 @@ import 'package:url_launcher/url_launcher.dart';
 class EventExistingBloc {
   final _repository = Repository();
 
+  Future deleteEvent(Event event) async {
+    await _repository.deleteEvent(event);
+  }
+
   Future forwardEventToAddedFriend(
       Event event, List<User> extendedUserList) async {
     event.invitedUserObjectList.addAll(extendedUserList);
@@ -21,7 +25,7 @@ class EventExistingBloc {
           roomID: roomId, userId: currentUserId);
 
   void launchMapsUrl(String placeId, String placeName) async {
-    placeName= placeName.replaceAll(' ',"");
+    placeName = placeName.replaceAll(' ', "");
     print('launchMap tapped');
     final url =
         'https://www.google.com/maps/search/?api=1&query=$placeName&query_place_id=$placeId';

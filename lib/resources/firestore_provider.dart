@@ -347,6 +347,17 @@ class FirestoreProvider {
 
   ///updates EventData in  specific room
   ///delete room and event (!! delete in allrooms collection and in each invited users userroomslist )
+  ///
+  Future deleteEvent (Event event) async {
+    event.invitedUserObjectList.forEach((user){
+      _firestore
+      .collection(_firestoreCollectionNameAllUsers)
+          .document(user.userID)
+          .collection(_userPersonalRoomsListCollectionName)
+          .document(event.roomId)
+          .delete();
+    });
+  }
 
   ///Adds a room Id to a user´s private rooms list
 
