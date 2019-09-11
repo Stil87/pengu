@@ -46,7 +46,12 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
               _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return CircularProgressIndicator();
+              return Column(
+                children: <Widget>[
+                  Text('Deleted or no Data!?'),
+                  CircularProgressIndicator(),
+                ],
+              );
             }
             User inviter = snapshot.data.invitedUserObjectList.firstWhere(
                 (user) =>

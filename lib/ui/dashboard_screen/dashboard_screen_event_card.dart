@@ -29,11 +29,14 @@ class _EventCardState extends State<EventCard> {
     Event event,
   ) {
     List<User> _correctedFriendsList = [];
-    event.invitedUserObjectList.forEach((user){
-      if(user.userID != widget.currentUserId)
+    User inviter = event.invitedUserObjectList.firstWhere((user) =>
+        user.eventRequestStatus == 'inviter' ||
+        user.eventRequestStatus == 'inviterThere');
+    event.invitedUserObjectList.forEach((user) {
+      if (user.userID != inviter.userID) {
         _correctedFriendsList.add(user);
-    }
-    );
+      }
+    });
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -57,9 +60,8 @@ class _EventCardState extends State<EventCard> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(event.eventPlace.placeName)
-        ),
+            padding: const EdgeInsets.all(8.0),
+            child: Text(event.eventPlace.placeName)),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
@@ -84,8 +86,9 @@ class _EventCardState extends State<EventCard> {
   }
 
   _showInviterUserBubble() {
-    User inviter = widget.event.invitedUserObjectList
-        .firstWhere((e) => e.eventRequestStatus == 'inviter' || e.eventRequestStatus == 'inviterThere');
+    User inviter = widget.event.invitedUserObjectList.firstWhere((e) =>
+        e.eventRequestStatus == 'inviter' ||
+        e.eventRequestStatus == 'inviterThere');
     return UserBubble(user: inviter);
   }
 }
