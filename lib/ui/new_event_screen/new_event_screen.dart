@@ -48,8 +48,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
             stream: _bloc.stream$,
             builder: (context, snapshot) {
               List<User> _justFriendsList = [];
-              _friendsList.forEach((user){
-                if (user.requestStatus == 'friend'){
+              _friendsList.forEach((user) {
+                if (user.requestStatus == 'friend') {
                   _justFriendsList.add(user);
                 }
               });
@@ -114,15 +114,15 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                     WrapItem(builderDelegate.message, false),
                                     animationBuilder: (animation) =>
                                         CurvedAnimation(
-                                          parent: animation,
-                                          curve: FlippedCurve(Curves.ease),
-                                        ),
+                                      parent: animation,
+                                      curve: FlippedCurve(Curves.ease),
+                                    ),
                                   ))
                               .toList(),
                         ),
                       ),
                       if (snapshot.data == 0) ...[
-                        Expanded(child: _createNameFinderRow())
+                        Expanded(flex: 2, child: _createNameFinderRow())
                       ],
                       if (snapshot.data == 1) ...[
                         Expanded(flex: 2, child: _createPlaceFinder())
@@ -130,7 +130,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       if (snapshot.data == 2) ...[
                         Expanded(flex: 2, child: _createTimeFinder())
                       ],
-                      if (snapshot.data == 3 ) ...[
+                      if (snapshot.data == 3) ...[
                         Expanded(
                           //height: 50.0,
                           child: ListView(
@@ -141,9 +141,9 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                       WrapItem(builderDelegate.message, true),
                                       animationBuilder: (animation) =>
                                           CurvedAnimation(
-                                            parent: animation,
-                                            curve: Curves.ease,
-                                          ),
+                                        parent: animation,
+                                        curve: Curves.ease,
+                                      ),
                                     ))
                                 .toList(),
                           ),
@@ -151,9 +151,11 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         if (snapshot.data == 3) ...[
                           Expanded(
                             child: FloatingActionButton(
-                              onPressed: () {_sendEvent(SidekickTeamBuilder.of(context).targetList);
-                              _showSnackbar();
-                              Navigator.pop(context);
+                              onPressed: () {
+                                _sendEvent(
+                                    SidekickTeamBuilder.of(context).targetList);
+                                _showSnackbar();
+                                Navigator.pop(context);
                               },
                               child: Icon(Icons.send),
                             ),
@@ -193,66 +195,117 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   _createTimeFinder() {
     return Column(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: FlatButton(
-              color: Colors.blueAccent,
-              onPressed: () {
-                _bloc.setTimeToDateTime(DateTime.now());
-              },
-              child: Text('Now!')),
-        ),
-        Wrap(
-          alignment: WrapAlignment.spaceAround,
-          spacing: 10.0,
-          children: <Widget>[
-            FlatButton(
-                color: Colors.blue,
-                onPressed: () {
-                  _bloc.setTimeToDateTime(
-                      DateTime.now().add(Duration(minutes: 30)));
-                },
-                child: Text('In 30')),
-            FlatButton(
-                color: Colors.blue,
-                onPressed: () {
-                  _bloc.setTimeToDateTime(
-                      DateTime.now().add(Duration(minutes: 60)));
-                },
-                child: Text('In 60')),
-            FlatButton(
-                color: Colors.blue,
-                onPressed: () {
-                  _bloc.setTimeToDateTime(
-                      DateTime.now().add(Duration(minutes: 90)));
-                },
-                child: Text('In 90')),
-            FlatButton(
-                color: Colors.blue,
-                onPressed: () {
-                  _bloc.setTimeToDateTime(
-                      DateTime.now().add(Duration(minutes: 120)));
-                },
-                child: Text('In 120')),
-          ],
-        ),
-        Wrap(
-          alignment: WrapAlignment.spaceBetween,
-          spacing: 10.0,
-          children: <Widget>[
-            FlatButton(
-                color: Colors.pink,
-                onPressed: () {
-                  _DayButtonClicked(0);
-                },
-                child: Text('Today')),
-            FlatButton(
-                color: Colors.pink,
-                onPressed: () {
-                  _DayButtonClicked(1);
-                },
-                child: Text('Tomorrow'))
-          ],
+        Expanded(
+          flex: 2,
+          child: ListView(
+            itemExtent: 200,
+            scrollDirection: Axis.horizontal,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: 20,
+                  child: OutlineButton(
+                      color: Colors.blueAccent,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        _bloc.setTimeToDateTime(DateTime.now());
+                      },
+                      child: Text('Now!')),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: 20,
+                  child: OutlineButton(
+                      color: Colors.blueAccent,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        _bloc.setTimeToDateTime(
+                            DateTime.now().add(Duration(minutes: 30)));
+                      },
+                      child: Text('In 30!')),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: 20,
+                  child: OutlineButton(
+                      color: Colors.blueAccent,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        _bloc.setTimeToDateTime(
+                            DateTime.now().add(Duration(minutes: 60)));
+                      },
+                      child: Text('in 60!')),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: 20,
+                  child: OutlineButton(
+                      color: Colors.blueAccent,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        _bloc.setTimeToDateTime(
+                            DateTime.now().add(Duration(minutes: 90)));
+                      },
+                      child: Text('in 90!')),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: 20,
+                  child: OutlineButton(
+                      color: Colors.blueAccent,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        _bloc.setTimeToDateTime(
+                            DateTime.now().add(Duration(minutes: 120)));
+                      },
+                      child: Text('in 120!')),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: 20,
+                  child: OutlineButton(
+                      color: Colors.blueAccent,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        _DayButtonClicked(0);
+                      },
+                      child: Text('Today!')),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: 20,
+                  child: OutlineButton(
+                      color: Colors.blueAccent,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        _DayButtonClicked(1);
+                      },
+                      child: Text('Tomorrow!')),
+                ),
+              ),
+
+            ],
+          ),
         ),
       ],
     );
@@ -316,7 +369,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
           ),
         ),
         Expanded(
-         // color: Colors.red,
+          // color: Colors.red,
           child: ListView.builder(
               shrinkWrap: true,
               itemCount: _placesList.length,
@@ -341,7 +394,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
     _bloc.increment();
     DateTime todaySelectedDateTime;
 
-     showTimePicker(
+    showTimePicker(
       initialTime: TimeOfDay.now(),
       context: context,
     ).then((time) {
@@ -366,8 +419,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   }
 
   void _sendEvent(List userList) async {
-   await _bloc.setInvitedUserList(userList);
-    print( userList);
+    await _bloc.setInvitedUserList(userList);
+    print(userList);
     await _bloc.createEvent();
   }
 
@@ -376,7 +429,6 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
 
 // Find the Scaffold in the widget tree and use it to show a SnackBar.
     _scaffoldKey.currentState.showSnackBar(snackBar);
-
   }
 }
 
@@ -397,7 +449,8 @@ class WrapItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => SidekickTeamBuilder.of<User>(context).move(user),
       child: Padding(
-          padding: const EdgeInsets.all(2.0), child: Material(child: UserBubble(user: user))),
+          padding: const EdgeInsets.all(2.0),
+          child: Material(child: UserBubble(user: user))),
     );
   }
 
