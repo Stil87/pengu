@@ -91,6 +91,10 @@ class Repository {
 
   Future<void> signOutFirebaseAuth() => _userAuthProvider.signOutFirebaseAuth();
 
+  ///reset user password using mail
+
+  resetPassword(String email)=>_userAuthProvider.resetPassword(email);
+
   /*--------------GOOGLE----------------------*/
 
   ///method to sign in user to Firebase.Auth with google account

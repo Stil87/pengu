@@ -89,6 +89,14 @@ class LoginBloc {
     return userId;
   }
 
+  ///reset the password
+  ///
+
+  Future resetUserPassword() {
+    // _repository.resetPassword(emailAddress);
+    print(emailAddress);
+  }
+
   Future _addUserToFirestoreColletion() async {
     FirebaseUser firebaseUser = await _repository.getCurrentFirebaseUser();
     User user = await _repository.createUserWithFirebaseUser(firebaseUser);

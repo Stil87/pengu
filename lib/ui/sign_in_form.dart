@@ -41,6 +41,8 @@ class _SignInFormState extends State<SignInForm> {
         submitButton(),
         Container(margin: EdgeInsets.only(top: 5.0, bottom: 5.0)),
         googleButton(),
+        Container(margin: EdgeInsets.only(top: 50.0, bottom: 5.0)),
+        resetPasswordButton(),
       ],
     );
   }
@@ -103,6 +105,68 @@ class _SignInFormState extends State<SignInForm> {
         ),
       ),
     );
+  }
+
+  Widget resetPasswordButton() {
+    return Container(
+      child: GestureDetector(
+        child: Text('forgot password?'),
+        onTap: () {
+          print('pusked');
+          String email = '';
+
+          return launchEmailChanger(context, email);
+        },
+      ),
+    );
+  }
+
+  launchEmailChanger(BuildContext context, String email) {
+    //set up the alerts buttons
+    Widget cancelButton = FlatButton(
+        onPressed: () {
+          return Navigator.pop(context);
+        },
+        child: Text('Nay!'));
+
+    Widget sendButton = FlatButton(
+        onPressed: () {
+          _bloc.resetUserPassword();
+          return Navigator.pop(context);
+        },
+        child: Text('Send!'));
+    //New FirebaseAuth user
+    Widget textField = SizedBox(
+      height: 150,
+      width: 220,
+      child: TextField(
+        decoration: InputDecoration(labelText: email),
+        onChanged: _bloc.changeEmail,
+      ),
+    );
+
+    //set up the alertDialog
+    AlertDialog alertDialog = AlertDialog(
+      title: Text('Reset your password'),
+      content: Text('Enter your mail address and we will send you a new password'),
+      actions: <Widget>[
+        Column(
+          children: <Widget>[
+            textField,
+            Row(
+              children: <Widget>[cancelButton, sendButton],
+            )
+          ],
+        ),
+      ],
+    );
+
+    //show the dialog
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alertDialog;
+        });
   }
 
   Widget submitButton() {

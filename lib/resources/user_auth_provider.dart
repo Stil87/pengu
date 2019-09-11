@@ -133,6 +133,12 @@ class UserAuthProvider {
     return await _firebaseAuth.signOut();
   }
 
+  /// method to reset user Password
+
+  Future<void> resetPassword(String email) async {
+    await _firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+
   /*User Auth Firebase with GOOGLE*/
 
   ///method to sign in user to Firebase.Auth with google account returning the FirebaseAuth user id
