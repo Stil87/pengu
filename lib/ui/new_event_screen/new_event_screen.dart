@@ -303,7 +303,6 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       child: Text('Tomorrow!')),
                 ),
               ),
-
             ],
           ),
         ),
@@ -345,6 +344,11 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   _createPlaceFinder() {
     return Column(
       children: <Widget>[
+        Container(color: Colors.redAccent,
+          child: Image(height: 10,
+            image: AssetImage("assets/images/powered_google.png"),
+          ),
+        ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Wrap(
