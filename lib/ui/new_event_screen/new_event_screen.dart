@@ -328,8 +328,9 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
       nameList = NameList().nameListOne;
     } else if (num == 2) {
       nameList = NameList().nameList2;
-    }else {
-    nameList = NameList().activityList;}
+    } else {
+      nameList = NameList().activityList;
+    }
     return Expanded(
       flex: 1,
       child: Padding(
@@ -339,8 +340,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
               shrinkWrap: true,
               itemCount: nameList.length,
               itemBuilder: (_, index) => ListTile(
-                    onTap: () => _bloc.addToThreeWordNameList(
-                        name: nameList[index]),
+                    onTap: () =>
+                        _bloc.addToThreeWordNameList(name: nameList[index]),
                     title: Text(nameList[index]),
                   )),
         ),
@@ -360,7 +361,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
         ),
         Align(
           alignment: Alignment.bottomCenter,
-          child: Wrap(
+          child: Wrap(runAlignment: WrapAlignment.spaceBetween,
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.my_location),
@@ -377,7 +378,21 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
               IconButton(
                 icon: Icon(Icons.local_cafe),
                 onPressed: () => _updatePlacesList('Cafe'),
-              )
+              ),
+              IconButton(
+                icon: Icon(Icons.movie),
+                onPressed: () => _updatePlacesList('Movies'),
+              ),
+              IconButton(
+                icon: Icon(Icons.pool),
+                onPressed: () => _updatePlacesList('swimming pool'),
+              ),
+              IconButton(
+                  icon: Icon(Icons.local_florist),
+                  onPressed: () => _updatePlacesList('parks')),
+              IconButton(
+                  icon: Icon(Icons.local_see),
+                  onPressed: () => _updatePlacesList('attractions')),
             ],
           ),
         ),
