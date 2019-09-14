@@ -62,7 +62,7 @@ class _DashboardScreenMyEventsContainerState
         child: CircularProgressIndicator(),
       );
     } else if (events == null || events.length == 0) {
-      return Text('No events yet');
+      return Container(alignment: Alignment.center,child: Text('No events yet'));
     } else {
       return ListView.builder(
           scrollDirection: Axis.vertical,

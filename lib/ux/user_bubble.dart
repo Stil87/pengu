@@ -28,23 +28,20 @@ class _UserBubbleState extends State<UserBubble>
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 1.5, right: 1.5),
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            SizedBox(height: 16.0,child: Text(_getName())),
-            // Text(widget.user.firstName),
-            Container(
-                child: CircleAvatar(
-                    backgroundColor: _setColor(),
-                    minRadius: 33.0,
-                    child: CircleAvatar(
-                        minRadius: 26.0,
-                        maxRadius: 29.0,
-                        backgroundImage: getProfileImage(widget.user)))),
-          ],
-        ),
+    return Container(color: Colors.blueAccent,
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 16.0,child: Text(_getName())),
+          // Text(widget.user.firstName),
+          Container(
+              child: CircleAvatar(
+                  backgroundColor: _setColor(),
+                  minRadius: 33.0,
+                  child: CircleAvatar(
+                      minRadius: 26.0,
+                      maxRadius: 29.0,
+                      backgroundImage: getProfileImage(widget.user)))),
+        ],
       ),
     );
   }

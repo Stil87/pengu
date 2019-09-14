@@ -60,8 +60,9 @@ class NewEventBloc {
   }
 
   increment() {
+    if(current <= 2 ) {
     _counter.add(current + 1);
-    print(_counter.value);
+    print(_counter.value);}
   }
 
   decrement() {

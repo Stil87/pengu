@@ -41,7 +41,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.blueAccent,
         key: _scaffoldKey,
         appBar: AppBar(),
         body: StreamBuilder<Object>(
@@ -68,15 +68,15 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                     scrollDirection: Axis.horizontal,
                                     itemCount: snapshot.data.length,
                                     itemBuilder: (_, index) {
-                                      return Card(
-                                        child: Text(snapshot.data[index]),
+                                      return Container(height: 10,alignment: Alignment.center,
+                                        child: Text(snapshot.data[index], style: TextStyle(fontSize: 20),),
                                       );
                                     }),
                               );
                             }
 
                             return Expanded(
-                                child: Text('We need a funny name!'));
+                                child: Container(color: Colors.blueAccent,alignment: Alignment.center,child: Text('We need a funny name!')));
                           }),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -122,7 +122,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         ),
                       ),
                       if (snapshot.data == 0) ...[
-                        Expanded(flex: 2, child: _createNameFinderRow())
+                        Expanded(flex: 2, child: Container(color: Colors.blueAccent,child:_createNameFinderRow()))
                       ],
                       if (snapshot.data == 1) ...[
                         Expanded(flex: 2, child: _createPlaceFinder())
@@ -166,24 +166,26 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         padding: const EdgeInsets.all(8.0),
                         child: Stack(
                           children: <Widget>[
+                            if (snapshot.data != 3)...[
                             Padding(
                               padding: const EdgeInsets.only(
                                   bottom: 20.0, right: 30.0),
                               child: Align(
                                   alignment: Alignment.bottomRight,
-                                  child: FloatingActionButton(
+                                  child: FloatingActionButton(backgroundColor: Colors.blue,child: Icon(Icons.arrow_forward),
                                       heroTag: 0,
                                       onPressed: () => _bloc.increment())),
-                            ),
+                            )],
+                            if (snapshot.data != 0)...[
                             Padding(
                               padding: const EdgeInsets.only(
                                   bottom: 20.0, left: 30.0),
                               child: Align(
                                   alignment: Alignment.bottomLeft,
-                                  child: FloatingActionButton(
+                                  child: FloatingActionButton(backgroundColor: Colors.blue, child: Icon(Icons.arrow_back),
                                       heroTag: 1,
                                       onPressed: () => _bloc.decrement())),
-                            ),
+                            ),]
                           ],
                         ),
                       )
