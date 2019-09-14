@@ -314,15 +314,22 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
     return Container(
       child: Row(
         children: <Widget>[
-          _createNameFinder(),
-          _createNameFinder(),
-          _createNameFinder()
+          _createNameFinder(1),
+          _createNameFinder(2),
+          _createNameFinder(0)
         ],
       ),
     );
   }
 
-  _createNameFinder() {
+  _createNameFinder(int num) {
+    List nameList;
+    if (num == 1) {
+      nameList = NameList().nameListOne;
+    } else if (num == 2) {
+      nameList = NameList().nameList2;
+    }else {
+    nameList = NameList().activityList;}
     return Expanded(
       flex: 1,
       child: Padding(
@@ -330,11 +337,11 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
         child: Container(
           child: ListView.builder(
               shrinkWrap: true,
-              itemCount: NameList().nameList.length,
+              itemCount: nameList.length,
               itemBuilder: (_, index) => ListTile(
                     onTap: () => _bloc.addToThreeWordNameList(
-                        name: NameList().nameList[index]),
-                    title: Text(NameList().nameList[index]),
+                        name: nameList[index]),
+                    title: Text(nameList[index]),
                   )),
         ),
       ),
@@ -344,8 +351,10 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   _createPlaceFinder() {
     return Column(
       children: <Widget>[
-        Container(color: Colors.redAccent,
-          child: Image(height: 10,
+        Container(
+          color: Colors.redAccent,
+          child: Image(
+            height: 10,
             image: AssetImage("assets/images/powered_google.png"),
           ),
         ),
