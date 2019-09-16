@@ -62,7 +62,15 @@ class _DashboardScreenMyEventsContainerState
         child: CircularProgressIndicator(),
       );
     } else if (events == null || events.length == 0) {
-      return Container(alignment: Alignment.center,child: Text('No events yet'));
+      return Container(alignment: Alignment.center,child:Column(
+        children: <Widget>[
+          Text('No events...'),
+          Padding(
+            padding: const EdgeInsets.only(top:28.0),
+            child: Icon(Icons.dashboard),
+          ),
+        ],
+      ));
     } else {
       return ListView.builder(
           scrollDirection: Axis.vertical,

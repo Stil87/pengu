@@ -26,6 +26,7 @@ class EventExistingBloc {
 
   void launchMapsUrl(String placeId, String placeName) async {
     placeName = placeName.replaceAll(' ', "");
+    
     print('launchMap tapped');
     final url =
         'https://www.google.com/maps/search/?api=1&query=$placeName&query_place_id=$placeId';

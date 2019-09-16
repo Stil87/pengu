@@ -50,7 +50,7 @@ class _RootScreenState extends State<RootScreen> {
                       stream: _bloc.streamUserPersonalFriendsObjectList(
                           currentUserID: user))
                 ],
-                child: Scaffold(
+                child: Scaffold(backgroundColor: Colors.blueAccent,
                   appBar: AppBar(
                     actions: <Widget>[
                       IconButton(

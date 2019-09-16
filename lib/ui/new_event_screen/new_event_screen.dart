@@ -41,7 +41,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.blueAccent,
+    return Scaffold(
+        backgroundColor: Colors.blueAccent,
         key: _scaffoldKey,
         appBar: AppBar(),
         body: StreamBuilder<Object>(
@@ -68,15 +69,23 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                     scrollDirection: Axis.horizontal,
                                     itemCount: snapshot.data.length,
                                     itemBuilder: (_, index) {
-                                      return Container(height: 10,alignment: Alignment.center,
-                                        child: Text(snapshot.data[index], style: TextStyle(fontSize: 20),),
+                                      return Container(
+                                        height: 10,
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          snapshot.data[index],
+                                          style: TextStyle(fontSize: 20),
+                                        ),
                                       );
                                     }),
                               );
                             }
 
                             return Expanded(
-                                child: Container(color: Colors.blueAccent,alignment: Alignment.center,child: Text('We need a funny name!')));
+                                child: Container(
+                                    color: Colors.blueAccent,
+                                    alignment: Alignment.center,
+                                    child: Text('We need a funny name!')));
                           }),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -122,7 +131,11 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         ),
                       ),
                       if (snapshot.data == 0) ...[
-                        Expanded(flex: 2, child: Container(color: Colors.blueAccent,child:_createNameFinderRow()))
+                        Expanded(
+                            flex: 2,
+                            child: Container(
+                                color: Colors.blueAccent,
+                                child: _createNameFinderRow()))
                       ],
                       if (snapshot.data == 1) ...[
                         Expanded(flex: 2, child: _createPlaceFinder())
@@ -166,26 +179,32 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         padding: const EdgeInsets.all(8.0),
                         child: Stack(
                           children: <Widget>[
-                            if (snapshot.data != 3)...[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 20.0, right: 30.0),
-                              child: Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: FloatingActionButton(backgroundColor: Colors.blue,child: Icon(Icons.arrow_forward),
-                                      heroTag: 0,
-                                      onPressed: () => _bloc.increment())),
-                            )],
-                            if (snapshot.data != 0)...[
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 20.0, left: 30.0),
-                              child: Align(
-                                  alignment: Alignment.bottomLeft,
-                                  child: FloatingActionButton(backgroundColor: Colors.blue, child: Icon(Icons.arrow_back),
-                                      heroTag: 1,
-                                      onPressed: () => _bloc.decrement())),
-                            ),]
+                            if (snapshot.data != 3) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 20.0, right: 30.0),
+                                child: Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: FloatingActionButton(
+                                        backgroundColor: Colors.blue,
+                                        child: Icon(Icons.arrow_forward),
+                                        heroTag: 0,
+                                        onPressed: () => _bloc.increment())),
+                              )
+                            ],
+                            if (snapshot.data != 0) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 20.0, left: 30.0),
+                                child: Align(
+                                    alignment: Alignment.bottomLeft,
+                                    child: FloatingActionButton(
+                                        backgroundColor: Colors.blue,
+                                        child: Icon(Icons.arrow_back),
+                                        heroTag: 1,
+                                        onPressed: () => _bloc.decrement())),
+                              ),
+                            ]
                           ],
                         ),
                       )
@@ -352,64 +371,121 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   }
 
   _createPlaceFinder() {
+    double size = 35;
     return Column(
       children: <Widget>[
         Container(
-          color: Colors.redAccent,
           child: Image(
-            height: 10,
+            height: 15,
             image: AssetImage("assets/images/powered_google.png"),
           ),
         ),
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Wrap(runAlignment: WrapAlignment.spaceBetween,
+        Expanded(
+          child: ListView(
+            //runAlignment: WrapAlignment.spaceBetween,
+            scrollDirection: Axis.horizontal, itemExtent: 70,
             children: <Widget>[
               IconButton(
-                icon: Icon(Icons.my_location),
+                icon: Icon(
+                  Icons.my_location,
+                  size: size,
+                ),
                 onPressed: () => _updatePlacesList('My location'),
               ),
               IconButton(
-                icon: Icon(Icons.restaurant),
+                icon: Icon(
+                  Icons.restaurant,
+                  size: size,
+                ),
                 onPressed: () => _updatePlacesList('Restaurant'),
               ),
               IconButton(
-                icon: Icon(Icons.local_bar),
+                icon: Icon(
+                  Icons.local_bar,
+                  size: size,
+                ),
                 onPressed: () => _updatePlacesList('Bar'),
               ),
               IconButton(
-                icon: Icon(Icons.local_cafe),
+                icon: Icon(
+                  Icons.local_cafe,
+                  size: size,
+                ),
                 onPressed: () => _updatePlacesList('Cafe'),
               ),
               IconButton(
-                icon: Icon(Icons.movie),
+                icon: Icon(
+                  Icons.movie,
+                  size: size,
+                ),
                 onPressed: () => _updatePlacesList('Movies'),
               ),
               IconButton(
-                icon: Icon(Icons.pool),
+                icon: Icon(
+                  Icons.pool,
+                  size: size,
+                ),
                 onPressed: () => _updatePlacesList('swimming pool'),
               ),
               IconButton(
-                  icon: Icon(Icons.local_florist),
+                  icon: Icon(
+                    Icons.local_florist,
+                    size: size,
+                  ),
                   onPressed: () => _updatePlacesList('parks')),
               IconButton(
-                  icon: Icon(Icons.local_see),
+                  icon: Icon(
+                    Icons.local_see,
+                    size: size,
+                  ),
                   onPressed: () => _updatePlacesList('attractions')),
             ],
           ),
         ),
         Expanded(
+          flex: 3,
           // color: Colors.red,
           child: ListView.builder(
               shrinkWrap: true,
               itemCount: _placesList.length,
               itemBuilder: (_, index) => ListTile(
-                  onTap: () => _bloc.addPlace(_placesList[index]),
-                  leading: Image(image: NetworkImage(_placesList[index].icon)),
-                  title: Text(_placesList[index].name))),
+                    onTap: () => _bloc.addPlace(_placesList[index]),
+                    //onLongPress: _bloc.,
+                    leading: Image(
+                      image: NetworkImage(
+                        _placesList[index].icon,
+                      ),
+                      height: 25,
+                    ),
+                    title: Text(_placesList[index].name),
+                    subtitle: Row(
+                      children: <Widget>[
+                        Text(_getOpeninghours(_placesList[index])),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 15.0),
+                          child: Text(_getVicinity(_placesList[index])),
+                        ),
+                      ],
+                    ),
+                  )),
         )
       ],
     );
+  }
+
+  String _getOpeninghours(PlacesSearchResult result) {
+    String open;
+    if (result.openingHours != null && result.openingHours.openNow) {
+      return open = 'Open now';
+    } else
+      return open = 'closed';
+  }
+
+  String _getVicinity(PlacesSearchResult result) {
+    String vicinity = 'so close';
+    if (result.vicinity != null) {
+      return result.vicinity;
+    }else  return vicinity;
   }
 
   _updatePlacesList(String place) async {
