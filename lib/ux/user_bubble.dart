@@ -33,7 +33,7 @@ class _UserBubbleState extends State<UserBubble>
         children: <Widget>[
           SizedBox(height: 16.0,child: Text(_getName())),
           // Text(widget.user.firstName),
-          Container(
+          Container(color: Colors.blueAccent,
               child: CircleAvatar(
                   backgroundColor: _setColor(),
                   minRadius: 33.0,

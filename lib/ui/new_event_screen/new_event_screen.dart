@@ -168,7 +168,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                 _sendEvent(
                                     SidekickTeamBuilder.of(context).targetList);
                                 _showSnackbar();
-                                Navigator.pop(context);
+                               return Navigator.pop(context);
                               },
                               child: Icon(Icons.send),
                             ),
@@ -214,6 +214,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   }
 
   _createTimeFinder() {
+    double height = 30;
+    double fontSize = 20;
     return Column(
       children: <Widget>[
         Expanded(
@@ -225,7 +227,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
-                  height: 20,
+                  height: height,
                   child: OutlineButton(
                       color: Colors.blueAccent,
                       shape: new RoundedRectangleBorder(
@@ -233,13 +235,13 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       onPressed: () {
                         _bloc.setTimeToDateTime(DateTime.now());
                       },
-                      child: Text('Now!')),
+                      child: Text('Now!',style: TextStyle(fontSize: fontSize),),),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
-                  height: 20,
+                  height: height,
                   child: OutlineButton(
                       color: Colors.blueAccent,
                       shape: new RoundedRectangleBorder(
@@ -248,13 +250,13 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         _bloc.setTimeToDateTime(
                             DateTime.now().add(Duration(minutes: 30)));
                       },
-                      child: Text('In 30!')),
+                      child: Text('In 30!',style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
-                  height: 20,
+                  height: height,
                   child: OutlineButton(
                       color: Colors.blueAccent,
                       shape: new RoundedRectangleBorder(
@@ -263,13 +265,13 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         _bloc.setTimeToDateTime(
                             DateTime.now().add(Duration(minutes: 60)));
                       },
-                      child: Text('in 60!')),
+                      child: Text('in 60!',style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
-                  height: 20,
+                  height: height,
                   child: OutlineButton(
                       color: Colors.blueAccent,
                       shape: new RoundedRectangleBorder(
@@ -278,13 +280,13 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         _bloc.setTimeToDateTime(
                             DateTime.now().add(Duration(minutes: 90)));
                       },
-                      child: Text('in 90!')),
+                      child: Text('in 90!',style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
-                  height: 20,
+                  height: height,
                   child: OutlineButton(
                       color: Colors.blueAccent,
                       shape: new RoundedRectangleBorder(
@@ -293,13 +295,13 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         _bloc.setTimeToDateTime(
                             DateTime.now().add(Duration(minutes: 120)));
                       },
-                      child: Text('in 120!')),
+                      child: Text('in 120!',style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
-                  height: 20,
+                  height: height,
                   child: OutlineButton(
                       color: Colors.blueAccent,
                       shape: new RoundedRectangleBorder(
@@ -307,13 +309,13 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       onPressed: () {
                         _DayButtonClicked(0);
                       },
-                      child: Text('Today!')),
+                      child: Text('Today!',style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(20.0),
                 child: Container(
-                  height: 20,
+                  height: height,
                   child: OutlineButton(
                       color: Colors.blueAccent,
                       shape: new RoundedRectangleBorder(
@@ -321,7 +323,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       onPressed: () {
                         _DayButtonClicked(1);
                       },
-                      child: Text('Tomorrow!')),
+                      child: Text('Tomorrow!',style: TextStyle(fontSize: fontSize))),
                 ),
               ),
             ],
@@ -555,8 +557,8 @@ class WrapItem extends StatelessWidget {
     return GestureDetector(
       onTap: () => SidekickTeamBuilder.of<User>(context).move(user),
       child: Padding(
-          padding: const EdgeInsets.all(2.0),
-          child: Material(child: UserBubble(user: user))),
+          padding: const EdgeInsets.all(5.0),
+          child: Material(color:Colors.blueAccent,child: UserBubble(user: user))),
     );
   }
 
