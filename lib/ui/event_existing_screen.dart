@@ -46,12 +46,16 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
               _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Column(
-                children: <Widget>[
-                  Text('Deleted or no Data!?'),
-                  CircularProgressIndicator(),
-                ],
+
+              return Container(alignment: Alignment.bottomCenter,
+                child: Column(
+                  children: <Widget>[
+                    Text('Deleted or no Data!?'),
+                    CircularProgressIndicator(),
+                  ],
+                ),
               );
+
             }
             User inviter = snapshot.data.invitedUserObjectList.firstWhere(
                 (user) =>
@@ -84,10 +88,13 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             height: 100.0,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Row(
+                              child: Row(mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   _getInviterBubble(inviter),
-                                  Text(snapshot.data.eventName),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 25.0),
+                                    child: Text(snapshot.data.eventName,style: TextStyle(fontSize: 20),),
+                                  ),
                                 ],
                               ),
                             )),
@@ -97,7 +104,15 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               snapshot.data.eventPlace.placeName),
                           child: SizedBox(
                             height: 50.0,
-                            child: Text(snapshot.data.eventPlace.placeName),
+                            child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(snapshot.data.eventPlace.placeName, style: TextStyle(fontSize: 20),),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10.0),
+                                  child: Icon(Icons.location_on),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                         Container(

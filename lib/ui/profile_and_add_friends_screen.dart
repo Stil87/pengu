@@ -21,7 +21,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.blueAccent,
       key: _scaffoldKey,
       appBar: AppBar(),
       body: StreamBuilder<List<User>>(
@@ -42,11 +42,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     onTap: () =>
                                         _launchProfilePictureChangeAlert(
                                             context, userId),
-                                    child: UserBubble(user: snapshot.data)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(left:25.0),
+                                      child: UserBubble(user: snapshot.data),
+                                    )),
                               ),
                               GestureDetector(
                                 onTap: () => launchNameChanger(_, userId),
-                                child: Text(snapshot.data.firstName),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 35.0),
+                                  child: Text(snapshot.data.firstName, style: TextStyle(fontSize: 20),),
+                                ),
                               )
                             ],
                           );
@@ -57,8 +63,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       height: 50.0,
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: Container(
-                            color: Colors.blue, child: Text('Your Friends')),
+                        child: Container(alignment: Alignment.center,
+
+                          child: Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
+                                child: Text('Your Friends',style: TextStyle(fontSize: 15),),
+                              ),
+                              Container(color: Colors.black,height: 1,)
+                            ],
+                          ),
+                        ),
                       )),
                   StreamBuilder<List<User>>(
                       stream: _bloc.getUserFriendsList(userId),
@@ -330,7 +346,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     AlertDialog alertDialog = AlertDialog(
       title: Text('We love your name!'),
       content: Text('Do u wanna change your profile name?'),
-      actions: <Widget>[ textField, cancelButton],
+      actions: <Widget>[ Row(children: <Widget>[textField, cancelButton],)],
     );
 
     //show the dialog

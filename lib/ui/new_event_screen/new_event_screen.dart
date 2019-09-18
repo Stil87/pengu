@@ -479,7 +479,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
 
   String _getOpeninghours(PlacesSearchResult result) {
     String open;
-    if (result.openingHours != null && result.openingHours.openNow) {
+    if (result != null && result.openingHours != null && result.openingHours.openNow) {
       return open = 'Open now';
     } else
       return open = 'closed';
@@ -487,7 +487,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
 
   String _getVicinity(PlacesSearchResult result) {
     String vicinity = 'so close';
-    if (result.vicinity != null) {
+    if (result != null && result.vicinity != null) {
       return result.vicinity;
     }else  return vicinity;
   }
