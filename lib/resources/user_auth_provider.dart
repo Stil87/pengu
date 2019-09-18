@@ -17,8 +17,10 @@ class UserAuthProvider {
 
   Future<String> signInFirebaseAuthWithEmail(
       {String email, String password}) async {
-    FirebaseUser user = await _firebaseAuth.signInWithEmailAndPassword(
+    FirebaseUser user;
+    AuthResult result= await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
+    user =  result.user;
     return user.uid;
   }
 
@@ -27,8 +29,10 @@ class UserAuthProvider {
 
   Future<String> signUpFirebaseAuthWithEmail(
       {String email, String password}) async {
-    FirebaseUser user = await _firebaseAuth.createUserWithEmailAndPassword(
+    FirebaseUser user;
+    AuthResult result = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
+    user = result.user;
     return user.uid;
   }
 
@@ -196,8 +200,10 @@ class UserAuthProvider {
 
   static Future<String> signInWithGoogleCredential(
       {AuthCredential credential}) async {
-    FirebaseUser user =
+    FirebaseUser user;
+    AuthResult result =
         await FirebaseAuth.instance.signInWithCredential(credential);
+    user = result.user;
     return user.uid;
   }
 

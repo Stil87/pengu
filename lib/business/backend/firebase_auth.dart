@@ -9,19 +9,25 @@ enum authProblems { UserNotFound, PasswordNotValid, NetworkError, UnknownError }
 
 class Auth {
   static Future<String> signIn(String email, String password) async {
-    FirebaseUser user = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    FirebaseUser user;
+    AuthResult result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    user= result.user;
     return user.uid;
   }
 
   static Future<String> signInWithGoogle(AuthCredential credential) async {
-    FirebaseUser user =
+    FirebaseUser user;
+    AuthResult result=
     await FirebaseAuth.instance.signInWithCredential(credential);
+    user = result.user;
     return user.uid;
   }
 
   static Future<String> signUp(String email, String password) async {
-    FirebaseUser user = await FirebaseAuth.instance
+    FirebaseUser user;
+    AuthResult result = await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password);
+    user = result.user;
     return user.uid;
   }
 
