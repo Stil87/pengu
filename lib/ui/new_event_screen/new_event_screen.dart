@@ -477,17 +477,25 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
     );
   }
 
-  String _getOpeninghours(PlacesSearchResult result) {
+  String _getOpeninghours(PlacesSearchResult results) {
+    print(results.name);
+    print(results.openingHours.openNow);
+    print(results.vicinity);
     String open;
-    if (result != null && result.openingHours != null && result.openingHours.openNow) {
-      return open = 'Open now';
+    PlacesSearchResult result = results;
+    if (result.openingHours != null && result.openingHours.openNow != null && result.openingHours.openNow) {
+       open = 'Open now';
+       return open;
     } else
-      return open = 'closed';
+       open = 'closed';
+    return open;
   }
 
-  String _getVicinity(PlacesSearchResult result) {
+  String _getVicinity(PlacesSearchResult results) {
     String vicinity = 'so close';
-    if (result != null && result.vicinity != null) {
+    PlacesSearchResult result = results;
+
+    if (result.vicinity != null ) {
       return result.vicinity;
     }else  return vicinity;
   }

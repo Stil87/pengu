@@ -62,7 +62,7 @@ class _UserBubbleState extends State<UserBubble>
   _setColor() {
     String status = widget.user.eventRequestStatus;
     if (status == '') {
-      return Colors.black;
+      return Colors.white;
     } else if (status == 'in' || status == 'inviter') {
       return Colors.green;
     } else if (status == 'out') {
@@ -70,7 +70,7 @@ class _UserBubbleState extends State<UserBubble>
     } else if (status == 'there' || status == 'inviterThere') {
       return Colors.tealAccent;
     } else {
-      return Colors.black;
+      return Colors.white;
     }
   }
 
