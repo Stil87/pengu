@@ -75,6 +75,16 @@ class EventExistingBloc {
           userID: user.userID, roomID: event.roomId, event: event);
       print('event created');
     });
+
+
+// correct the status string for the snaackbar alert for user with inviter status
+    if (status == 'inviter') {
+      status = 'in';
+    } else if (status == 'inviterThere') {
+      status = 'there';
+    }
+
+
 return status;
 
   }
