@@ -241,7 +241,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                 .length) ...[
                           SizedBox(
                             height: 85.0,
-                            child: FloatingActionButton(
+                            child: FloatingActionButton(child: Icon(Icons.send),
                                 onPressed: () => _bloc
                                         .forwardEventToAddedFriend(
                                             snapshot.data,
