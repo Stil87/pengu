@@ -22,6 +22,7 @@ class EventExistingScreen extends StatefulWidget {
 class _EventExistingScreenState extends State<EventExistingScreen> {
   EventExistingBloc _bloc = EventExistingBloc();
   Color _backgroundColor = Colors.blueAccent;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -38,15 +39,14 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
     }
 
     // TODO: implement build
-    return Scaffold(
+    return Scaffold(key: _scaffoldKey,
       backgroundColor: _backgroundColor,
       appBar: AppBar(),
       body: StreamBuilder<Event>(
           stream:
-              _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
+          _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-
               return Container(alignment: Alignment.bottomCenter,
                 child: Column(
                   children: <Widget>[
@@ -55,11 +55,10 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                   ],
                 ),
               );
-
             }
             User inviter = snapshot.data.invitedUserObjectList.firstWhere(
-                (user) =>
-                    user.eventRequestStatus == 'inviter' ||
+                    (user) =>
+                user.eventRequestStatus == 'inviter' ||
                     user.eventRequestStatus == 'inviterThere');
             User currentUser = snapshot.data.invitedUserObjectList
                 .firstWhere((user) => user.userID == widget.currentUserID);
@@ -76,6 +75,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                 .where((user) => user.eventRequestStatus == '')
                 .toList();
 
+
             return SidekickTeamBuilder(
                 initialTargetList: _userInvitedList,
                 initialSourceList: widget._friendList,
@@ -88,25 +88,30 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             height: 100.0,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   _getInviterBubble(inviter),
                                   Padding(
                                     padding: const EdgeInsets.only(left: 25.0),
-                                    child: Text(snapshot.data.eventName,style: TextStyle(fontSize: 20),),
+                                    child: Text(snapshot.data.eventName,
+                                      style: TextStyle(fontSize: 20),),
                                   ),
                                 ],
                               ),
                             )),
                         GestureDetector(
-                          onTap: () => _bloc.launchMapsUrl(
-                              snapshot.data.eventPlace.placeId,
-                              snapshot.data.eventPlace.placeName),
+                          onTap: () =>
+                              _bloc.launchMapsUrl(
+                                  snapshot.data.eventPlace.placeId,
+                                  snapshot.data.eventPlace.placeName),
                           child: SizedBox(
                             height: 50.0,
-                            child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text(snapshot.data.eventPlace.placeName, style: TextStyle(fontSize: 20),),
+                                Text(snapshot.data.eventPlace.placeName,
+                                  style: TextStyle(fontSize: 20),),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10.0),
                                   child: Icon(Icons.location_on),
@@ -141,8 +146,9 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                           scrollDirection: Axis.horizontal,
                                           itemCount: _userThereList.length,
                                           shrinkWrap: true,
-                                          itemBuilder: (_, index) => UserBubble(
-                                              user: _userThereList[index])),
+                                          itemBuilder: (_, index) =>
+                                              UserBubble(
+                                                  user: _userThereList[index])),
                                     ),
                                   )
                                 ],
@@ -181,8 +187,9 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                       scrollDirection: Axis.horizontal,
                                       itemCount: _userOutList.length,
                                       shrinkWrap: true,
-                                      itemBuilder: (_, index) => UserBubble(
-                                          user: _userOutList[index])),
+                                      itemBuilder: (_, index) =>
+                                          UserBubble(
+                                              user: _userOutList[index])),
                                 )
                               ],
                             ),
@@ -197,19 +204,20 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             children: targetBuilderDelegates
-                                .map((builderDelegate) => builderDelegate.build(
-                                      context,
-                                      WrapItem(
-                                        widget._friendList,
-                                        builderDelegate.message,
-                                        false,
-                                      ),
-                                      animationBuilder: (animation) =>
-                                          CurvedAnimation(
+                                .map((builderDelegate) =>
+                                builderDelegate.build(
+                                  context,
+                                  WrapItem(
+                                    widget._friendList,
+                                    builderDelegate.message,
+                                    false,
+                                  ),
+                                  animationBuilder: (animation) =>
+                                      CurvedAnimation(
                                         parent: animation,
                                         curve: FlippedCurve(Curves.ease),
                                       ),
-                                    ))
+                                ))
                                 .toList(),
                           ),
                         ),
@@ -221,37 +229,41 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               scrollDirection: Axis.horizontal,
                               children: sourceBuilderDelegates
                                   .map((builderDelegate) =>
-                                      builderDelegate.build(
-                                        context,
-                                        WrapItem(widget._friendList,
-                                            builderDelegate.message, true),
-                                        animationBuilder: (animation) =>
-                                            CurvedAnimation(
+                                  builderDelegate.build(
+                                    context,
+                                    WrapItem(widget._friendList,
+                                        builderDelegate.message, true),
+                                    animationBuilder: (animation) =>
+                                        CurvedAnimation(
                                           parent: animation,
                                           curve: Curves.ease,
                                         ),
-                                      ))
+                                  ))
                                   .toList(),
                             ),
                           )
                         ],
                         if (_userInvitedList.length <
-                            SidekickTeamBuilder.of<User>(context)
+                            SidekickTeamBuilder
+                                .of<User>(context)
                                 .targetList
                                 .length) ...[
                           SizedBox(
                             height: 85.0,
                             child: FloatingActionButton(child: Icon(Icons.send),
-                                onPressed: () => _bloc
+                                onPressed: () =>
+                                    _bloc
                                         .forwardEventToAddedFriend(
-                                            snapshot.data,
-                                            SidekickTeamBuilder.of<User>(
-                                                    context)
-                                                .targetList)
+                                        snapshot.data,
+                                        SidekickTeamBuilder
+                                            .of<User>(
+                                            context)
+                                            .targetList)
                                         .whenComplete(() {
                                       List<User> _toRemove = [];
                                       if (widget._friendList.isNotEmpty) {
-                                        SidekickTeamBuilder.of<User>(context)
+                                        SidekickTeamBuilder
+                                            .of<User>(context)
                                             .targetList
                                             .forEach((invitedUser) {
                                           widget._friendList
@@ -265,22 +277,25 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
 
                                         setState(() {
                                           widget._friendList.removeWhere(
-                                              (user) =>
+                                                  (user) =>
                                                   _toRemove.contains(user));
                                         });
                                       }
                                     })),
                           )
-                        ] else ...[
-                          SizedBox(
-                              height: 85.0,
-                              child: GestureDetector(
-                                  onTap: () => _bloc.changeEventRequestStatus(
-                                      snapshot.data,
-                                      widget.currentUserID,
-                                      inviter.userID),
-                                  child: UserBubble(user: currentUser)))
-                        ],
+                        ] else
+                          ...[
+                            SizedBox(
+                                height: 85.0,
+                                child: GestureDetector(
+                                    onTap: () =>
+                                        _changeEventRequestStatus(
+                                            snapshot.data,
+                                            widget.currentUserID,
+                                            inviter.userID,
+                                            currentUser.eventRequestStatus),
+                                    child: UserBubble(user: currentUser)))
+                          ],
                         if (inviter.userID == currentUser.userID) ...[
                           _deleteIconButton(context, widget.event)
                         ]
@@ -290,6 +305,15 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                 });
           }),
     );
+  }
+
+  _changeEventRequestStatus(Event event, String currentUserId, String inviterId,
+      String currentUserEventRequestStatus) async {
+    await _bloc.changeEventRequestStatus(event, currentUserId, inviterId).then((
+        status) {
+      _launchStatusSnackbar(status);
+    });
+
   }
 
   _getInviterBubble(User inviter) {
@@ -334,14 +358,18 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
           return alertDialog;
         });
   }
+
+  void _launchStatusSnackbar(String eventRequestStatus) {
+    final snackyBar = SnackBar(content: Text('You are $eventRequestStatus'));
+
+    _scaffoldKey.currentState.showSnackBar(snackyBar);
+  }
 }
 
 class WrapItem extends StatelessWidget {
-  const WrapItem(
-    this.userList,
-    this.user,
-    this.isSource,
-  ) : size = isSource ? 40.0 : 70.0;
+  const WrapItem(this.userList,
+      this.user,
+      this.isSource,) : size = isSource ? 40.0 : 70.0;
 
   final bool isSource;
   final double size;

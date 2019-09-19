@@ -64,11 +64,11 @@ class _UserBubbleState extends State<UserBubble>
     if (status == '') {
       return Colors.white;
     } else if (status == 'in' || status == 'inviter') {
-      return Colors.green;
+      return Colors.green[500];
     } else if (status == 'out') {
-      return Colors.red[100];
+      return Colors.red[900];
     } else if (status == 'there' || status == 'inviterThere') {
-      return Colors.tealAccent;
+      return Colors.cyanAccent;
     } else {
       return Colors.white;
     }

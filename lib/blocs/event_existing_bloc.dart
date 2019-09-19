@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/user.dart';
 import 'package:peng_u/resources/repository.dart';
@@ -37,7 +38,7 @@ class EventExistingBloc {
     }
   }
 
-  Future changeEventRequestStatus(
+  Future<String> changeEventRequestStatus(
       Event event, String currentUserId, String inviterId) async {
     User _oldCurrentUser = event.invitedUserObjectList
         .firstWhere((user) => user.userID == currentUserId);
@@ -74,5 +75,9 @@ class EventExistingBloc {
           userID: user.userID, roomID: event.roomId, event: event);
       print('event created');
     });
+return status;
+
   }
+
+
 }

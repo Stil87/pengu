@@ -194,6 +194,15 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                         onPressed: () => _bloc.increment())),
                               )
                             ],
+                           /* if (snapshot.data == 3) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 20.0, right: 30.0),
+                                child: Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Checkbox()),
+                              )
+                            ],*/
                             if (snapshot.data != 0) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
