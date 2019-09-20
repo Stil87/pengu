@@ -64,8 +64,14 @@ class _EventCardState extends State<EventCard> {
           ),
         ),
         Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(event.eventPlace.placeName)),
+          padding: const EdgeInsets.all(8.0),
+          child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                event.eventPlace.placeName,
+                // style: TextStyle(fontSize: 20),
+              )),
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

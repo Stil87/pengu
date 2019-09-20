@@ -8,8 +8,6 @@ import 'package:peng_u/utils/name_list.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 import 'package:rxdart/rxdart.dart';
 
-
-
 class NewEventScreenPlay extends StatefulWidget {
   final List _friendsList;
 
@@ -117,8 +115,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                               return Column(
                                 children: <Widget>[
                                   Text(_getDate(snap.data)),
-                                  Text(TimeOfDay.fromDateTime(
-                                      snap.data)
+                                  Text(TimeOfDay.fromDateTime(snap.data)
                                       .format(context)),
                                 ],
                               );
@@ -355,6 +352,21 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                           style: TextStyle(fontSize: fontSize))),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Container(
+                  height: height,
+                  child: OutlineButton(
+                      color: Colors.blueAccent,
+                      shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(30.0)),
+                      onPressed: () {
+                        _dateTimePicker();
+                      },
+                      child: Text('some time',
+                          style: TextStyle(fontSize: fontSize))),
+                ),
+              ),
             ],
           ),
         ),
@@ -414,9 +426,11 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
         Padding(
           padding: const EdgeInsets.all(10.0),
           child: TextField(
-              decoration: InputDecoration(hintText: 'type in location or use buttons'),textAlign: TextAlign.center,
-              onSubmitted: (string) => _updatePlacesList(string),
-            ),
+            decoration:
+                InputDecoration(hintText: 'type in location or use buttons'),
+            textAlign: TextAlign.center,
+            onSubmitted: (string) => _updatePlacesList(string),
+          ),
         ),
         Expanded(
           child: ListView(
@@ -510,6 +524,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
       ],
     );
   }
+
   String _getDate(DateTime dateTime) {
     var time = dateTime;
     var formatter = new DateFormat('yyyy-MM-dd');
@@ -525,12 +540,13 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
       formatted = 'Today';
     }
     if (dateToCheck == yesterday) {
-      formatted =  'Yesterday';
+      formatted = 'Yesterday';
     }
     if (dateToCheck == tomorrow) {
       formatted = 'tomorrow';
-    } else{
-      formatted = formatted.toString();}
+    } else {
+      formatted = formatted.toString();
+    }
     return formatted;
   }
 
@@ -586,6 +602,27 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
       }
       if (todaySelectedDateTime.isAfter(DateTime.now())) {
         _bloc.setTimeToDateTime(todaySelectedDateTime);
+      } else {
+        final snackBar = SnackBar(content: Text('Travelling back in Time?!'));
+        _scaffoldKey.currentState.showSnackBar(snackBar);
+        _bloc.decrement();
+      }
+    });
+  }
+
+  _dateTimePicker() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now().add(Duration(days: 1)),
+            firstDate: DateTime.now(),
+            lastDate: DateTime.now().add(Duration(days: 700)))
+        .then((date) {
+      if (date.isAfter(DateTime.now())) {
+        showTimePicker(context: context, initialTime: TimeOfDay.now())
+            .then((time) {
+              DateTime combinedTime = DateTime(date.year,date.month,date.day, time.hour,time.minute);
+              _bloc.setTimeToDateTime(combinedTime);
+        });
       } else {
         final snackBar = SnackBar(content: Text('Travelling back in Time?!'));
         _scaffoldKey.currentState.showSnackBar(snackBar);

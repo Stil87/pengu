@@ -107,9 +107,11 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text(
-                                  snapshot.data.eventPlace.placeName,
-                                  style: TextStyle(fontSize: 20),
+                                FittedBox(fit: BoxFit.fitWidth,
+                                  child: Text(
+                                    snapshot.data.eventPlace.placeName,
+
+                                  ),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 10.0),

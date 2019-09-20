@@ -116,7 +116,7 @@ class NameList {
 
   List<String> activityList = [
     'thing',
-    'love'
+    'love',
     'dinner',
     'lunch',
     'breakfast',
