@@ -5,6 +5,7 @@ import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/user.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
 import 'dashboard_screen/dashboard_screen.dart';
 
@@ -86,22 +87,16 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                     child: Column(
                       children: <Widget>[
                         SizedBox(
-                            height: 100.0,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  _getInviterBubble(inviter),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 25.0),
-                                    child: Text(
-                                      snapshot.data.eventName,
-                                      style: TextStyle(fontSize: 20),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            height: 130.0,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                _getInviterBubble(inviter),
+                                Text(
+                                  snapshot.data.eventName,
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
                             )),
                         GestureDetector(
                           onTap: () => _bloc.launchMapsUrl(
@@ -128,13 +123,20 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             height: 50.0,
                             child: Padding(
                               padding: const EdgeInsets.all(2.0),
-                              child: Text(snapshot.data.dateTime.toString()),
+                              child: Column(
+                                children: <Widget>[
+                                  Text(_getDate(snapshot.data.dateTime)),
+                                  Text(TimeOfDay.fromDateTime(
+                                          snapshot.data.dateTime)
+                                      .format(context)),
+                                ],
+                              ),
                             )),
                         Padding(
                           padding: const EdgeInsets.all(1.0),
                           child: Container(
                             height: 1.0,
-                            color: Colors.black,
+                            color: Colors.blue[700],
                           ),
                         ),
                         if (_userThereList.length > 0) ...[
@@ -157,8 +159,10 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                             scrollDirection: Axis.horizontal,
                                             itemCount: _userThereList.length,
                                             shrinkWrap: true,
-                                            itemBuilder: (_, index) => UserBubble(
-                                                user: _userThereList[index])),
+                                            itemBuilder: (_, index) =>
+                                                UserBubble(
+                                                    user:
+                                                        _userThereList[index])),
                                       ),
                                     ),
                                   ),
@@ -166,7 +170,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                     padding: const EdgeInsets.all(5.0),
                                     child: Container(
                                       height: 1.0,
-                                      color: Colors.black,
+                                      color: Colors.blue[700],
                                     ),
                                   ),
                                 ],
@@ -191,8 +195,8 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                         scrollDirection: Axis.horizontal,
                                         itemCount: _userInList.length,
                                         shrinkWrap: true,
-                                        itemBuilder: (_, index) =>
-                                            UserBubble(user: _userInList[index])),
+                                        itemBuilder: (_, index) => UserBubble(
+                                            user: _userInList[index])),
                                   ),
                                 )
                               ],
@@ -201,7 +205,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                           Padding(
                             padding: const EdgeInsets.all(1.0),
                             child: Container(
-                              color: Colors.black,
+                              color: Colors.blue[700],
                               height: 1,
                             ),
                           ),
@@ -230,7 +234,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                 Padding(
                                   padding: const EdgeInsets.all(5.0),
                                   child: Container(
-                                    color: Colors.black,
+                                    color: Colors.blue[700],
                                     height: 1,
                                   ),
                                 ),
@@ -241,7 +245,10 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                         if (_userInvitedList.length > 0) ...[
                           Padding(
                             padding: const EdgeInsets.all(5.0),
-                            child: Text('invited people',style: TextStyle(fontSize: 20),),
+                            child: Text(
+                              'invited people',
+                              style: TextStyle(fontSize: 20),
+                            ),
                           )
                         ],
                         SizedBox(
@@ -406,6 +413,30 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
     );
 
     _scaffoldKey.currentState.showSnackBar(snackyBar);
+  }
+
+  String _getDate(DateTime dateTime) {
+    var time = dateTime;
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String formatted = formatter.format(time);
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    final dateToCheck = DateTime(time.year, time.month, time.day);
+
+    if (dateToCheck == today) {
+      formatted = 'Today';
+    }
+    if (dateToCheck == yesterday) {
+      formatted =  'Yesterday';
+    }
+    if (dateToCheck == tomorrow) {
+      formatted = 'tomorrow';
+    } else{
+      formatted = formatted.toString();}
+    return formatted;
   }
 }
 

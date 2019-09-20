@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sidekick/flutter_sidekick.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:intl/intl.dart';
 import 'package:peng_u/blocs/event_new_bloc.dart';
 import 'package:peng_u/model/user.dart';
 import 'package:peng_u/utils/name_list.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 import 'package:rxdart/rxdart.dart';
 
-///Penis
+
 
 class NewEventScreenPlay extends StatefulWidget {
   final List _friendsList;
@@ -113,7 +114,14 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                               return Container();
                             }
                             if (snap.hasData) {
-                              return Text(snap.data.toString());
+                              return Column(
+                                children: <Widget>[
+                                  Text(_getDate(snap.data)),
+                                  Text(TimeOfDay.fromDateTime(
+                                      snap.data)
+                                      .format(context)),
+                                ],
+                              );
                             }
                           }),
                       Expanded(
@@ -140,7 +148,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                 child: _createNameFinderRow()))
                       ],
                       if (snapshot.data == 1) ...[
-                        Expanded(flex: 2, child: _createPlaceFinder())
+                        Expanded(flex: 4, child: _createPlaceFinder())
                       ],
                       if (snapshot.data == 2) ...[
                         Expanded(flex: 2, child: _createTimeFinder())
@@ -170,7 +178,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                 _sendEvent(
                                     SidekickTeamBuilder.of(context).targetList);
                                 _showSnackbar();
-                               return Navigator.pop(context);
+                                return Navigator.pop(context);
                               },
                               child: Icon(Icons.send),
                             ),
@@ -194,7 +202,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                         onPressed: () => _bloc.increment())),
                               )
                             ],
-                           /* if (snapshot.data == 3) ...[
+                            /* if (snapshot.data == 3) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 20.0, right: 30.0),
@@ -240,13 +248,17 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                 child: Container(
                   height: height,
                   child: OutlineButton(
-                      color: Colors.blueAccent,
-                      shape: new RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(30.0)),
-                      onPressed: () {
-                        _bloc.setTimeToDateTime(DateTime.now());
-                      },
-                      child: Text('Now!',style: TextStyle(fontSize: fontSize),),),
+                    color: Colors.blueAccent,
+                    shape: new RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(30.0)),
+                    onPressed: () {
+                      _bloc.setTimeToDateTime(DateTime.now());
+                    },
+                    child: Text(
+                      'Now!',
+                      style: TextStyle(fontSize: fontSize),
+                    ),
+                  ),
                 ),
               ),
               Padding(
@@ -261,7 +273,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         _bloc.setTimeToDateTime(
                             DateTime.now().add(Duration(minutes: 30)));
                       },
-                      child: Text('In 30!',style: TextStyle(fontSize: fontSize))),
+                      child:
+                          Text('In 30!', style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
@@ -276,7 +289,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         _bloc.setTimeToDateTime(
                             DateTime.now().add(Duration(minutes: 60)));
                       },
-                      child: Text('in 60!',style: TextStyle(fontSize: fontSize))),
+                      child:
+                          Text('in 60!', style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
@@ -291,7 +305,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         _bloc.setTimeToDateTime(
                             DateTime.now().add(Duration(minutes: 90)));
                       },
-                      child: Text('in 90!',style: TextStyle(fontSize: fontSize))),
+                      child:
+                          Text('in 90!', style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
@@ -306,7 +321,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         _bloc.setTimeToDateTime(
                             DateTime.now().add(Duration(minutes: 120)));
                       },
-                      child: Text('in 120!',style: TextStyle(fontSize: fontSize))),
+                      child: Text('in 120!',
+                          style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
@@ -320,7 +336,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       onPressed: () {
                         _DayButtonClicked(0);
                       },
-                      child: Text('Today!',style: TextStyle(fontSize: fontSize))),
+                      child:
+                          Text('Today!', style: TextStyle(fontSize: fontSize))),
                 ),
               ),
               Padding(
@@ -334,7 +351,8 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                       onPressed: () {
                         _DayButtonClicked(1);
                       },
-                      child: Text('Tomorrow!',style: TextStyle(fontSize: fontSize))),
+                      child: Text('Tomorrow!',
+                          style: TextStyle(fontSize: fontSize))),
                 ),
               ),
             ],
@@ -392,6 +410,13 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
             height: 15,
             image: AssetImage("assets/images/powered_google.png"),
           ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: TextField(
+              decoration: InputDecoration(hintText: 'type in location or use buttons'),textAlign: TextAlign.center,
+              onSubmitted: (string) => _updatePlacesList(string),
+            ),
         ),
         Expanded(
           child: ListView(
@@ -485,18 +510,41 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
       ],
     );
   }
+  String _getDate(DateTime dateTime) {
+    var time = dateTime;
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String formatted = formatter.format(time);
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    final dateToCheck = DateTime(time.year, time.month, time.day);
+
+    if (dateToCheck == today) {
+      formatted = 'Today';
+    }
+    if (dateToCheck == yesterday) {
+      formatted =  'Yesterday';
+    }
+    if (dateToCheck == tomorrow) {
+      formatted = 'tomorrow';
+    } else{
+      formatted = formatted.toString();}
+    return formatted;
+  }
 
   String _getOpeninghours(PlacesSearchResult results) {
-    print(results.name);
-    print(results.openingHours.openNow);
-    print(results.vicinity);
     String open;
     PlacesSearchResult result = results;
-    if (result.openingHours != null && result.openingHours.openNow != null && result.openingHours.openNow) {
-       open = 'Open now';
-       return open;
+    if (result != null &&
+        result.openingHours != null &&
+        result.openingHours.openNow != null &&
+        result.openingHours.openNow) {
+      open = 'Open now';
+      return open;
     } else
-       open = 'closed';
+      open = 'closed';
     return open;
   }
 
@@ -504,9 +552,10 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
     String vicinity = 'so close';
     PlacesSearchResult result = results;
 
-    if (result.vicinity != null ) {
+    if (result.vicinity != null) {
       return result.vicinity;
-    }else  return vicinity;
+    } else
+      return vicinity;
   }
 
   _updatePlacesList(String place) async {
@@ -577,7 +626,8 @@ class WrapItem extends StatelessWidget {
       onTap: () => SidekickTeamBuilder.of<User>(context).move(user),
       child: Padding(
           padding: const EdgeInsets.all(5.0),
-          child: Material(color:Colors.blueAccent,child: UserBubble(user: user))),
+          child: Material(
+              color: Colors.blueAccent, child: UserBubble(user: user))),
     );
   }
 

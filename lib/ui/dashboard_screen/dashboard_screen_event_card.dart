@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:peng_u/blocs/event_card_bloc.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -48,25 +49,32 @@ class _EventCardState extends State<EventCard> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Row(
-
             children: <Widget>[
               _showInviterUserBubble(),
               Padding(
                 padding: const EdgeInsets.only(left: 20.0),
-                child: Text(event.eventName,style: TextStyle(fontSize: 20),),
+                child: FittedBox(
+                    fit: BoxFit.fitWidth,
+                    child: Text(
+                      event.eventName,
+                      // style: TextStyle(fontSize: 20),
+                    )),
               ),
-
             ],
           ),
         ),
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-              event.dateTime.difference(DateTime.now()).inHours.toString()),
-        ),
-        Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(event.eventPlace.placeName)),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: <Widget>[
+              Text(_getDate(event.dateTime)),
+              Text(TimeOfDay.fromDateTime(event.dateTime).format(context)),
+            ],
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
@@ -82,6 +90,31 @@ class _EventCardState extends State<EventCard> {
         )
       ],
     );
+  }
+
+  String _getDate(DateTime dateTime) {
+    var time = dateTime;
+    var formatter = new DateFormat('yyyy-MM-dd');
+    String formatted = formatter.format(time);
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final tomorrow = DateTime(now.year, now.month, now.day + 1);
+    final dateToCheck = DateTime(time.year, time.month, time.day);
+
+    if (dateToCheck == today) {
+      formatted = 'Today';
+    }
+    if (dateToCheck == yesterday) {
+      formatted = 'Yesterday';
+    }
+    if (dateToCheck == tomorrow) {
+      formatted = 'tomorrow';
+    } else {
+      formatted = formatted.toString();
+    }
+    return formatted;
   }
 
   @override

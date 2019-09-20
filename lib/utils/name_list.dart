@@ -1,5 +1,7 @@
 class NameList {
   List<String> nameListOne = [
+    'sexy',
+    'lovely',
     'new',
     'good',
     'high',
@@ -22,11 +24,13 @@ class NameList {
     'real',
     'best',
     'right',
+    'beautiful',
     'social',
     'only',
     'public',
     'sure',
     'low',
+    'pretty',
     'early',
     'able',
     'human',
@@ -56,17 +60,24 @@ class NameList {
     'difficult'
   ];
   List<String> nameList2 = [
+
+    'uniting',
+    'romantic',
     'available',
     'likely',
     'short',
     'single',
     'medical',
     'current',
+    'ugly',
     'wrong',
     'private',
     'past',
     'foreign',
+    'pretty',
     'fine',
+    'populistic',
+    'canlde light',
     'common',
     'poor',
     'natural',
@@ -100,22 +111,29 @@ class NameList {
     'huge',
     'popular',
     'traditional',
-    'ultural'
+    'cultural'
   ];
 
   List<String> activityList = [
+    'thing',
+    'love'
     'dinner',
     'lunch',
     'breakfast',
     'drinking',
     'sexparty',
+    'dancing',
+    'warming',
     'party',
+    'night out',
     'gangbang',
+    'picknick',
     'cafe',
     'beer',
     'talk',
     'gossip',
     'wine',
+    'climate',
     'dolce vita',
     'italian way',
     'clubbing',
@@ -126,7 +144,7 @@ class NameList {
     'gathering',
     'public speech',
     'birthday',
-    'usual day',
+    'day',
     'flirt',
     'shopping',
     'talking',
@@ -137,6 +155,7 @@ class NameList {
     'end',
     'sex',
     'horse riding',
-    'movie'
+    'movie',
+    'strike'
   ];
 }
