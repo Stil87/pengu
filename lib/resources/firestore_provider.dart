@@ -223,6 +223,7 @@ class FirestoreProvider {
       });
     });
   }
+
   /// change user name in firestore collection of the userobject including userfriends
 
   Future setUserNameAllUserandUserFriends(
@@ -286,8 +287,6 @@ class FirestoreProvider {
     });
   }
 
-
-
   ///stream user friends events
   ///
   Stream<List<Event>> streamUserFriendsEvent(String currentUserId) {
@@ -296,22 +295,32 @@ class FirestoreProvider {
         .document(currentUserId)
         .collection(_userPersonalFriendslistCollectionName)
         .snapshots()
-        .map((snap) => snap.documents
-                .map((doc) => User.fromJson(doc.data))
-                .toList()
-                .map((user) {
-              _firestore
-                  .collection(_firestoreCollectionNameAllUsers)
-                  .document(user.userID)
-                  .collection(_userPersonalRoomsListCollectionName)
-                    ..where('dateTime',
-                            isGreaterThanOrEqualTo: Timestamp.fromDate(
-                                DateTime.now().subtract(Duration(hours: 6))))
-                        .orderBy('dateTime', descending: false)
-                        .snapshots()
-                        .map((snap) => snap.documents
-                            .map((doc) => Event.fromFirestore(doc)));
-            }).toList());
+        .map((snap) {
+          print('hdjfhsdjk');
+       snap.documents
+          .map((doc) => User.fromJson(doc.data))
+          .toList()
+          .map((user) {
+        print(
+            'Stream freinds events: mapping of friendslist stream ${user.firstName}');
+         return _firestore
+            .collection(_firestoreCollectionNameAllUsers)
+            .document(user.userID)
+            .collection(_userPersonalRoomsListCollectionName)
+              ..where('dateTime',
+                      isGreaterThanOrEqualTo: Timestamp.fromDate(
+                          DateTime.now().subtract(Duration(hours: 6))))
+                  .orderBy('dateTime', descending: false)
+                  .snapshots()
+                  .map((snap2) {
+                    print('UUUHH ${snap2.documents}');
+                  snap2.documents.forEach((doc) {
+                  print('aahhhaa');
+                 return  Event.fromFirestore(doc);
+                });
+              });
+      });
+    });
 
     /*_firestore
         .collection(_firestoreCollectionNameAllUsers)
@@ -348,10 +357,10 @@ class FirestoreProvider {
   ///updates EventData in  specific room
   ///delete room and event (!! delete in allrooms collection and in each invited users userroomslist )
   ///
-  Future deleteEvent (Event event) async {
-    event.invitedUserObjectList.forEach((user){
+  Future deleteEvent(Event event) async {
+    event.invitedUserObjectList.forEach((user) {
       _firestore
-      .collection(_firestoreCollectionNameAllUsers)
+          .collection(_firestoreCollectionNameAllUsers)
           .document(user.userID)
           .collection(_userPersonalRoomsListCollectionName)
           .document(event.roomId)
