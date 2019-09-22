@@ -48,11 +48,11 @@ class _EventCardState extends State<EventCard> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
+          child: Column(
             children: <Widget>[
               _showInviterUserBubble(),
               Padding(
-                padding: const EdgeInsets.only(left: 20.0),
+                padding: const EdgeInsets.only(top: 5.0),
                 child: FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Text(

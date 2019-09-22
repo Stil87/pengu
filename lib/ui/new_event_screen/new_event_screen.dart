@@ -7,6 +7,7 @@ import 'package:peng_u/model/user.dart';
 import 'package:peng_u/utils/name_list.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 class NewEventScreenPlay extends StatefulWidget {
   final List _friendsList;
@@ -26,12 +27,23 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
   List<User> _friendsList;
   List<PlacesSearchResult> _placesList = [];
   NewEventBloc _bloc = NewEventBloc();
+  bool _keyboardVisibility = false;
 
   @override
   void initState() {
     super.initState();
     _bloc.setZero();
     _friendsList.forEach((user) => print(user.firstName));
+
+    KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        setState(() {
+          print('keyboard $visible');
+          _keyboardVisibility = visible;
+
+        });
+      },
+    );
   }
 
   @override
@@ -191,11 +203,11 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                           )
                         ]*/
                       ],
-                      Padding(
+                      if(_keyboardVisibility == false)...[Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Stack(
                           children: <Widget>[
-                            if (snapshot.data != 3) ...[
+                            if (snapshot.data != 3  ) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 20.0, right: 30.0),
@@ -208,7 +220,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                         onPressed: () => _bloc.increment())),
                               )
                             ],
-                            if (snapshot.data == 3) ...[
+                            if (snapshot.data == 3  ) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
                                     bottom: 20.0, right: 30.0),
@@ -250,7 +262,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                             ]
                           ],
                         ),
-                      )
+                      )],
                     ]);
                   });
             }));
