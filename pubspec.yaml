@@ -45,6 +45,7 @@ dependencies:
   flutter_image_compress: ^0.6.3
   intl: ^0.16.0
   firebase_messaging: ^5.1.6
+  geolocator: ^5.1.3
 
 
 

@@ -138,8 +138,17 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                         ),
                       ),
                       if (snapshot.data == 0) ...[
+                        TextField(
+                          onSubmitted: (v) =>
+                              _bloc.addToThreeWordNameList(name: v),
+                          decoration: InputDecoration(
+                              hintText: 'type in name or use lists below'),
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                      if (snapshot.data == 0) ...[
                         Expanded(
-                            flex: 2,
+                            flex: 3,
                             child: Container(
                                 color: Colors.blueAccent,
                                 child: _createNameFinderRow()))
@@ -168,7 +177,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                 .toList(),
                           ),
                         ),
-                        if (snapshot.data == 3) ...[
+                      /*  if (snapshot.data == 3) ...[
                           Expanded(
                             child: FloatingActionButton(
                               onPressed: () {
@@ -180,7 +189,7 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                               child: Icon(Icons.send),
                             ),
                           )
-                        ]
+                        ]*/
                       ],
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -197,6 +206,24 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
                                         child: Icon(Icons.arrow_forward),
                                         heroTag: 0,
                                         onPressed: () => _bloc.increment())),
+                              )
+                            ],
+                            if (snapshot.data == 3) ...[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                    bottom: 20.0, right: 30.0),
+                                child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: FloatingActionButton(
+                                    onPressed: () {
+                                      _sendEvent(SidekickTeamBuilder.of(context)
+                                          .targetList);
+                                      _showSnackbar();
+                                      return Navigator.pop(context);
+                                    },
+                                    child: Icon(Icons.send),
+                                  ),
+                                ),
                               )
                             ],
                             /* if (snapshot.data == 3) ...[
@@ -620,8 +647,9 @@ class _NewEventScreenPlayState extends State<NewEventScreenPlay> {
       if (date.isAfter(DateTime.now())) {
         showTimePicker(context: context, initialTime: TimeOfDay.now())
             .then((time) {
-              DateTime combinedTime = DateTime(date.year,date.month,date.day, time.hour,time.minute);
-              _bloc.setTimeToDateTime(combinedTime);
+          DateTime combinedTime =
+              DateTime(date.year, date.month, date.day, time.hour, time.minute);
+          _bloc.setTimeToDateTime(combinedTime);
         });
       } else {
         final snackBar = SnackBar(content: Text('Travelling back in Time?!'));

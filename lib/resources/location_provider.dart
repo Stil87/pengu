@@ -1,6 +1,7 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart' as LocationManager;
 import 'package:google_maps_webservice/places.dart';
+import 'package:geolocator/geolocator.dart';
 
 class LocationProvider {
   static const String _googleApiKey = 'AIzaSyCFvSvlS_QGpJdZAUgAWj_fxTtoM_AuM50';
@@ -8,9 +9,9 @@ class LocationProvider {
 
   /// method returns the USers current location as a Future LatLng, On exceptions returns null
 
-  Future<LatLng> getUserLocation() async {
+  /*Future<LatLng> getUserLocation_() async {
     LocationManager.LocationData currentLocation;
-    final location = LocationManager.Location();
+    Location location = LocationManager.Location();
     try {
       currentLocation = await location.getLocation();
       final lat = currentLocation.altitude;
@@ -21,7 +22,17 @@ class LocationProvider {
       currentLocation = null;
       return null;
     }
+  }*/
+
+  Future <LatLng>getUserLocation()async{
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    final lat = position.altitude;
+    final lng = position.longitude;
+    final center = LatLng(lat, lng);
+    return center;
   }
+
+
 
   Future<PlaceDetails> getPlaceById(String id) async {
     PlacesDetailsResponse placeDetailRespond =
@@ -37,7 +48,7 @@ class LocationProvider {
       {String searchString, Location location}) async {
     final _result = await _places.searchByText(
       searchString,
-      location: location,
+      location: location,radius: 0.1
     );
     print('Cost:-----use of PlacesAPI searchByText');
     return _result;
