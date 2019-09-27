@@ -12,11 +12,14 @@ import 'package:peng_u/ux/teambuilder_grouping.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
+import 'blocs/push_notification.dart';
+
 void main() {
   SharedPreferences.getInstance().then((prefs) {
     runApp(PengU(prefs: prefs));
   });
   _setFirestoreTimestamp();
+
 }
 
 Future _setFirestoreTimestamp() async {

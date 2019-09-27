@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:peng_u/blocs/dashboard_bloc.dart';
+import 'package:peng_u/blocs/push_notification.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/user.dart';
 import 'package:peng_u/ui/dashboard_screen/dashboard_screen_event_card.dart';
@@ -22,6 +23,8 @@ class _DashboardScreenMyEventsContainerState
   void initState() {
     super.initState();
     _getCurrentFirebaseUserID();
+
+
   }
 
   _getCurrentFirebaseUserID() {

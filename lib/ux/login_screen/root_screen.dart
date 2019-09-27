@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:peng_u/blocs/dashboard_bloc.dart';
 import 'package:peng_u/blocs/dashboard_bloc_provider.dart';
+import 'package:peng_u/blocs/push_notification.dart';
 import 'package:peng_u/model/event.dart';
 import 'package:peng_u/model/user.dart';
 import 'package:peng_u/old/ui/pengu_control_page_animator.dart';
@@ -38,6 +39,7 @@ class _RootScreenState extends State<RootScreen> {
           );
         } else {
           if (snapshot.hasData) {
+
             var user = snapshot.data.uid;
             return MultiProvider(
                 providers: [

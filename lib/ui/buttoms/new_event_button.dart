@@ -9,15 +9,17 @@ class NewEventButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _friendsList = Provider.of<List<User>>(context);
-    return FloatingActionButton(
-      heroTag: 'newEvent',
-      onPressed: () {
-        Route route = MaterialPageRoute(
-            builder: (context) => NewEventScreenPlay(_friendsList));
-        Navigator.push(context, route);
-      },
-      highlightElevation: 50.0,
-      child: Icon(Icons.local_activity),
+    return Container(
+      child: FloatingActionButton(
+        heroTag: 'newEvent',
+        onPressed: () {
+          Route route = MaterialPageRoute(
+              builder: (context) => NewEventScreenPlay(_friendsList));
+          Navigator.push(context, route);
+        },
+        highlightElevation: 50.0,
+        child: Icon(Icons.local_activity),
+      ),
     );
   }
 }
