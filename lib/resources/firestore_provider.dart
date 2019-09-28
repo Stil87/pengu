@@ -390,6 +390,14 @@ class FirestoreProvider {
         .document(roomID)
         .setData(event.toJson());
   }
+  
+  Future<void> addRoomObjectToRoomCollection (Event event) async {
+    await _firestore
+        .collection(_roomCollectionNameAllRooms)
+        .document(event.roomId)
+        .setData(event.toJson());
+    
+  }
 
   ///changes user commitment in a specific room
 

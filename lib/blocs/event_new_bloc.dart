@@ -165,7 +165,8 @@ class NewEventBloc {
             placeName: pickedPlace.name, placeId: pickedPlace.placeId),
         invitedUserObjectList: invitedUserList,
         roomId: uniqueRoomId);
-    spreadEventToFriends(event);
+    await spreadEventToFriends(event);
+    _repository.addRoomObjectToRoomCollection(event);
   }
 
   Future<void> spreadEventToFriends(Event event) {

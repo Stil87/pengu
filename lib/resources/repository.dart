@@ -243,6 +243,11 @@ class Repository {
       _firestoreProvider.addRoomObjectToUsersPrivateRoomList(
           userID: userID, roomID: roomID, event: event);
 
+  /// method to add the new room to rooms collection at firestore
+
+  Future<void> addRoomObjectToRoomCollection (Event event) async =>
+  _firestoreProvider.addRoomObjectToRoomCollection(event);
+
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(
