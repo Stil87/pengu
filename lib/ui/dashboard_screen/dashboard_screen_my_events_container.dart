@@ -23,6 +23,7 @@ class _DashboardScreenMyEventsContainerState
   void initState() {
     super.initState();
     _getCurrentFirebaseUserID();
+    MessageHandler().createState().initState();
 
 
   }
@@ -30,6 +31,7 @@ class _DashboardScreenMyEventsContainerState
   _getCurrentFirebaseUserID() {
     _bloc.getCurrentUserId().then((val) => setState(() {
           _currentUserId = val;
+
         }));
   }
 

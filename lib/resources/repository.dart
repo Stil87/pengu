@@ -315,4 +315,7 @@ class Repository {
 
   Future<String> uploadUserImage(File image, String userId) async =>
       _firestoreProvider.uploadUserImage(image, userId);
+
+  Future saveUserDeviceToken(String token, String userId)=>
+      _firestoreProvider.saveUserDeviceToken(token, userId);
 }

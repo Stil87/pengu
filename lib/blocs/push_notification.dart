@@ -1,12 +1,18 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:peng_u/resources/repository.dart';
+import 'package:provider/provider.dart';
 
 class MessageHandler extends StatefulWidget {
+
   @override
   _MessageHandlerState createState() => _MessageHandlerState();
+
+
 
 
 }
@@ -14,6 +20,8 @@ class MessageHandler extends StatefulWidget {
 class _MessageHandlerState extends State<MessageHandler> {
   final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
+ final _repository = Repository();
+
 
   ///Todo: cancel subsription
   StreamSubscription iosSubscription;
@@ -31,9 +39,13 @@ class _MessageHandlerState extends State<MessageHandler> {
     print('MessageHandler initState MEthode fires');
     if (Platform.isIOS) {
       print('MessageHandler ios detected ');
-      iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {});
+      iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
+        _saveDeviceToken();
+      });
+      _fcm.requestNotificationPermissions(IosNotificationSettings());
+    } else {
+      _saveDeviceToken();
     }
-    _fcm.requestNotificationPermissions(IosNotificationSettings());
 
     _fcm.configure(
 
@@ -85,5 +97,17 @@ class _MessageHandlerState extends State<MessageHandler> {
   @override
   Widget build(BuildContext context) {
     return Container();
+  }
+
+  void _saveDeviceToken()  async{
+
+  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+
+    String fcmToken = await _fcm.getToken();
+    if (fcmToken != null ) {
+      _repository.saveUserDeviceToken(fcmToken, user.uid);
+
+    }
+
   }
 }

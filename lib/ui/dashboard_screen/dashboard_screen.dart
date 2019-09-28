@@ -17,10 +17,10 @@ class DashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var user = Provider.of<FirebaseUser>(context);
+    var user =  Provider.of<FirebaseUser>(context);
     print('user from provider with: ${user.displayName}');
     _bloc.createNewFirestoreCollectionUser(currentUserId: user.uid);
-    MessageHandler().createState().initState();
+
 
 
     return Column(

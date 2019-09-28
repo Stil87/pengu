@@ -14,6 +14,7 @@ class FirestoreProvider {
   final String _userPersonalFriendIdFieldInDocument = 'userFriendsId';
   final String _roomCollectionNameAllRooms = 'rooms';
   final String _userPersonalRoomsListCollectionName = 'userRooms';
+  final String _userTokenCollection = 'tokens';
 
   /*-----------User friends related firebase provider operation*/
 
@@ -296,14 +297,11 @@ class FirestoreProvider {
         .collection(_userPersonalFriendslistCollectionName)
         .snapshots()
         .map((snap) {
-          print('hdjfhsdjk');
-       snap.documents
-          .map((doc) => User.fromJson(doc.data))
-          .toList()
-          .map((user) {
+      print('hdjfhsdjk');
+      snap.documents.map((doc) => User.fromJson(doc.data)).toList().map((user) {
         print(
             'Stream freinds events: mapping of friendslist stream ${user.firstName}');
-         return _firestore
+        return _firestore
             .collection(_firestoreCollectionNameAllUsers)
             .document(user.userID)
             .collection(_userPersonalRoomsListCollectionName)
@@ -313,10 +311,10 @@ class FirestoreProvider {
                   .orderBy('dateTime', descending: false)
                   .snapshots()
                   .map((snap2) {
-                    print('UUUHH ${snap2.documents}');
-                  snap2.documents.forEach((doc) {
+                print('UUUHH ${snap2.documents}');
+                snap2.documents.forEach((doc) {
                   print('aahhhaa');
-                 return  Event.fromFirestore(doc);
+                  return Event.fromFirestore(doc);
                 });
               });
       });
@@ -390,13 +388,12 @@ class FirestoreProvider {
         .document(roomID)
         .setData(event.toJson());
   }
-  
-  Future<void> addRoomObjectToRoomCollection (Event event) async {
+
+  Future<void> addRoomObjectToRoomCollection(Event event) async {
     await _firestore
         .collection(_roomCollectionNameAllRooms)
         .document(event.roomId)
         .setData(event.toJson());
-    
   }
 
   ///changes user commitment in a specific room
@@ -501,5 +498,16 @@ class FirestoreProvider {
     String url = dowurl.toString();
 
     return url;
+  }
+
+  /// save user Devicetoken
+
+  Future saveUserDeviceToken(String token, String userId) {
+    _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(userId)
+        .collection(_userTokenCollection)
+        .document(token)
+        .setData({'token': token, 'platform': Platform.operatingSystem});
   }
 }
