@@ -25,7 +25,11 @@ class _MessageHandlerState extends State<MessageHandler> {
   ///Todo: cancel subsription
   StreamSubscription iosSubscription;
 
-
+  @override
+  void dispose() {
+    if (iosSubscription != null) iosSubscription.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -101,8 +105,10 @@ class _MessageHandlerState extends State<MessageHandler> {
 
   void _saveDeviceToken() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
-
-    String fcmToken = await _fcm.getToken();
+    String fcmToken;
+  try{
+    fcmToken = await _fcm.getToken();}
+    catch (e) {print('getToken e : $e');}
     print ('token: $fcmToken');
     if (fcmToken != null) {
       _repository.saveUserDeviceToken(fcmToken, user.uid);
