@@ -61,9 +61,7 @@ class _RootScreenState extends State<RootScreen> {
                       )
                     ],
                   ),
-                  body:  DashboardBlocProvider(
-                   child: DashboardScreen(),
-                  ),
+                  body:  MessageHandler(),
                 )); //StandardScreen());
           } else {
             return Scaffold(

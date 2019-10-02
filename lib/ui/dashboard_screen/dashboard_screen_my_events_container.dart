@@ -23,7 +23,7 @@ class _DashboardScreenMyEventsContainerState
   void initState() {
     super.initState();
     _getCurrentFirebaseUserID();
-    MessageHandler().createState().initState();
+
 
 
   }

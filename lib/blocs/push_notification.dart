@@ -5,33 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peng_u/resources/repository.dart';
+import 'package:peng_u/ui/dashboard_screen/dashboard_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'dashboard_bloc_provider.dart';
 
 class MessageHandler extends StatefulWidget {
 
+
   @override
   _MessageHandlerState createState() => _MessageHandlerState();
-
-
-
-
 }
 
 class _MessageHandlerState extends State<MessageHandler> {
   final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
- final _repository = Repository();
-
+  final _repository = Repository();
 
   ///Todo: cancel subsription
   StreamSubscription iosSubscription;
 
-  @override
-  void dispose() {
-    super.dispose();
-    print('!!!MessageHandler dispose!!!');
-    //iosSubscription.cancel();
-  }
+
 
   @override
   void initState() {
@@ -39,16 +33,17 @@ class _MessageHandlerState extends State<MessageHandler> {
     print('MessageHandler initState MEthode fires');
     if (Platform.isIOS) {
       print('MessageHandler ios detected ');
+      _fcm.requestNotificationPermissions(IosNotificationSettings());
       iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
+        print('onIOSSettingsregistered $data');
         _saveDeviceToken();
       });
-      _fcm.requestNotificationPermissions(IosNotificationSettings());
+
     } else {
       _saveDeviceToken();
     }
 
     _fcm.configure(
-
       onMessage: (Map<String, dynamic> pushNote) async {
         print('on Message: $pushNote');
         showDialog(
@@ -66,12 +61,15 @@ class _MessageHandlerState extends State<MessageHandler> {
             ],
           ),
         );
+        print('on Message AlerDiolog showed');
       },
       onLaunch: (Map<String, dynamic> pushNote) async {
         print('on Launch: $pushNote');
         final snackBar =
             SnackBar(content: Text(pushNote['notification']['title']));
-        Scaffold.of(context).showSnackBar(snackBar);},
+        Scaffold.of(context).showSnackBar(snackBar);
+        print('on launch AlerDiolog showed');
+      },
       onResume: (Map<String, dynamic> message) async {
         print("onMessage: $message");
         showDialog(
@@ -89,25 +87,25 @@ class _MessageHandlerState extends State<MessageHandler> {
             ],
           ),
         );
+        print('on Resume AlerDiolog showed');
       },
     );
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return DashboardBlocProvider(
+      child: DashboardScreen(),
+    );
   }
 
-  void _saveDeviceToken()  async{
-
-  FirebaseUser user = await FirebaseAuth.instance.currentUser();
+  void _saveDeviceToken() async {
+    FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
     String fcmToken = await _fcm.getToken();
-    if (fcmToken != null ) {
+    print ('token: $fcmToken');
+    if (fcmToken != null) {
       _repository.saveUserDeviceToken(fcmToken, user.uid);
-
     }
-
   }
 }
