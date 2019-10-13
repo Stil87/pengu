@@ -506,8 +506,7 @@ class FirestoreProvider {
     _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(userId)
-        .collection(_userTokenCollection)
-        .document(token)
-        .setData({'token': token, 'platform': Platform.operatingSystem});
+
+        .setData({'userMobileToken': token }, merge: true );
   }
 }

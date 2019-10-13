@@ -25,11 +25,7 @@ class _MessageHandlerState extends State<MessageHandler> {
   ///Todo: cancel subsription
   StreamSubscription iosSubscription;
 
-  @override
-  void dispose() {
-    if (iosSubscription != null) iosSubscription.cancel();
-    super.dispose();
-  }
+
 
   @override
   void initState() {
@@ -46,7 +42,7 @@ class _MessageHandlerState extends State<MessageHandler> {
     } else {
       _saveDeviceToken();
     }
-
+print('push notes if you read this fcm.configure might fire');
     _fcm.configure(
       onMessage: (Map<String, dynamic> pushNote) async {
         print('on Message: $pushNote');
@@ -69,28 +65,12 @@ class _MessageHandlerState extends State<MessageHandler> {
       },
       onLaunch: (Map<String, dynamic> pushNote) async {
         print('on Launch: $pushNote');
-        final snackBar =
-            SnackBar(content: Text(pushNote['notification']['title']));
-        Scaffold.of(context).showSnackBar(snackBar);
+
         print('on launch AlerDiolog showed');
       },
       onResume: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            content: ListTile(
-              title: Text(message['notification']['title']),
-              subtitle: Text(message['notification']['body']),
-            ),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          ),
-        );
+
         print('on Resume AlerDiolog showed');
       },
     );
@@ -105,6 +85,7 @@ class _MessageHandlerState extends State<MessageHandler> {
 
   void _saveDeviceToken() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    print('pushNote - saveDevice token firebase user: ${user.displayName}');
     String fcmToken;
   try{
     fcmToken = await _fcm.getToken();}

@@ -3,13 +3,14 @@ import 'package:peng_u/model/event.dart';
 
 class User {
   final String userID;
-   String firstName;
+  String firstName;
   final String email;
-   String profilePictureURL;
+  String profilePictureURL;
   final List<Event> eventList;
-   String requestStatus;
-   String searchKey;
-   String eventRequestStatus;
+  String requestStatus;
+  String searchKey;
+  String eventRequestStatus;
+  String userMobileToken;
 
   User(
       {this.userID,
@@ -19,7 +20,8 @@ class User {
       this.eventList,
       this.requestStatus,
       this.searchKey,
-      this.eventRequestStatus});
+      this.eventRequestStatus,
+      this.userMobileToken});
 
   Map<String, Object> toJson() {
     return {
@@ -31,7 +33,8 @@ class User {
       'eventList': eventList,
       'requestStatus': requestStatus,
       'searchKey': searchKey ?? 'd',
-      'eventRequestStatus': eventRequestStatus ?? ''
+      'eventRequestStatus': eventRequestStatus ?? '',
+      'userMobileToken': userMobileToken ?? ''
     };
   }
 
@@ -45,7 +48,8 @@ class User {
         profilePictureURL: doc['profilePictureURL'],
         requestStatus: doc['requestStatus'] ?? 'noRequest',
         searchKey: doc['searchKey'] ?? 'd',
-        eventRequestStatus: doc['eventRequestStatus']);
+        eventRequestStatus: doc['eventRequestStatus'],
+        userMobileToken: doc['userMobileToken'] ?? 'defaultToken');
     return user;
   }
 
