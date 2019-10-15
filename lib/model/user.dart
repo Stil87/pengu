@@ -49,7 +49,7 @@ class User {
         requestStatus: doc['requestStatus'] ?? 'noRequest',
         searchKey: doc['searchKey'] ?? 'd',
         eventRequestStatus: doc['eventRequestStatus'],
-        userMobileToken: doc['userMobileToken'] ?? 'defaultToken');
+        userMobileToken: doc['userMobileToken'] ?? '');
     return user;
   }
 

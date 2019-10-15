@@ -60,9 +60,10 @@ class NewEventBloc {
   }
 
   increment() {
-    if(current <= 2 ) {
-    _counter.add(current + 1);
-    print(_counter.value);}
+    if (current <= 2) {
+      _counter.add(current + 1);
+      print(_counter.value);
+    }
   }
 
   decrement() {
@@ -166,7 +167,9 @@ class NewEventBloc {
         invitedUserObjectList: invitedUserList,
         roomId: uniqueRoomId);
     await spreadEventToFriends(event);
-    _repository.addRoomObjectToRoomCollection(event);
+
+    List tokens = _createListofUserTokens(event);
+    _repository.addTokenListToRoomCollection(event, tokens);
   }
 
   Future<void> spreadEventToFriends(Event event) {
@@ -175,5 +178,14 @@ class NewEventBloc {
           userID: user.userID, roomID: event.roomId, event: event);
       print('event created');
     });
+  }
+
+  List<String> _createListofUserTokens(Event event) {
+    List<String> userTokens = [];
+    event.invitedUserObjectList.forEach((user) {
+      if(user.userMobileToken != null)
+      userTokens.add(user.userMobileToken);
+    });
+    return userTokens;
   }
 }

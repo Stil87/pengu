@@ -245,8 +245,8 @@ class Repository {
 
   /// method to add the new room to rooms collection at firestore
 
-  Future<void> addRoomObjectToRoomCollection (Event event) async =>
-  _firestoreProvider.addRoomObjectToRoomCollection(event);
+  Future<void> addTokenListToRoomCollection (Event event, List tokens) async =>
+  _firestoreProvider.addTokenListToRoomCollection(event, tokens);
 
   ///changes user commitment in a specific room
 
