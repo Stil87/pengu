@@ -66,8 +66,8 @@ class UserAuthProvider {
   ///adds FirebaseAut User to firebase storage collection "users" needed user object
 
   Future<void> addUserToFirebaseStoreCollection({User user}) async {
-    checkUserExistInFirestoreCollection(userID: user.userID).then((value) {
-      if (!value) {
+     await checkUserExistInFirestoreCollection(userID: user.userID).then((value) {
+      if (value == false) {
         print("user ${user.firstName} ${user.email} added");
         _firestore.collection('users').document(user.userID).setData(user.toJson());
       } else {
@@ -81,7 +81,7 @@ class UserAuthProvider {
   Future<bool> checkUserExistInFirestoreCollection({String userID}) async {
     bool exists = false;
     try {
-      await _firestore.document("users/$userID").get().then((doc) {
+      await _firestore.collection('users').document(userID).get().then((doc) {
         if (doc.exists)
           exists = true;
         else

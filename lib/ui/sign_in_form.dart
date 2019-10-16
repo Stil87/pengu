@@ -199,9 +199,7 @@ class _SignInFormState extends State<SignInForm> {
 
   void authenticateUserWithGoogle() {
     _bloc.showProgressBar(true);
-    _bloc.signInWithGoogle().then((userId) {
-      print('google sign in with FirebaseAuth User id: $userId');
-    }).catchError((e) {
+    _bloc.signInWithGoogle().catchError((e) {
       _bloc.setSignInStatus(null);
       showErrorMessage(errorMessage: e);
     });

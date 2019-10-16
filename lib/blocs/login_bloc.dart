@@ -40,7 +40,7 @@ class LoginBloc {
   Function(bool) get showProgressBar => _isSignedIn.sink.add;
 
   final _validateEmail =
-      StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
+  StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
     if (email.contains('@')) {
       sink.add(email);
     } else {
@@ -48,7 +48,7 @@ class LoginBloc {
     }
   });
   final _validateName =
-      StreamTransformer<String, String>.fromHandlers(handleData: (name, sink) {
+  StreamTransformer<String, String>.fromHandlers(handleData: (name, sink) {
     if (name.length < 20) {
       sink.add(name);
     } else {
@@ -58,12 +58,12 @@ class LoginBloc {
 
   final _validatePassword = StreamTransformer<String, String>.fromHandlers(
       handleData: (password, sink) {
-    if (password.length > 5) {
-      sink.add(password);
-    } else {
-      sink.addError(StringConstants.passwordValidateMessage);
-    }
-  });
+        if (password.length > 5) {
+          sink.add(password);
+        } else {
+          sink.addError(StringConstants.passwordValidateMessage);
+        }
+      });
 
   ///method signs in FirebaseAuth and returns FirebaseAuth user.id
 
@@ -84,9 +84,11 @@ class LoginBloc {
 
   ///methods sign up with google in FirebaseAuth and returns FirebaseAuth user id
 
-  Future<String> signInWithGoogle() async {
-    String userId = await _repository.signInWithGoogle();
-    return userId;
+  Future signInWithGoogle() async {
+    await _repository.signInWithGoogle().whenComplete(() =>
+        _addUserToFirestoreColletion());
+
+
   }
 
   ///reset the password
@@ -100,7 +102,8 @@ class LoginBloc {
   Future _addUserToFirestoreColletion() async {
     FirebaseUser firebaseUser = await _repository.getCurrentFirebaseUser();
     User user = await _repository.createUserWithFirebaseUser(firebaseUser);
-    user.firstName = _userName.value;
+    if (user.firstName == null || user.firstName == ''){
+    user.firstName = _userName.value;}
     user.searchKey = _userName.value[0];
 
     await _repository.addUserToFirebaseStoreCollection(user);

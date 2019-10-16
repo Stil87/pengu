@@ -93,7 +93,7 @@ class Repository {
 
   ///reset user password using mail
 
-  resetPassword(String email)=>_userAuthProvider.resetPassword(email);
+  resetPassword(String email) => _userAuthProvider.resetPassword(email);
 
   /*--------------GOOGLE----------------------*/
 
@@ -245,8 +245,8 @@ class Repository {
 
   /// method to add the new room to rooms collection at firestore
 
-  Future<void> addTokenListToRoomCollection (Event event, List tokens) async =>
-  _firestoreProvider.addTokenListToRoomCollection(event, tokens);
+  Future<void> addEventDetailsToRoomCollection(Event event, List tokens, User inviter) async =>
+      _firestoreProvider.addEventDetailsToRoomCollection(event, tokens, inviter);
 
   ///changes user commitment in a specific room
 
@@ -316,6 +316,9 @@ class Repository {
   Future<String> uploadUserImage(File image, String userId) async =>
       _firestoreProvider.uploadUserImage(image, userId);
 
-  Future saveUserDeviceToken(String token, String userId)=>
-      _firestoreProvider.saveUserDeviceToken(token, userId);
+  Future spreadUserDeviceToken(String userId, String token, List<User> list) =>
+      _firestoreProvider.spreadUserDeviceToken(userId, token, list);
+
+  Future getUserToken(String userId) async =>
+      _firestoreProvider.getUserToken(userId);
 }

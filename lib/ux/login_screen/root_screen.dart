@@ -39,7 +39,6 @@ class _RootScreenState extends State<RootScreen> {
           );
         } else {
           if (snapshot.hasData) {
-
             var user = snapshot.data.uid;
             return MultiProvider(
                 providers: [
@@ -57,11 +56,13 @@ class _RootScreenState extends State<RootScreen> {
                     actions: <Widget>[
                       IconButton(
                         icon: Icon(Icons.exit_to_app),
-                        onPressed: () => _repository.signOutFirebaseAuth(),
+                        onPressed: () =>
+                            _repository.signOutFirebaseAuth().whenComplete(() =>
+                                _repository.signOutWithGoogle()),
                       )
                     ],
                   ),
-                  body:  MessageHandler(),
+                  body: MessageHandler(),
                 )); //StandardScreen());
           } else {
             return Scaffold(

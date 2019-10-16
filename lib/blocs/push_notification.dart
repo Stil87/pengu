@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:peng_u/model/user.dart';
 import 'package:peng_u/resources/repository.dart';
 import 'package:peng_u/ui/dashboard_screen/dashboard_screen.dart';
 import 'package:provider/provider.dart';
@@ -11,8 +12,6 @@ import 'package:provider/provider.dart';
 import 'dashboard_bloc_provider.dart';
 
 class MessageHandler extends StatefulWidget {
-
-
   @override
   _MessageHandlerState createState() => _MessageHandlerState();
 }
@@ -25,8 +24,6 @@ class _MessageHandlerState extends State<MessageHandler> {
   ///Todo: cancel subsription
   StreamSubscription iosSubscription;
 
-
-
   @override
   void initState() {
     super.initState();
@@ -38,11 +35,10 @@ class _MessageHandlerState extends State<MessageHandler> {
         print('onIOSSettingsregistered $data');
         _saveDeviceToken();
       });
-
     } else {
       _saveDeviceToken();
     }
-print('push notes if you read this fcm.configure might fire');
+    print('push notes if you read this fcm.configure might fire');
     _fcm.configure(
       onMessage: (Map<String, dynamic> pushNote) async {
         print('on Message: $pushNote');
@@ -87,12 +83,27 @@ print('push notes if you read this fcm.configure might fire');
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
     print('pushNote - saveDevice token firebase user: ${user.displayName}');
     String fcmToken;
-  try{
-    fcmToken = await _fcm.getToken();}
-    catch (e) {print('getToken e : $e');}
-    print ('token: $fcmToken');
-    if (fcmToken != null) {
-      _repository.saveUserDeviceToken(fcmToken, user.uid);
+    var oldToken;
+    try {
+      fcmToken = await _fcm.getToken();
+      oldToken = await _repository.getUserToken(user.uid);
+    } catch (e) {
+      print('getToken e : $e');
     }
+    print('token: $fcmToken');
+    if (fcmToken != null && fcmToken != oldToken) {
+      if (await _repository.checkUserExistInFirestoreCollection(user.uid)) {
+        await _spreadUserToken(fcmToken, user.uid);
+      }
+    } else {
+      print('using old token');
+    }
+  }
+
+  Future _spreadUserToken(String token, String userId) async {
+    List<User> friendsList = await _repository
+        .futureUserPersonalFriendsObjectList(currentUserID: userId);
+
+    await _repository.spreadUserDeviceToken(userId, token, friendsList);
   }
 }

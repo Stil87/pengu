@@ -389,11 +389,16 @@ class FirestoreProvider {
         .setData(event.toJson());
   }
 
-  Future<void> addTokenListToRoomCollection(Event event, List tokens) async {
+  Future<void> addEventDetailsToRoomCollection(
+      Event event, List tokens, User inviter) async {
     await _firestore
         .collection(_roomCollectionNameAllRooms)
         .document(event.roomId)
-        .setData({'tokens' : tokens});
+        .setData({
+      'tokens': tokens,
+      'eventName': event.eventName,
+      'inviter': inviter.firstName
+    });
   }
 
   ///changes user commitment in a specific room
@@ -501,12 +506,32 @@ class FirestoreProvider {
   }
 
   /// save user Devicetoken
+  ///
+  /// change user Image in firestore collection of the userobject including userfriends
 
-  Future saveUserDeviceToken(String token, String userId) {
+  Future spreadUserDeviceToken(
+      String userId, String token, List<User> friendsList) async {
     _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(userId)
+        .setData({'userMobileToken': token}, merge: true).whenComplete(() {
+      friendsList.forEach((user) {
+        _firestore
+            .collection(_firestoreCollectionNameAllUsers)
+            .document(user.userID)
+            .collection(_userPersonalFriendslistCollectionName)
+            .document(userId)
+            .setData({'userMobileToken': token}, merge: true);
+      });
+    });
+  }
 
-        .setData({'userMobileToken': token }, merge: true );
+  Future getUserToken(String userId) async {
+    var tokens = await _firestore
+        .collection(_firestoreCollectionNameAllUsers)
+        .document(userId)
+        .get()
+        .then((vale) => vale.data['userMobileToken']);
+    return tokens;
   }
 }

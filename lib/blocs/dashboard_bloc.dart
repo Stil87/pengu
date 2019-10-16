@@ -14,7 +14,8 @@ class DashboardBloc {
       print('user exists already in Firestore Collection');
     } else {
       FirebaseUser firebaseUser = await _repository.getCurrentFirebaseUser();
-      await _repository.createUserWithFirebaseUser(firebaseUser);
+      User user = await _repository.createUserWithFirebaseUser(firebaseUser);
+      await _repository.addUserToFirebaseStoreCollection(user);
       print('user added to firestore user collection');
     }
   }

@@ -139,7 +139,7 @@ class NewEventBloc {
     print(location);
     final locationDummy = Location(48.7643321, 9.1653504);
     var results = await getNearbyPlacesByText(
-            searchString: search, location: locationDummy)
+            searchString: search, location: location)
         .catchError((e) => print('places error : $e'));
 
     return results;
@@ -167,9 +167,9 @@ class NewEventBloc {
         invitedUserObjectList: invitedUserList,
         roomId: uniqueRoomId);
     await spreadEventToFriends(event);
-
+User inviter = getInviter(event);
     List tokens = _createListofUserTokens(event);
-    _repository.addTokenListToRoomCollection(event, tokens);
+    _repository.addEventDetailsToRoomCollection(event, tokens, inviter);
   }
 
   Future<void> spreadEventToFriends(Event event) {
@@ -187,5 +187,10 @@ class NewEventBloc {
       userTokens.add(user.userMobileToken);
     });
     return userTokens;
+  }
+
+  User getInviter(Event event) {
+   User inviter =  event.invitedUserObjectList.firstWhere((user)=> user.eventRequestStatus == 'inviter');
+   return inviter;
   }
 }
