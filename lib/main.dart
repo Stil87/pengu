@@ -64,7 +64,7 @@ class PengU extends StatelessWidget {
     if (seen) {
       return RootScreen();
     } else {
-      return WalkthroughScreen(prefs: prefs);
+      return RootScreen();//WalkthroughScreen(prefs: prefs);
     }
   }
 }
