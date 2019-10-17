@@ -274,7 +274,13 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                     ))
                                 .toList(),
                           ),
-                        ),
+                        ),if (sourceBuilderDelegates.length > 0) ...[Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Text(
+                            'your friends',
+                            style: TextStyle(fontSize: 20),
+                          ),
+                        )],
                         if (sourceBuilderDelegates.length > 0) ...[
                           SizedBox(
                             height: 105.0,

@@ -21,7 +21,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.blueAccent,
+    return Scaffold(
+      backgroundColor: Colors.blueAccent,
       key: _scaffoldKey,
       appBar: AppBar(),
       body: StreamBuilder<List<User>>(
@@ -43,7 +44,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                         _launchProfilePictureChangeAlert(
                                             context, userId),
                                     child: Padding(
-                                      padding: const EdgeInsets.only(left:25.0),
+                                      padding:
+                                          const EdgeInsets.only(left: 25.0),
                                       child: UserBubble(user: snapshot.data),
                                     )),
                               ),
@@ -51,7 +53,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 onTap: () => launchNameChanger(_, userId),
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 35.0),
-                                  child: Text(snapshot.data.firstName, style: TextStyle(fontSize: 20),),
+                                  child: Text(
+                                    snapshot.data.firstName,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
                                 ),
                               )
                             ],
@@ -63,15 +68,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       height: 50.0,
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: Container(alignment: Alignment.center,
-
+                        child: Container(
+                          alignment: Alignment.center,
                           child: Column(
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 8.0),
-                                child: Text('Your Friends',style: TextStyle(fontSize: 15),),
+                                child: Text(
+                                  'Your Friends',
+                                  style: TextStyle(fontSize: 15),
+                                ),
                               ),
-                              Container(color: Colors.black,height: 1,)
+                              Container(
+                                color: Colors.black,
+                                height: 1,
+                              )
                             ],
                           ),
                         ),
@@ -312,7 +323,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     AlertDialog alertDialog = AlertDialog(
       title: Text('You are a beauty!'),
       content: Text('Do u wanna change your profile image?'),
-      actions: <Widget>[cancelButton, gallery, camera],
+      actions: <Widget>[Column(children: <Widget>[cancelButton, gallery, camera],)],
     );
 
     //show the dialog
@@ -331,7 +342,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         },
         child: Text('Nay!'));
     //New FirebaseAuth user
-    Widget textField = SizedBox(height: 150, width: 220,
+    Widget textField = SizedBox(
+      height: 150,
+      width: 220,
       child: TextField(
         decoration: InputDecoration(hintText: 'enter your name'),
         onSubmitted: (v) {
@@ -346,7 +359,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     AlertDialog alertDialog = AlertDialog(
       title: Text('We love your name!'),
       content: Text('Do u wanna change your profile name?'),
-      actions: <Widget>[ Row(children: <Widget>[textField, cancelButton],)],
+      actions: <Widget>[
+        Column(
+          children: <Widget>[
+            textField,
+             cancelButton,
+
+          ],
+        )
+      ],
     );
 
     //show the dialog
