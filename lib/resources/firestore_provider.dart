@@ -232,14 +232,14 @@ class FirestoreProvider {
     _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(userId)
-        .setData({'firstName': changedName}, merge: true).whenComplete(() {
+        .setData({'firstName': changedName, 'searchKey': changedName[0]}, merge: true).whenComplete(() {
       friendsList.forEach((user) {
         _firestore
             .collection(_firestoreCollectionNameAllUsers)
             .document(user.userID)
             .collection(_userPersonalFriendslistCollectionName)
             .document(userId)
-            .setData({'firstName': changedName}, merge: true);
+            .setData({'firstName': changedName,'searchKey': changedName[0]}, merge: true);
       });
     });
   }

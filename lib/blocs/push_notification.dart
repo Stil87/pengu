@@ -46,8 +46,8 @@ class _MessageHandlerState extends State<MessageHandler> {
           context: context,
           builder: (context) => AlertDialog(
             content: ListTile(
-              title: Text(pushNote['notification']['title']),
-              subtitle: Text(pushNote['notification']['body']),
+              title: Text(pushNote['notification']['title'] ?? 'null '),
+              subtitle: Text(pushNote['notification']['body'] ?? 'null'),
             ),
             actions: <Widget>[
               FlatButton(
