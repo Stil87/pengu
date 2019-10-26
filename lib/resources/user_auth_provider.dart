@@ -51,6 +51,7 @@ class UserAuthProvider {
       userID: firebaseUser.uid,
       email: firebaseUser.email ?? '',
       profilePictureURL: firebaseUser.photoUrl ?? '',
+      searchKey: firebaseUser.displayName[0]
     );
     return user;
   }

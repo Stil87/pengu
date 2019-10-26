@@ -101,18 +101,6 @@ class LoginBloc {
   Future _addUserToFirestoreColletion() async {
     FirebaseUser firebaseUser = await _repository.getCurrentFirebaseUser();
     User user = await _repository.createUserWithFirebaseUser(firebaseUser);
-    if (user.firstName == null || user.firstName == '') {
-      if (_userName != null) {
-        user.firstName = _userName.value;
-
-        user.searchKey = _userName.value[0];
-      } else if (firebaseUser.displayName != null) {
-        user.firstName = firebaseUser.displayName;
-
-        user.searchKey = firebaseUser.displayName[0];
-
-      }
-    }
 
     await _repository.addUserToFirebaseStoreCollection(user);
   }
