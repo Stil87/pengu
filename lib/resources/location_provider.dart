@@ -25,7 +25,7 @@ class LocationProvider {
   }*/
 
   Future <LatLng>getUserLocation()async{
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
     final lat = position.altitude;
     final lng = position.longitude;
     final center = LatLng(lat, lng);

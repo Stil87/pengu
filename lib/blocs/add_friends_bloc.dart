@@ -55,8 +55,8 @@ class AddFriendsBloc {
     File image;
     if (sourceId == 1) {
       image = await ImagePicker.pickImage(source: ImageSource.camera);
-    }
-    image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    } else {
+    image = await ImagePicker.pickImage(source: ImageSource.gallery);}
 
     File compressedImage = await FlutterImageCompress.compressAndGetFile(
         image.path, image.path,
