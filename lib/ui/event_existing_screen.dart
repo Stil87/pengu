@@ -316,7 +316,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                             snapshot.data,
                                             SidekickTeamBuilder.of<User>(
                                                     context)
-                                                .targetList)
+                                                .targetList, widget.currentUserID)
                                         .whenComplete(() {
                                       List<User> _toRemove = [];
                                       if (widget._friendList.isNotEmpty) {

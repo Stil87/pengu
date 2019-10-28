@@ -248,6 +248,11 @@ class Repository {
   Future<void> addEventDetailsToRoomCollection(Event event, List tokens, User inviter) async =>
       _firestoreProvider.addEventDetailsToRoomCollection(event, tokens, inviter);
 
+  /// method to forward an existing room in the room collection
+  ///
+  Future<void> addForwardedUserDetailsToRoomInRoomCollection(Event event, List tokens, User forwarder) async =>
+  _firestoreProvider.addForwardedUserDetailsToRoomInRoomCollection(event, tokens, forwarder);
+
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(

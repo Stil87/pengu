@@ -94,6 +94,7 @@ class _MessageHandlerState extends State<MessageHandler> {
     if (fcmToken != null && fcmToken != oldToken) {
       if (await _repository.checkUserExistInFirestoreCollection(user.uid)) {
         await _spreadUserToken(fcmToken, user.uid);
+        print('new token: $fcmToken');
       }
     } else {
       print('using old token');

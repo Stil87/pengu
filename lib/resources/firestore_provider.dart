@@ -389,15 +389,24 @@ class FirestoreProvider {
         .setData(event.toJson());
   }
 
+  Future<void> addForwardedUserDetailsToRoomInRoomCollection(Event event, List tokens, User forwarder) async {
+    await _firestore
+        .collection(_roomCollectionNameAllRooms)
+        .document(event.roomId)
+        .setData({'forwarded' : true, 'forwarder' : forwarder.firstName , 'tokens' : tokens }, merge: true);
+  }
+
   Future<void> addEventDetailsToRoomCollection(
       Event event, List tokens, User inviter) async {
     await _firestore
         .collection(_roomCollectionNameAllRooms)
         .document(event.roomId)
         .setData({
+      'forwarded': false,
       'tokens': tokens,
       'eventName': event.eventName,
-      'inviter': inviter.firstName
+      'inviter': inviter.firstName,
+      'timeStemp': DateTime.now()
     });
   }
 

@@ -11,13 +11,24 @@ class EventExistingBloc {
     await _repository.deleteEvent(event);
   }
 
-  Future forwardEventToAddedFriend(
-      Event event, List<User> extendedUserList) async {
+  Future forwardEventToAddedFriend(Event event, List<User> extendedUserList,
+      String currentUserId) async {
     event.invitedUserObjectList.addAll(extendedUserList);
     event.invitedUserObjectList.forEach((user) async {
       await _repository.addRoomObjectToUsersPrivateRoomList(
           userID: user.userID, roomID: event.roomId, event: event);
       print('event forwarded');
+
+      List<String> tokens = [];
+
+      User forwarder = event.invitedUserObjectList.firstWhere((user)=> user.userID == currentUserId);
+     
+
+      event.invitedUserObjectList.forEach((user) =>
+          tokens.add(user.userMobileToken));
+      await _repository.addForwardedUserDetailsToRoomInRoomCollection(
+          event, tokens, forwarder);
+      print('rooms collection: event forwarded from forwarder: ${forwarder.firstName}');
     });
   }
 
@@ -27,7 +38,7 @@ class EventExistingBloc {
 
   void launchMapsUrl(String placeId, String placeName) async {
     placeName = placeName.replaceAll(' ', "");
-    
+
     print('launchMap tapped');
     final url =
         'https://www.google.com/maps/search/?api=1&query=$placeName&query_place_id=$placeId';
@@ -38,8 +49,8 @@ class EventExistingBloc {
     }
   }
 
-  Future<String> changeEventRequestStatus(
-      Event event, String currentUserId, String inviterId) async {
+  Future<String> changeEventRequestStatus(Event event, String currentUserId,
+      String inviterId) async {
     User _oldCurrentUser = event.invitedUserObjectList
         .firstWhere((user) => user.userID == currentUserId);
 
@@ -85,8 +96,7 @@ class EventExistingBloc {
     }
 
 
-return status;
-
+    return status;
   }
 
 
