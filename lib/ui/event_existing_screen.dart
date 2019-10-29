@@ -392,7 +392,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
     Widget deleteButton = FlatButton(
         child: Text('Delete it'),
         onPressed: () {
-          _bloc.deleteEvent(event);
+          _bloc.deleteEvent(event, widget.currentUserID);
           // Route route =
           // MaterialPageRoute(builder: (context) => DashboardScreen());
           Navigator.pop(context);

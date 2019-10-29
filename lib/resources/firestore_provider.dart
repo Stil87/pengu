@@ -430,6 +430,20 @@ class FirestoreProvider {
     });
   }
 
+  Future<void> deleteEventInformationToRoomCollection(
+      Event event, List tokens, User deleter) async {
+    await _firestore
+        .collection(_roomCollectionNameAllRooms)
+        .document(event.roomId)
+        .setData({
+      'forwarded': 'deleted',
+      'tokens': tokens,
+      'eventName': event.eventName,
+      'deleter': deleter.firstName,
+      'timeStemp': DateTime.now()
+    });
+  }
+
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(

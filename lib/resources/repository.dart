@@ -259,6 +259,11 @@ class Repository {
       Event event, List tokens, User currentUser) async => _firestoreProvider.addUserStatusToRoomInRoomCollection(
       event, tokens, currentUser);
 
+  /// push details to Room collection and let the delete push note fire
+
+  Future<void> deleteEventInformationToRoomCollection(
+      Event event, List tokens, User deleter) async => _firestoreProvider.deleteEventInformationToRoomCollection(event, tokens, deleter);
+
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(

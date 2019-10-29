@@ -7,8 +7,13 @@ import 'package:url_launcher/url_launcher.dart';
 class EventExistingBloc {
   final _repository = Repository();
 
-  Future deleteEvent(Event event) async {
+  Future deleteEvent(Event event, String currentUserId) async {
     await _repository.deleteEvent(event);
+    List<String> tokens = [];
+    event.invitedUserObjectList
+        .forEach((user) => tokens.add(user.userMobileToken));
+    User deleter = event.invitedUserObjectList.firstWhere((user) => user.userID == currentUserId);
+    await _repository.deleteEventInformationToRoomCollection(event, tokens, deleter);
   }
 
   Future forwardEventToAddedFriend(
@@ -88,7 +93,7 @@ class EventExistingBloc {
 
       print('event created');
     });
-    List <String>tokens = [];
+    List<String> tokens = [];
     event.invitedUserObjectList
         .forEach((user) => tokens.add(user.userMobileToken));
 
