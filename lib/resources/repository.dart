@@ -253,6 +253,12 @@ class Repository {
   Future<void> addForwardedUserDetailsToRoomInRoomCollection(Event event, List tokens, User forwarder) async =>
   _firestoreProvider.addForwardedUserDetailsToRoomInRoomCollection(event, tokens, forwarder);
 
+  /// changes the status of current user in Rooms Collectiion document (room) used for push notes
+
+  Future<void> addUserStatusToRoomInRoomCollection(
+      Event event, List tokens, User currentUser) async => _firestoreProvider.addUserStatusToRoomInRoomCollection(
+      event, tokens, currentUser);
+
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(

@@ -232,14 +232,16 @@ class FirestoreProvider {
     _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(userId)
-        .setData({'firstName': changedName, 'searchKey': changedName[0]}, merge: true).whenComplete(() {
+        .setData({'firstName': changedName, 'searchKey': changedName[0]},
+            merge: true).whenComplete(() {
       friendsList.forEach((user) {
         _firestore
             .collection(_firestoreCollectionNameAllUsers)
             .document(user.userID)
             .collection(_userPersonalFriendslistCollectionName)
             .document(userId)
-            .setData({'firstName': changedName,'searchKey': changedName[0]}, merge: true);
+            .setData({'firstName': changedName, 'searchKey': changedName[0]},
+                merge: true);
       });
     });
   }
@@ -389,11 +391,29 @@ class FirestoreProvider {
         .setData(event.toJson());
   }
 
-  Future<void> addForwardedUserDetailsToRoomInRoomCollection(Event event, List tokens, User forwarder) async {
+  Future<void> addForwardedUserDetailsToRoomInRoomCollection(
+      Event event, List tokens, User forwarder) async {
     await _firestore
         .collection(_roomCollectionNameAllRooms)
         .document(event.roomId)
-        .setData({'forwarded' : true, 'forwarder' : forwarder.firstName , 'tokens' : tokens }, merge: true);
+        .setData({
+      'forwarded': true,
+      'forwarder': forwarder.firstName,
+      'tokens': tokens
+    }, merge: true);
+  }
+
+  Future<void> addUserStatusToRoomInRoomCollection(
+      Event event, List tokens, User currentUser) async {
+    await _firestore
+        .collection(_roomCollectionNameAllRooms)
+        .document(event.roomId)
+        .setData({
+      'tokens':tokens,
+      'forwarded' : false,
+      'statusChanger': currentUser.firstName,
+      'statusChange': currentUser.eventRequestStatus
+    }, merge: true);
   }
 
   Future<void> addEventDetailsToRoomCollection(

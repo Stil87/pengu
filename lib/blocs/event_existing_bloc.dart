@@ -11,8 +11,8 @@ class EventExistingBloc {
     await _repository.deleteEvent(event);
   }
 
-  Future forwardEventToAddedFriend(Event event, List<User> extendedUserList,
-      String currentUserId) async {
+  Future forwardEventToAddedFriend(
+      Event event, List<User> extendedUserList, String currentUserId) async {
     event.invitedUserObjectList.addAll(extendedUserList);
     event.invitedUserObjectList.forEach((user) async {
       await _repository.addRoomObjectToUsersPrivateRoomList(
@@ -21,14 +21,15 @@ class EventExistingBloc {
 
       List<String> tokens = [];
 
-      User forwarder = event.invitedUserObjectList.firstWhere((user)=> user.userID == currentUserId);
-     
+      User forwarder = event.invitedUserObjectList
+          .firstWhere((user) => user.userID == currentUserId);
 
-      event.invitedUserObjectList.forEach((user) =>
-          tokens.add(user.userMobileToken));
+      event.invitedUserObjectList
+          .forEach((user) => tokens.add(user.userMobileToken));
       await _repository.addForwardedUserDetailsToRoomInRoomCollection(
           event, tokens, forwarder);
-      print('rooms collection: event forwarded from forwarder: ${forwarder.firstName}');
+      print(
+          'rooms collection: event forwarded from forwarder: ${forwarder.firstName}');
     });
   }
 
@@ -49,8 +50,8 @@ class EventExistingBloc {
     }
   }
 
-  Future<String> changeEventRequestStatus(Event event, String currentUserId,
-      String inviterId) async {
+  Future<String> changeEventRequestStatus(
+      Event event, String currentUserId, String inviterId) async {
     User _oldCurrentUser = event.invitedUserObjectList
         .firstWhere((user) => user.userID == currentUserId);
 
@@ -84,9 +85,12 @@ class EventExistingBloc {
     event.invitedUserObjectList.forEach((user) async {
       await _repository.addRoomObjectToUsersPrivateRoomList(
           userID: user.userID, roomID: event.roomId, event: event);
+
       print('event created');
     });
-
+    List <String>tokens = [];
+    event.invitedUserObjectList
+        .forEach((user) => tokens.add(user.userMobileToken));
 
 // correct the status string for the snaackbar alert for user with inviter status
     if (status == 'inviter') {
@@ -95,9 +99,10 @@ class EventExistingBloc {
       status = 'there';
     }
 
+    _oldCurrentUser.eventRequestStatus = status;
+    await _repository.addUserStatusToRoomInRoomCollection(
+        event, tokens, _oldCurrentUser);
 
     return status;
   }
-
-
 }
