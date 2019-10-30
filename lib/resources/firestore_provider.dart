@@ -15,6 +15,7 @@ class FirestoreProvider {
   final String _roomCollectionNameAllRooms = 'rooms';
   final String _userPersonalRoomsListCollectionName = 'userRooms';
   final String _userTokenCollection = 'tokens';
+  final String _friendRelationsCollection = 'friendsRelation';
 
   /*-----------User friends related firebase provider operation*/
 
@@ -132,9 +133,46 @@ class FirestoreProvider {
               .document(userIdToAdd)
               .collection(_userPersonalFriendslistCollectionName)
               .document(currentUserId)
-              .setData(currentUserSnap.data);
+              .setData(currentUserSnap.data)
+          // push to friendsrelation collection to fire psuh note
+              .whenComplete(() => pushNoteFriendRequest(
+                  User.fromDocument(friendsSnap),
+                  User.fromDocument(currentUserSnap)));
         });
       });
+    });
+  }
+
+  /// push friendRequest to FriendsColletcion to fire push note
+  ///
+  Future<void> pushNoteFriendRequest(
+      User requestedUser, User currentUser) async {
+
+    await _firestore
+        .collection(_friendRelationsCollection)
+        .document()
+        .setData({
+      'kind' : 'request',
+      'timeStemp': DateTime.now(),
+      'requestedFriend': requestedUser.firstName,
+      'token': requestedUser.userMobileToken,
+      'requester': currentUser.firstName
+    });
+  }
+
+  /// push friendAccepts to FriendsColletcion to fire push note
+  ///
+  Future<void> pushNoteFriendAcception(
+      User acceptedUser, User currentUser) async {
+    await _firestore
+        .collection(_friendRelationsCollection)
+        .document()
+        .setData({
+      'kind' : 'acception',
+      'timeStemp': DateTime.now(),
+      'acceptedFriiend': acceptedUser.firstName,
+      'token': acceptedUser.userMobileToken,
+      'requester': currentUser.firstName
     });
   }
 
@@ -409,8 +447,8 @@ class FirestoreProvider {
         .collection(_roomCollectionNameAllRooms)
         .document(event.roomId)
         .setData({
-      'tokens':tokens,
-      'forwarded' : false,
+      'tokens': tokens,
+      'forwarded': false,
       'statusChanger': currentUser.firstName,
       'statusChange': currentUser.eventRequestStatus
     }, merge: true);

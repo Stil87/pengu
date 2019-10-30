@@ -179,6 +179,11 @@ class Repository {
       _firestoreProvider.sendUserFriendshipRequest(
           currentUserId: currentUserId, userIdToAdd: userIdToAdd);
 
+  /// method to send push note if friend requested
+
+  Future<void> pushNoteFriendRequest(User requestedUser, User currentUser  ) async => _firestoreProvider.pushNoteFriendRequest(
+      requestedUser, currentUser);
+
   ///Future that accepts a friendship request an put changes both requestStatus to friend
 
   Future<void> acceptFriendshipRequest(
