@@ -170,7 +170,7 @@ class FirestoreProvider {
         .setData({
       'kind' : 'acception',
       'timeStemp': DateTime.now(),
-      'acceptedFriiend': acceptedUser.firstName,
+      'acceptedFriend': acceptedUser.firstName,
       'token': acceptedUser.userMobileToken,
       'requester': currentUser.firstName
     });
@@ -179,8 +179,8 @@ class FirestoreProvider {
   ///Future that accepts a friendship request an put changes both requestStatus to friend
 
   Future<void> acceptFriendshipRequest(
-      String currentUserId, String userIdToAdd) {
-    return _firestore
+      String currentUserId, String userIdToAdd) async {
+     await _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(currentUserId)
         .collection(_userPersonalFriendslistCollectionName)
@@ -193,6 +193,10 @@ class FirestoreProvider {
           .document(currentUserId)
           .setData({'requestStatus': 'friend'}, merge: true);
     });
+    User currentUser =await getUserFromFirestoreCollectionFuture(userID: currentUserId);
+    User requester = await getUserFromFirestoreCollectionFuture(userID: userIdToAdd);
+
+    await pushNoteFriendAcception(requester, currentUser);
   }
 
   ///Future that deletes json user object to delete friends and all related requests requests

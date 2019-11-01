@@ -45,13 +45,20 @@ class UserAuthProvider {
 
   ///returns a User object out of a Firebase User
 
-  Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser) async {
+  Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser,
+      {String userName}) async {
+    String userDisplayName;
+    if (firebaseUser.displayName == null || firebaseUser.displayName == '') {
+      userDisplayName = userName;
+    } else {
+      userDisplayName = firebaseUser.displayName;
+    }
     User user = new User(
-        firstName: firebaseUser.displayName,
+        firstName: userName,
         userID: firebaseUser.uid,
         email: firebaseUser.email ?? '',
         profilePictureURL: firebaseUser.photoUrl ?? '',
-        searchKey: firebaseUser.displayName[0] ?? '');
+        searchKey: userName[0] ?? '');
     return user;
   }
 
@@ -65,7 +72,8 @@ class UserAuthProvider {
 
   ///adds FirebaseAut User to firebase storage collection "users" needed user object
 
-  Future<void> addUserToFirebaseStoreCollection({User user}) async {
+  Future<void> addUserToFirebaseStoreCollection(
+      {User user, String userName}) async {
     await checkUserExistInFirestoreCollection(userID: user.userID)
         .then((value) {
       if (value == false) {

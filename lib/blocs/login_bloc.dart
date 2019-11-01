@@ -78,7 +78,7 @@ class LoginBloc {
   Future<void> signUpWithFirebaseAndEmail() async {
     await _repository
         .createFirebaseAuthUserWithEmail(_email.value, _password.value)
-        .then((v) => _addUserToFirestoreColletion());
+        .then((v) => _addUserToFirestoreColletion(userName : _userName.value));
     return;
   }
 
@@ -98,11 +98,13 @@ class LoginBloc {
     print(emailAddress);
   }
 
-  Future _addUserToFirestoreColletion() async {
+  Future _addUserToFirestoreColletion({String userName}) async {
     FirebaseUser firebaseUser = await _repository.getCurrentFirebaseUser();
-    User user = await _repository.createUserWithFirebaseUser(firebaseUser);
 
-    await _repository.addUserToFirebaseStoreCollection(user);
+    User user = await _repository.createUserWithFirebaseUser(firebaseUser, userName: userName);
+
+
+    await _repository.addUserToFirebaseStoreCollection(user ,userName: userName);
   }
 
   void dispose() async {

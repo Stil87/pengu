@@ -45,8 +45,8 @@ class Repository {
 
   ///returns a User object out of a Firebase User
 
-  Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser) =>
-      _userAuthProvider.createUserWithFirebaseUser(firebaseUser);
+  Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser , {String userName}) =>
+      _userAuthProvider.createUserWithFirebaseUser(firebaseUser , userName: userName);
 
   ///returns the current firebaseUserId
 
@@ -55,8 +55,8 @@ class Repository {
 
   ///adds FirebaseAut User to firebase storage collection "users" needed user object
 
-  Future<void> addUserToFirebaseStoreCollection(User user) =>
-      _userAuthProvider.addUserToFirebaseStoreCollection(user: user);
+  Future<void> addUserToFirebaseStoreCollection(User user ,{String userName}) =>
+      _userAuthProvider.addUserToFirebaseStoreCollection(user: user , userName: userName );
 
   ///method that checks if user exists already in firestore collection "user"
   ///returns boolean
