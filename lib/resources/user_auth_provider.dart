@@ -18,9 +18,9 @@ class UserAuthProvider {
   Future<String> signInFirebaseAuthWithEmail(
       {String email, String password}) async {
     FirebaseUser user;
-    AuthResult result= await _firebaseAuth.signInWithEmailAndPassword(
+    AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
         email: email, password: password);
-    user =  result.user;
+    user = result.user;
     return user.uid;
   }
 
@@ -47,12 +47,11 @@ class UserAuthProvider {
 
   Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser) async {
     User user = new User(
-      firstName: firebaseUser.displayName,
-      userID: firebaseUser.uid,
-      email: firebaseUser.email ?? '',
-      profilePictureURL: firebaseUser.photoUrl ?? '',
-      searchKey: firebaseUser.displayName[0]
-    );
+        firstName: firebaseUser.displayName,
+        userID: firebaseUser.uid,
+        email: firebaseUser.email ?? '',
+        profilePictureURL: firebaseUser.photoUrl ?? '',
+        searchKey: firebaseUser.displayName[0] ?? '');
     return user;
   }
 
@@ -67,10 +66,14 @@ class UserAuthProvider {
   ///adds FirebaseAut User to firebase storage collection "users" needed user object
 
   Future<void> addUserToFirebaseStoreCollection({User user}) async {
-     await checkUserExistInFirestoreCollection(userID: user.userID).then((value) {
+    await checkUserExistInFirestoreCollection(userID: user.userID)
+        .then((value) {
       if (value == false) {
         print("user ${user.firstName} ${user.email} added");
-        _firestore.collection('users').document(user.userID).setData(user.toJson());
+        _firestore
+            .collection('users')
+            .document(user.userID)
+            .setData(user.toJson());
       } else {
         print("user ${user.firstName} ${user.email} exists");
       }
@@ -83,9 +86,12 @@ class UserAuthProvider {
     bool exists = false;
     try {
       await _firestore.collection('users').document(userID).get().then((doc) {
-        if (doc.exists)
-          exists = true;
-        else
+        if (doc.exists) {
+          if (doc.data.containsKey('email')) {
+            exists = true;
+          } else
+            exists = false;
+        } else
           exists = false;
       });
       return exists;
@@ -108,10 +114,6 @@ class UserAuthProvider {
       }).first;
     });
   }
-
-
-
-
 
   ///Stream which listens to change in User sign in status FirebaseAuth
   ///returns either a user object or null
