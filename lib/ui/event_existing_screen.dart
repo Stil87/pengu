@@ -6,6 +6,7 @@ import 'package:peng_u/model/user.dart';
 import 'package:peng_u/ux/user_bubble.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:fab_menu/fab_menu.dart';
 
 import 'dashboard_screen/dashboard_screen.dart';
 
@@ -24,6 +25,24 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   EventExistingBloc _bloc = EventExistingBloc();
   Color _backgroundColor = Colors.blueAccent;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  List<MenuData> menuDataList;
+
+  @override
+  void initState() {
+    super.initState();
+    menuDataList = [
+      new MenuData(Icons.home, (context, menuData) {
+        Scaffold.of(context).showSnackBar(new SnackBar(
+            content: new Text('you have pressed ${menuData.labelText}')));
+      }, labelText: 'home'),
+      new MenuData(Icons.sync_disabled, (context, menuData) {
+        setState(() {
+          menuData.enable = !menuData.enable;
+          menuData.icon = menuData.enable ? Icons.sync : Icons.sync_disabled;
+        });
+      }, labelText: 'enable')
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +63,11 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
       key: _scaffoldKey,
       backgroundColor: _backgroundColor,
       appBar: AppBar(),
+      floatingActionButton: FabMenu(
+        menus: menuDataList,
+        maskColor: Colors.white,
+      ),
+      floatingActionButtonLocation: fabMenuLocation,
       body: StreamBuilder<Event>(
           stream:
               _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
@@ -107,10 +131,10 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                FittedBox(fit: BoxFit.fitWidth,
+                                FittedBox(
+                                  fit: BoxFit.fitWidth,
                                   child: Text(
                                     snapshot.data.eventPlace.placeName,
-
                                   ),
                                 ),
                                 Padding(
@@ -274,13 +298,16 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                     ))
                                 .toList(),
                           ),
-                        ),if (sourceBuilderDelegates.length > 0) ...[Padding(
-                          padding: const EdgeInsets.all(5.0),
-                          child: Text(
-                            'your friends',
-                            style: TextStyle(fontSize: 20),
-                          ),
-                        )],
+                        ),
+                        if (sourceBuilderDelegates.length > 0) ...[
+                          Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text(
+                              'your friends',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          )
+                        ],
                         if (sourceBuilderDelegates.length > 0) ...[
                           SizedBox(
                             height: 105.0,
@@ -316,7 +343,8 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                             snapshot.data,
                                             SidekickTeamBuilder.of<User>(
                                                     context)
-                                                .targetList, widget.currentUserID)
+                                                .targetList,
+                                            widget.currentUserID)
                                         .whenComplete(() {
                                       List<User> _toRemove = [];
                                       if (widget._friendList.isNotEmpty) {
@@ -341,15 +369,19 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                     })),
                           )
                         ] else ...[
-                          SizedBox(
-                              height: 85.0,
-                              child: GestureDetector(
-                                  onTap: () => _changeEventRequestStatus(
-                                      snapshot.data,
-                                      widget.currentUserID,
-                                      inviter.userID,
-                                      currentUser.eventRequestStatus),
-                                  child: UserBubble(user: currentUser)))
+                          Column(
+                            children: <Widget>[
+                              SizedBox(
+                                  height: 85.0,
+                                  child: GestureDetector(
+                                      onTap: () => _changeEventRequestStatus(
+                                          snapshot.data,
+                                          widget.currentUserID,
+                                          inviter.userID,
+                                          currentUser.eventRequestStatus),
+                                      child: UserBubble(user: currentUser))),
+                            ],
+                          )
                         ],
                         if (inviter.userID == currentUser.userID) ...[
                           _deleteIconButton(context, widget.event)
@@ -438,12 +470,13 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
       formatted = 'Today';
     }
     if (dateToCheck == yesterday) {
-      formatted =  'Yesterday';
+      formatted = 'Yesterday';
     }
     if (dateToCheck == tomorrow) {
       formatted = 'tomorrow';
-    } else{
-      formatted = formatted.toString();}
+    } else {
+      formatted = formatted.toString();
+    }
     return formatted;
   }
 }
