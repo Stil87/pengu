@@ -41,6 +41,25 @@ class _MessageHandlerState extends State<MessageHandler> {
     print('push notes if you read this fcm.configure might fire');
     _fcm.configure(
       onMessage: (Map<String, dynamic> pushNote) async {
+
+        if(Platform.isIOS) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              content: ListTile(
+                title: Text(pushNote['aps']['alert']['title'] ?? 'null '),
+                subtitle: Text(pushNote['aps']['alert']['body'] ?? 'null'),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  child: Text('Ok'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              ],
+            ),
+          );
+
+        }else{
         print('on Message: $pushNote');
         showDialog(
           context: context,
@@ -58,7 +77,7 @@ class _MessageHandlerState extends State<MessageHandler> {
           ),
         );
         print('on Message AlerDiolog showed');
-      },
+      }},
       onLaunch: (Map<String, dynamic> pushNote) async {
         print('on Launch: $pushNote');
 
