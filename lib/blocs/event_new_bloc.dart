@@ -12,7 +12,7 @@ import 'package:rxdart/rxdart.dart';
 class NewEventBloc {
   final _repository = Repository();
 
-  BehaviorSubject _counter = BehaviorSubject(seedValue: 0);
+  BehaviorSubject _counter = BehaviorSubject<int>.seeded(0);
   BehaviorSubject<List> _threeWordNameList = BehaviorSubject<List>();
   BehaviorSubject<PlacesSearchResult> _pickedPlace = BehaviorSubject();
   BehaviorSubject<DateTime> _dateTime = BehaviorSubject();
@@ -93,7 +93,7 @@ class NewEventBloc {
     _threeWordNameList.add(_list);
   }
 
-  BehaviorSubject _pageRoot = BehaviorSubject(seedValue: 0);
+  BehaviorSubject _pageRoot = BehaviorSubject<int>.seeded(0);
 
   Observable get pageRooterStream => _pageRoot.stream;
 

@@ -24,11 +24,14 @@ class _MessageHandlerState extends State<MessageHandler> {
   ///Todo: cancel subsription
   StreamSubscription iosSubscription;
 
+
+
   @override
   void initState() {
     super.initState();
     print('MessageHandler initState MEthode fires');
     if (Platform.isIOS) {
+
       print('MessageHandler ios detected ');
       _fcm.requestNotificationPermissions(IosNotificationSettings());
       iosSubscription = _fcm.onIosSettingsRegistered.listen((data) {
