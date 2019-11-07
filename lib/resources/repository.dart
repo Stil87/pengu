@@ -45,8 +45,10 @@ class Repository {
 
   ///returns a User object out of a Firebase User
 
-  Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser , {String userName}) =>
-      _userAuthProvider.createUserWithFirebaseUser(firebaseUser , userName: userName);
+  Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser,
+          {String userName}) =>
+      _userAuthProvider.createUserWithFirebaseUser(firebaseUser,
+          userName: userName);
 
   ///returns the current firebaseUserId
 
@@ -55,8 +57,9 @@ class Repository {
 
   ///adds FirebaseAut User to firebase storage collection "users" needed user object
 
-  Future<void> addUserToFirebaseStoreCollection(User user ,{String userName}) =>
-      _userAuthProvider.addUserToFirebaseStoreCollection(user: user , userName: userName );
+  Future<void> addUserToFirebaseStoreCollection(User user, {String userName}) =>
+      _userAuthProvider.addUserToFirebaseStoreCollection(
+          user: user, userName: userName);
 
   ///method that checks if user exists already in firestore collection "user"
   ///returns boolean
@@ -181,8 +184,9 @@ class Repository {
 
   /// method to send push note if friend requested
 
-  Future<void> pushNoteFriendRequest(User requestedUser, User currentUser  ) async => _firestoreProvider.pushNoteFriendRequest(
-      requestedUser, currentUser);
+  Future<void> pushNoteFriendRequest(
+          User requestedUser, User currentUser) async =>
+      _firestoreProvider.pushNoteFriendRequest(requestedUser, currentUser);
 
   ///Future that accepts a friendship request an put changes both requestStatus to friend
 
@@ -250,24 +254,31 @@ class Repository {
 
   /// method to add the new room to rooms collection at firestore
 
-  Future<void> addEventDetailsToRoomCollection(Event event, List tokens, User inviter) async =>
-      _firestoreProvider.addEventDetailsToRoomCollection(event, tokens, inviter);
+  Future<void> addEventDetailsToRoomCollection(
+          Event event, List tokens, User inviter) async =>
+      _firestoreProvider.addEventDetailsToRoomCollection(
+          event, tokens, inviter);
 
   /// method to forward an existing room in the room collection
   ///
-  Future<void> addForwardedUserDetailsToRoomInRoomCollection(Event event, List tokens, User forwarder) async =>
-  _firestoreProvider.addForwardedUserDetailsToRoomInRoomCollection(event, tokens, forwarder);
+  Future<void> addForwardedUserDetailsToRoomInRoomCollection(
+          Event event, List tokens, User forwarder) async =>
+      _firestoreProvider.addForwardedUserDetailsToRoomInRoomCollection(
+          event, tokens, forwarder);
 
   /// changes the status of current user in Rooms Collectiion document (room) used for push notes
 
   Future<void> addUserStatusToRoomInRoomCollection(
-      Event event, List tokens, User currentUser) async => _firestoreProvider.addUserStatusToRoomInRoomCollection(
-      event, tokens, currentUser);
+          Event event, List tokens, User currentUser) async =>
+      _firestoreProvider.addUserStatusToRoomInRoomCollection(
+          event, tokens, currentUser);
 
   /// push details to Room collection and let the delete push note fire
 
   Future<void> deleteEventInformationToRoomCollection(
-      Event event, List tokens, User deleter) async => _firestoreProvider.deleteEventInformationToRoomCollection(event, tokens, deleter);
+          Event event, List tokens, User deleter) async =>
+      _firestoreProvider.deleteEventInformationToRoomCollection(
+          event, tokens, deleter);
 
   ///changes user commitment in a specific room
 
@@ -331,6 +342,13 @@ class Repository {
   ///returns a google PlaceDetail object by id
   Future<PlaceDetails> getPlaceById(String id) =>
       _locationProvider.getPlaceById(id);
+
+  void sendPush(User userInList, String currentUserId, int pushNote) async {
+    if (currentUserId == null) {
+      currentUserId = await _userAuthProvider.getCurrentFirebaseUserId();
+    }
+    await _firestoreProvider.sendPush(userInList, currentUserId, pushNote);
+  }
 
 /*-----------User location related firebase storage provider operation*/
 

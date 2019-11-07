@@ -31,10 +31,10 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   void initState() {
     super.initState();
     menuDataList = [
-      new MenuData(Icons.home, (context, menuData) {
+      new MenuData(Icons.cancel, (context, menuData) {
         Scaffold.of(context).showSnackBar(new SnackBar(
             content: new Text('you have pressed ${menuData.labelText}')));
-      }, labelText: 'home'),
+      }, labelText: 'cancel'),
       new MenuData(Icons.sync_disabled, (context, menuData) {
         setState(() {
           menuData.enable = !menuData.enable;
@@ -186,9 +186,16 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                             itemCount: _userThereList.length,
                                             shrinkWrap: true,
                                             itemBuilder: (_, index) =>
-                                                UserBubble(
-                                                    user:
-                                                        _userThereList[index])),
+                                                GestureDetector(
+                                                  onLongPress: () => _sendPush(
+                                                      _userThereList[index],
+                                                      widget.currentUserID,
+                                                      3,
+                                                      context),
+                                                  child: UserBubble(
+                                                      user: _userThereList[
+                                                          index]),
+                                                )),
                                       ),
                                     ),
                                   ),
@@ -221,8 +228,16 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                         scrollDirection: Axis.horizontal,
                                         itemCount: _userInList.length,
                                         shrinkWrap: true,
-                                        itemBuilder: (_, index) => UserBubble(
-                                            user: _userInList[index])),
+                                        itemBuilder: (_, index) =>
+                                            GestureDetector(
+                                              onLongPress: () => _sendPush(
+                                                  _userInList[index],
+                                                  widget.currentUserID,
+                                                  0,
+                                                  context),
+                                              child: UserBubble(
+                                                  user: _userInList[index]),
+                                            )),
                                   ),
                                 )
                               ],
@@ -253,8 +268,16 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                         scrollDirection: Axis.horizontal,
                                         itemCount: _userOutList.length,
                                         shrinkWrap: true,
-                                        itemBuilder: (_, index) => UserBubble(
-                                            user: _userOutList[index])),
+                                        itemBuilder: (_, index) =>
+                                            GestureDetector(
+                                              onLongPress: () => _sendPush(
+                                                  _userOutList[index],
+                                                  widget.currentUserID,
+                                                  1,
+                                                  context),
+                                              child: UserBubble(
+                                                  user: _userOutList[index]),
+                                            )),
                                   ),
                                 ),
                                 Padding(
@@ -395,9 +418,11 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   }
 
   _changeEventRequestStatus(Event event, String currentUserId, String inviterId,
-      String currentUserEventRequestStatus) async {
+      String currentUserEventRequestStatus,
+      {String newEventStatus}) async {
     await _bloc
-        .changeEventRequestStatus(event, currentUserId, inviterId)
+        .changeEventRequestStatus(
+            event, currentUserId, inviterId, newEventStatus)
         .then((status) {
       _launchStatusSnackbar(status);
     });
@@ -479,6 +504,22 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
     }
     return formatted;
   }
+
+  _sendPush(User userInList, String currentUserId, int pushNote,
+      BuildContext context) async {
+    _bloc.sendPush(userInList, currentUserId, pushNote);
+    String text;
+    if (pushNote == 0) {
+      text = 'You gave ${userInList.firstName} a big smile!';
+    } else if (pushNote == 1) {
+      text = 'You said ${userInList.firstName} is a boring person!';
+    } else if (pushNote == 2) {
+      text = 'You just tried to wake up ${userInList.firstName}';
+    } else if (pushNote == 3) {
+      text = 'You just called ${userInList.firstName} a hero!';
+    }
+    Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(text)));
+  }
 }
 
 class WrapItem extends StatelessWidget {
@@ -497,8 +538,15 @@ class WrapItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String idDummy;
+    EventExistingBloc _bloc = EventExistingBloc();
     //Todo: Add circular progress bar
     return GestureDetector(
+      onLongPress: () {
+        _bloc.sendPush(user, idDummy, 2);
+        Scaffold.of(context).showSnackBar(
+        new SnackBar(content: new Text('You send a wake up push!')));
+      },
       onTap: () {
         if (userList.contains(user)) {
           SidekickTeamBuilder.of<User>(context).move(user);

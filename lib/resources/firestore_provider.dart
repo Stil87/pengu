@@ -134,7 +134,7 @@ class FirestoreProvider {
               .collection(_userPersonalFriendslistCollectionName)
               .document(currentUserId)
               .setData(currentUserSnap.data)
-          // push to friendsrelation collection to fire psuh note
+              // push to friendsrelation collection to fire psuh note
               .whenComplete(() => pushNoteFriendRequest(
                   User.fromDocument(friendsSnap),
                   User.fromDocument(currentUserSnap)));
@@ -147,12 +147,8 @@ class FirestoreProvider {
   ///
   Future<void> pushNoteFriendRequest(
       User requestedUser, User currentUser) async {
-
-    await _firestore
-        .collection(_friendRelationsCollection)
-        .document()
-        .setData({
-      'kind' : 'request',
+    await _firestore.collection(_friendRelationsCollection).document().setData({
+      'kind': 'request',
       'timeStemp': DateTime.now(),
       'requestedFriend': requestedUser.firstName,
       'token': requestedUser.userMobileToken,
@@ -164,11 +160,8 @@ class FirestoreProvider {
   ///
   Future<void> pushNoteFriendAcception(
       User acceptedUser, User currentUser) async {
-    await _firestore
-        .collection(_friendRelationsCollection)
-        .document()
-        .setData({
-      'kind' : 'acception',
+    await _firestore.collection(_friendRelationsCollection).document().setData({
+      'kind': 'acception',
       'timeStemp': DateTime.now(),
       'acceptedFriend': acceptedUser.firstName,
       'token': acceptedUser.userMobileToken,
@@ -180,7 +173,7 @@ class FirestoreProvider {
 
   Future<void> acceptFriendshipRequest(
       String currentUserId, String userIdToAdd) async {
-     await _firestore
+    await _firestore
         .collection(_firestoreCollectionNameAllUsers)
         .document(currentUserId)
         .collection(_userPersonalFriendslistCollectionName)
@@ -193,8 +186,10 @@ class FirestoreProvider {
           .document(currentUserId)
           .setData({'requestStatus': 'friend'}, merge: true);
     });
-    User currentUser =await getUserFromFirestoreCollectionFuture(userID: currentUserId);
-    User requester = await getUserFromFirestoreCollectionFuture(userID: userIdToAdd);
+    User currentUser =
+        await getUserFromFirestoreCollectionFuture(userID: currentUserId);
+    User requester =
+        await getUserFromFirestoreCollectionFuture(userID: userIdToAdd);
 
     await pushNoteFriendAcception(requester, currentUser);
   }
@@ -618,5 +613,20 @@ class FirestoreProvider {
         .get()
         .then((vale) => vale.data['userMobileToken']);
     return tokens;
+  }
+
+  Future<void> sendPush(
+      User userInList, String currentUserId, int pushNote) async {
+        
+    User currentUser =
+        await getUserFromFirestoreCollectionFuture(userID: currentUserId);
+    _firestore.collection(_friendRelationsCollection).document().setData({
+      'kind': 'pushNote',
+      'pushNoteInt': pushNote,
+      'userTo': userInList.firstName,
+      'userFrom': currentUser.firstName,
+      'userToToken': userInList.userMobileToken,
+      'userFromToken': currentUser.userMobileToken
+    });
   }
 }

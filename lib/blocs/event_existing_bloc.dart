@@ -56,7 +56,7 @@ class EventExistingBloc {
   }
 
   Future<String> changeEventRequestStatus(
-      Event event, String currentUserId, String inviterId) async {
+      Event event, String currentUserId, String inviterId, String newEventStatus) async {
     User _oldCurrentUser = event.invitedUserObjectList
         .firstWhere((user) => user.userID == currentUserId);
 
@@ -69,7 +69,7 @@ class EventExistingBloc {
         status = 'inviter';
       }
     }
-    if (status == 'in') {
+   if (status == 'in') {
       status = 'there';
     } else if (status == 'there') {
       status = 'out';
@@ -109,5 +109,10 @@ class EventExistingBloc {
         event, tokens, _oldCurrentUser);
 
     return status;
+  }
+
+  void sendPush(User userInList, String currentUserId, int pushNote) {
+   _repository.sendPush(userInList, currentUserId,pushNote);
+
   }
 }

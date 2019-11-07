@@ -12,10 +12,10 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 class AddFriendsBloc {
   final _repository = Repository();
 
-  BehaviorSubject<List<User>> _tempSearchStore = BehaviorSubject(seedValue: []);
+  BehaviorSubject<List<User>> _tempSearchStore = BehaviorSubject<List<User>>.seeded( []);
   BehaviorSubject<List<User>> _resultSearchStore =
-      BehaviorSubject(seedValue: []);
-  BehaviorSubject<List<User>> _userFriendsList = BehaviorSubject(seedValue: []);
+      BehaviorSubject<List<User>>.seeded( []);
+  BehaviorSubject<List<User>> _userFriendsList = BehaviorSubject<List<User>>.seeded( []);
 
   Observable<List<User>> get tempSearchStoreStream => _tempSearchStore.stream;
 
