@@ -57,18 +57,34 @@ class EventExistingBloc {
 
   Future<String> changeEventRequestStatus(
       Event event, String currentUserId, String inviterId, String newEventStatus) async {
+  Event eventUpdated =   await _repository.getRoom(currentUserId, event.roomId);
+  event = eventUpdated;
     User _oldCurrentUser = event.invitedUserObjectList
         .firstWhere((user) => user.userID == currentUserId);
 
-    String status = _oldCurrentUser.eventRequestStatus;
-    print('alter Status $status');
+    //String status = _oldCurrentUser.eventRequestStatus;
+    //print('alter Status $status');
+
+   String status = newEventStatus;
+
     if (currentUserId == inviterId) {
+      if (status == 'in') {
+        status = 'inviter';
+      } else if (status == 'there') {
+        status = 'inviterThere';
+      }
+    }
+
+
+ /*   if (currentUserId == inviterId) {
       if (status == 'inviter') {
         status = 'inviterThere';
       } else if (status == 'inviterThere') {
         status = 'inviter';
       }
     }
+
+
    if (status == 'in') {
       status = 'there';
     } else if (status == 'there') {
@@ -77,7 +93,7 @@ class EventExistingBloc {
       status = 'in';
     } else if (status == '') {
       status = 'in';
-    }
+    }*/
 
     int index = event.invitedUserObjectList.indexOf(_oldCurrentUser);
     event.invitedUserObjectList.removeAt(index);

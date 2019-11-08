@@ -567,6 +567,14 @@ class FirestoreProvider {
         .map((doc) => Event.fromFirestore(doc));
   }
 
+  Future<Event> getRoom (String currentUserId, String eventId) async {
+   return await  _firestore.collection(_firestoreCollectionNameAllUsers)
+        .document(currentUserId)
+        .collection(_userPersonalRoomsListCollectionName)
+        .document(eventId)
+        .get().then((room) => Event.fromFirestore(room));
+  }
+
   /// Firebasestorage methods
   ///
   /// uploads file to storage in file 'images/'

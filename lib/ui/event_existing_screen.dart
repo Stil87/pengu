@@ -26,23 +26,9 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   Color _backgroundColor = Colors.blueAccent;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   List<MenuData> menuDataList;
-
-  @override
-  void initState() {
-    super.initState();
-    menuDataList = [
-      new MenuData(Icons.cancel, (context, menuData) {
-        Scaffold.of(context).showSnackBar(new SnackBar(
-            content: new Text('you have pressed ${menuData.labelText}')));
-      }, labelText: 'cancel'),
-      new MenuData(Icons.sync_disabled, (context, menuData) {
-        setState(() {
-          menuData.enable = !menuData.enable;
-          menuData.icon = menuData.enable ? Icons.sync : Icons.sync_disabled;
-        });
-      }, labelText: 'enable')
-    ];
-  }
+  Event updatedEvent;
+  String inviterIdUpdate;
+  String currentUserEventStatusUpdate;
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +49,6 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
       key: _scaffoldKey,
       backgroundColor: _backgroundColor,
       appBar: AppBar(),
-      floatingActionButton: FabMenu(
-        menus: menuDataList,
-        maskColor: Colors.white,
-      ),
-      floatingActionButtonLocation: fabMenuLocation,
       body: StreamBuilder<Event>(
           stream:
               _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
@@ -83,12 +64,17 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                 ),
               );
             }
+
             User inviter = snapshot.data.invitedUserObjectList.firstWhere(
                 (user) =>
                     user.eventRequestStatus == 'inviter' ||
                     user.eventRequestStatus == 'inviterThere');
+            inviterIdUpdate = inviter.userID;
             User currentUser = snapshot.data.invitedUserObjectList
                 .firstWhere((user) => user.userID == widget.currentUserID);
+            String currentUserRequestStatus = currentUser.eventRequestStatus;
+            print('requestStatus: $currentUserRequestStatus');
+            currentUserEventStatusUpdate = currentUser.eventRequestStatus;
             List<User> _userInList = snapshot.data.invitedUserObjectList
                 .where((user) => user.eventRequestStatus == 'in')
                 .toList();
@@ -300,6 +286,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             ),
                           )
                         ],
+                      if (targetBuilderDelegates.length > 0) ...[
                         SizedBox(
                           height: 105.0,
                           child: ListView(
@@ -321,7 +308,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                     ))
                                 .toList(),
                           ),
-                        ),
+                        )],
                         if (sourceBuilderDelegates.length > 0) ...[
                           Padding(
                             padding: const EdgeInsets.all(5.0),
@@ -394,15 +381,69 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                         ] else ...[
                           Column(
                             children: <Widget>[
-                              SizedBox(
-                                  height: 85.0,
-                                  child: GestureDetector(
-                                      onTap: () => _changeEventRequestStatus(
-                                          snapshot.data,
-                                          widget.currentUserID,
-                                          inviter.userID,
-                                          currentUser.eventRequestStatus),
-                                      child: UserBubble(user: currentUser))),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  if (currentUserRequestStatus !=
+                                      'inviter') ...[
+                                    if (currentUserRequestStatus != 'in') ...[
+                                      SizedBox(
+                                          height: 85.0,
+                                          child: GestureDetector(
+                                              onTap: () =>
+                                                  _changeEventRequestStatus(
+                                                      snapshot.data,
+                                                      widget.currentUserID,
+                                                      inviter.userID,
+                                                      currentUser
+                                                          .eventRequestStatus,
+                                                      newEventStatus: 'in'),
+                                              child: Icon(Icons.thumb_up)))
+                                    ]
+                                  ],
+                                  if (currentUserRequestStatus != 'there') ...[
+                                    if (currentUserRequestStatus !=
+                                        'inviterThere') ...[
+                                      Padding(
+                                        padding: const EdgeInsets.all(30.0),
+                                        child: SizedBox(
+                                            height: 85.0,
+                                            child: GestureDetector(
+                                                onTap: () =>
+                                                    _changeEventRequestStatus(
+                                                        snapshot.data,
+                                                        widget.currentUserID,
+                                                        inviter.userID,
+                                                        currentUser
+                                                            .eventRequestStatus,
+                                                        newEventStatus:
+                                                            'there'),
+                                                child: Icon(
+                                                    Icons.assistant_photo))),
+                                      )
+                                    ]
+                                  ],
+                                  if (inviter.userID != currentUser.userID) ...[
+                                    if (currentUserRequestStatus != 'out') ...[
+                                      Padding(
+                                        padding: const EdgeInsets.all(30.0),
+                                        child: SizedBox(
+                                            height: 85.0,
+                                            child: GestureDetector(
+                                                onTap: () =>
+                                                    _changeEventRequestStatus(
+                                                        snapshot.data,
+                                                        widget.currentUserID,
+                                                        inviter.userID,
+                                                        currentUser
+                                                            .eventRequestStatus,
+                                                        newEventStatus: 'out'),
+                                                child: Icon(Icons.thumb_down))),
+                                      ),
+                                    ]
+                                  ]
+                                ],
+                              ),
                             ],
                           )
                         ],
@@ -426,6 +467,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
         .then((status) {
       _launchStatusSnackbar(status);
     });
+    setState(() {});
   }
 
   _getInviterBubble(User inviter) {
@@ -545,7 +587,7 @@ class WrapItem extends StatelessWidget {
       onLongPress: () {
         _bloc.sendPush(user, idDummy, 2);
         Scaffold.of(context).showSnackBar(
-        new SnackBar(content: new Text('You send a wake up push!')));
+            new SnackBar(content: new Text('You send a wake up push!')));
       },
       onTap: () {
         if (userList.contains(user)) {

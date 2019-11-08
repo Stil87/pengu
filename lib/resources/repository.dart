@@ -222,6 +222,9 @@ class Repository {
 
 /*-----------User rooms related firestore provider operation*/
 
+
+  Future<Event> getRoom (String currentUserId, String eventId) async =>
+  _firestoreProvider.getRoom(currentUserId, eventId);
   /// Creating a new unique room at Firestore rooms Collection and returns roomId as a String
 
   Future<String> createNewRoomWithUniqueIDAtFirestoreRoomCollection() =>
