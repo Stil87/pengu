@@ -132,7 +132,9 @@ class EventExistingBloc {
     _repository.sendPush(userInList, currentUserId, pushNote);
   }
 
-  createChallenge(String newName) {
-    if (newName.isNotEmpty) {}
+  Future createChallenge(User currentUser, Event event, {String newName}) {
+
+      return _repository.createChallenge(currentUser, event,newName: newName);
+
   }
 }

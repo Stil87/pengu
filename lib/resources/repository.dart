@@ -33,8 +33,8 @@ class Repository {
   ///Firebase authentification create FirebaseUser (SignUp) with email and password
   ///returns User Id
 
-  Future<String> createFirebaseAuthUserWithEmail(
-          String email, String password) =>
+  Future<String> createFirebaseAuthUserWithEmail(String email,
+      String password) =>
       _userAuthProvider.signUpFirebaseAuthWithEmail(
           email: email, password: password);
 
@@ -46,7 +46,7 @@ class Repository {
   ///returns a User object out of a Firebase User
 
   Future<User> createUserWithFirebaseUser(FirebaseUser firebaseUser,
-          {String userName}) =>
+      {String userName}) =>
       _userAuthProvider.createUserWithFirebaseUser(firebaseUser,
           userName: userName);
 
@@ -123,28 +123,28 @@ class Repository {
   /// stream to get Users personal friends list returning firestore snapshop
 
   Stream<QuerySnapshot> userPersonalFriendsListFromFirestore(
-          {String currentUserId}) =>
+      {String currentUserId}) =>
       _firestoreProvider.userPersonalFriendsListFromFirestore(
           currentUserID: currentUserId);
 
   /// stream to get Users personal friends list returning  List<Strings> of friends ids
   ///
   Stream<List<String>> streamUserPersonalFriendsIdStringList(
-          {String currentUserID}) =>
+      {String currentUserID}) =>
       _firestoreProvider.streamUserPersonalFriendsIdStringList(
           currentUserID: currentUserID);
 
   /// stream to get Users personal friends list returning  List of user objects
   ///
   Stream<List<User>> streamUserPersonalFriendsObjectList(
-          {String currentUserID}) =>
+      {String currentUserID}) =>
       _firestoreProvider.streamUserPersonalFriendsObjectList(
           currentUserID: currentUserID);
 
   /// future to get Users personal friends list returning  List of user objects
 
   Future<List<User>> futureUserPersonalFriendsObjectList(
-          {String currentUserID}) =>
+      {String currentUserID}) =>
       _firestoreProvider.futureUserPersonalFriendsObjectList(
           currentUserID: currentUserID);
 
@@ -152,7 +152,7 @@ class Repository {
   /// currentUser/userFriends(snapshot)/userObject/Eventlists/
   ///
   Stream<List<Event>> streamUserPersonalFriendsEventsObjectList(
-          {String currentUserID}) =>
+      {String currentUserID}) =>
       _firestoreProvider.streamUserPersonalFriendsEventsObjectList(
           currentUserID: currentUserID);
 
@@ -164,34 +164,34 @@ class Repository {
   ///Future to search the firestore user list by searchKeyword
   ///
   Future<QuerySnapshot> getUserDocumentsFromFirestoreBySearchKey(
-          {String searchKey}) =>
+      {String searchKey}) =>
       _firestoreProvider.getUserDocumentsFromFirestoreBySearchKey(
           searchKey: searchKey);
 
   /// Add User Friend to users personal friends list create to fire
 
   Future<void> addUserIdToUsersPersonalFriendsListToFirestore(
-          {String currentUserID, String newUserID}) =>
+      {String currentUserID, String newUserID}) =>
       _firestoreProvider.addUserIdToUsersPersonalFriendsListToFirestore(
           currentUserID: currentUserID, newUserID: newUserID);
 
   ///Future that adds a Userobeject as Json to current users friends list in firestore
 
   Future<void> sendUserFriendshipRequest(
-          {String currentUserId, String userIdToAdd}) =>
+      {String currentUserId, String userIdToAdd}) =>
       _firestoreProvider.sendUserFriendshipRequest(
           currentUserId: currentUserId, userIdToAdd: userIdToAdd);
 
   /// method to send push note if friend requested
 
-  Future<void> pushNoteFriendRequest(
-          User requestedUser, User currentUser) async =>
+  Future<void> pushNoteFriendRequest(User requestedUser,
+      User currentUser) async =>
       _firestoreProvider.pushNoteFriendRequest(requestedUser, currentUser);
 
   ///Future that accepts a friendship request an put changes both requestStatus to friend
 
-  Future<void> acceptFriendshipRequest(
-          String currentUserId, String userIdToAdd) =>
+  Future<void> acceptFriendshipRequest(String currentUserId,
+      String userIdToAdd) =>
       _firestoreProvider.acceptFriendshipRequest(currentUserId, userIdToAdd);
 
   ///Future that deletes json user object to delete friends and all related requests requests
@@ -203,28 +203,29 @@ class Repository {
   ///
   /// change profile image of user user info plus friends
   ///
-  setUserImageAllUserandUserFriends(
-          String userId, String imageURL, List<User> friendsList) =>
+  setUserImageAllUserandUserFriends(String userId, String imageURL,
+      List<User> friendsList) =>
       _firestoreProvider.setUserImageAllUserandUserFriends(
           userId, imageURL, friendsList);
 
-  Future setUserNameAllUserandUserFriends(
-          String userId, String changedName, List<User> friendsList) =>
+  Future setUserNameAllUserandUserFriends(String userId, String changedName,
+      List<User> friendsList) =>
       _firestoreProvider.setUserNameAllUserandUserFriends(
           userId, changedName, friendsList);
 
   /// change user Name in firestore collection of the userobject in all events
 
-  Future setUserNameAllEvents(
-          String userId, String changedName, List<Event> userEventList) =>
+  Future setUserNameAllEvents(String userId, String changedName,
+      List<Event> userEventList) =>
       _firestoreProvider.setUserNameAllEvents(
           userId, changedName, userEventList);
 
 /*-----------User rooms related firestore provider operation*/
 
 
-  Future<Event> getRoom (String currentUserId, String eventId) async =>
-  _firestoreProvider.getRoom(currentUserId, eventId);
+  Future<Event> getRoom(String currentUserId, String eventId) async =>
+      _firestoreProvider.getRoom(currentUserId, eventId);
+
   /// Creating a new unique room at Firestore rooms Collection and returns roomId as a String
 
   Future<String> createNewRoomWithUniqueIDAtFirestoreRoomCollection() =>
@@ -246,47 +247,47 @@ class Repository {
   ///Adds a room Id to a user´s private rooms list
 
   Future<void> addRoomIDToUsersPrivateRoomList(
-          {String userID, String roomID}) =>
+      {String userID, String roomID}) =>
       _firestoreProvider.addRoomIDToUsersPrivateRoomList(
           userID: userID, roomID: roomID);
 
   Future<void> addRoomObjectToUsersPrivateRoomList(
-          {String userID, String roomID, Event event}) =>
+      {String userID, String roomID, Event event}) =>
       _firestoreProvider.addRoomObjectToUsersPrivateRoomList(
           userID: userID, roomID: roomID, event: event);
 
   /// method to add the new room to rooms collection at firestore
 
-  Future<void> addEventDetailsToRoomCollection(
-          Event event, List tokens, User inviter) async =>
+  Future<void> addEventDetailsToRoomCollection(Event event, List tokens,
+      User inviter) async =>
       _firestoreProvider.addEventDetailsToRoomCollection(
           event, tokens, inviter);
 
   /// method to forward an existing room in the room collection
   ///
-  Future<void> addForwardedUserDetailsToRoomInRoomCollection(
-          Event event, List tokens, User forwarder) async =>
+  Future<void> addForwardedUserDetailsToRoomInRoomCollection(Event event,
+      List tokens, User forwarder) async =>
       _firestoreProvider.addForwardedUserDetailsToRoomInRoomCollection(
           event, tokens, forwarder);
 
   /// changes the status of current user in Rooms Collectiion document (room) used for push notes
 
-  Future<void> addUserStatusToRoomInRoomCollection(
-          Event event, List tokens, User currentUser) async =>
+  Future<void> addUserStatusToRoomInRoomCollection(Event event, List tokens,
+      User currentUser) async =>
       _firestoreProvider.addUserStatusToRoomInRoomCollection(
           event, tokens, currentUser);
 
   /// push details to Room collection and let the delete push note fire
 
-  Future<void> deleteEventInformationToRoomCollection(
-          Event event, List tokens, User deleter) async =>
+  Future<void> deleteEventInformationToRoomCollection(Event event, List tokens,
+      User deleter) async =>
       _firestoreProvider.deleteEventInformationToRoomCollection(
           event, tokens, deleter);
 
   ///changes user commitment in a specific room
 
   Future<void> changeCurrentUserCommitmentInASpecificRoom(
-          {String currentUserID, String roomId, String commitment}) =>
+      {String currentUserID, String roomId, String commitment}) =>
       _firestoreProvider.changeCurrentUserCommitmentInASpecificRoom(
           currentUserID: currentUserID, roomId: roomId, commitment: commitment);
 
@@ -294,34 +295,34 @@ class Repository {
   ///
   //Todo: checkt bzw zeigt dem User dieser Stream auch Änderungen innhrhalb eines Rooms z.b commitment änderungen
   Stream<QuerySnapshot> userPersonalRoomListFromFirestore(
-          {String currentUserID}) =>
+      {String currentUserID}) =>
       _firestoreProvider.userPersonalRoomListFromFirestore(
           currentUserID: currentUserID);
 
   /// stream to get Users personal rooms list returning  List of event objects
   ///
   Stream<List<Event>> streamUserPersonalEventsObjectList(
-          {String currentUserID}) =>
+      {String currentUserID}) =>
       _firestoreProvider.streamUserPersonalEventsObjectList(
           currentUserID: currentUserID);
 
   /// stream of the Event data in a specific room
 
   Stream<Event> getRoomDocumentSnapshotWithRoomIDAndUserId(
-          {String roomID, String userId}) =>
+      {String roomID, String userId}) =>
       _firestoreProvider.getRoomDocumentSnapshotWithRoomIDAndUserId(
           roomID: roomID, userId: userId);
 
   /// change user Image in firestore collection of the userobject in all events
 
-  Future setUserImageAllEvents(
-          String userId, String imageURL, List<Event> userEventList) =>
+  Future setUserImageAllEvents(String userId, String imageURL,
+      List<Event> userEventList) =>
       _firestoreProvider.setUserImageAllEvents(userId, imageURL, userEventList);
 
   ///get user Personal Event List as a future
 
   Future<List<Event>> futureUserPersonalEventsObjectList(
-          {String currentUserID}) =>
+      {String currentUserID}) =>
       _firestoreProvider.futureUserPersonalEventsObjectList(
           currentUserID: currentUserID);
 
@@ -338,7 +339,7 @@ class Repository {
   ///method returns PlacesSearchResponse which can turn with .result into List<PlacesSearchResult>
 
   Future<PlacesSearchResponse> getNearbyPlacesByText(
-          {String searchString, Location location}) =>
+      {String searchString, Location location}) =>
       _locationProvider.getNearbyPlacesByText(
           searchString: searchString, location: location);
 
@@ -363,4 +364,12 @@ class Repository {
 
   Future getUserToken(String userId) async =>
       _firestoreProvider.getUserToken(userId);
+
+ /*-------------------------challenge __________________*/
+
+  Future<void> createChallenge(User currentUser, Event event,
+      {String newName}) async =>
+      _firestoreProvider.createChallenge(currentUser, event, newName: newName);
+
+
 }

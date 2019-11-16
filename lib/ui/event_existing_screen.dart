@@ -52,7 +52,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
       appBar: AppBar(),
       body: StreamBuilder<Event>(
           stream:
-              _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
+          _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
           builder: (context, roomSnap) {
             if (!roomSnap.hasData) {
               return Container(
@@ -67,8 +67,8 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
             }
 
             User inviter = roomSnap.data.invitedUserObjectList.firstWhere(
-                (user) =>
-                    user.eventRequestStatus == 'inviter' ||
+                    (user) =>
+                user.eventRequestStatus == 'inviter' ||
                     user.eventRequestStatus == 'inviterThere');
             inviterIdUpdate = inviter.userID;
             User currentUser = roomSnap.data.invitedUserObjectList
@@ -111,7 +111,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                         alignment: Alignment.center,
                                         child: Container(
                                           padding:
-                                              const EdgeInsets.only(top: 12.0),
+                                          const EdgeInsets.only(top: 12.0),
                                           child: Text(
                                             roomSnap.data.eventName,
                                             style: TextStyle(fontSize: 20),
@@ -122,7 +122,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                         alignment: Alignment.centerRight,
                                         child: Container(
                                           padding:
-                                              const EdgeInsets.only(left: 5.0),
+                                          const EdgeInsets.only(left: 5.0),
                                           child: FloatingActionButton(
                                             mini: true,
                                             onPressed: () =>
@@ -139,16 +139,26 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                         if (nameChallengeTextFieldEnabler == 1) ...[
                           SizedBox(
                             height: 70,
-                            child: TextFormField(onFieldSubmitted:(newName) => _bloc.createChallenge(newName),textAlign: TextAlign.center,
+                            child: TextFormField(
+                              onFieldSubmitted: (newName) {
+                                _bloc
+                                    .createChallenge(currentUser, widget.event,
+                                    newName: newName)
+                                    .whenComplete(() => _openNameTextField());
+                              },
+                              textAlign: TextAlign.center,
                               decoration: InputDecoration(
                                   hintText: 'come up with a better name!'),
                             ),
                           )
+                        ], if(roomSnap.data.nameChallenge.length!= 0)...[
+                          Text(roomSnap.data.nameChallenge[0].newName)
                         ],
                         GestureDetector(
-                          onTap: () => _bloc.launchMapsUrl(
-                              roomSnap.data.eventPlace.placeId,
-                              roomSnap.data.eventPlace.placeName),
+                          onTap: () =>
+                              _bloc.launchMapsUrl(
+                                  roomSnap.data.eventPlace.placeId,
+                                  roomSnap.data.eventPlace.placeName),
                           child: SizedBox(
                             height: 40.0,
                             child: Row(
@@ -176,7 +186,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                 children: <Widget>[
                                   Text(_getDate(roomSnap.data.dateTime)),
                                   Text(TimeOfDay.fromDateTime(
-                                          roomSnap.data.dateTime)
+                                      roomSnap.data.dateTime)
                                       .format(context)),
                                 ],
                               ),
@@ -210,14 +220,15 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                             shrinkWrap: true,
                                             itemBuilder: (_, index) =>
                                                 GestureDetector(
-                                                  onLongPress: () => _sendPush(
-                                                      _userThereList[index],
-                                                      widget.currentUserID,
-                                                      3,
-                                                      context),
+                                                  onLongPress: () =>
+                                                      _sendPush(
+                                                          _userThereList[index],
+                                                          widget.currentUserID,
+                                                          3,
+                                                          context),
                                                   child: UserBubble(
                                                       user: _userThereList[
-                                                          index]),
+                                                      index]),
                                                 )),
                                       ),
                                     ),
@@ -253,11 +264,12 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                         shrinkWrap: true,
                                         itemBuilder: (_, index) =>
                                             GestureDetector(
-                                              onLongPress: () => _sendPush(
-                                                  _userInList[index],
-                                                  widget.currentUserID,
-                                                  0,
-                                                  context),
+                                              onLongPress: () =>
+                                                  _sendPush(
+                                                      _userInList[index],
+                                                      widget.currentUserID,
+                                                      0,
+                                                      context),
                                               child: UserBubble(
                                                   user: _userInList[index]),
                                             )),
@@ -293,11 +305,12 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                         shrinkWrap: true,
                                         itemBuilder: (_, index) =>
                                             GestureDetector(
-                                              onLongPress: () => _sendPush(
-                                                  _userOutList[index],
-                                                  widget.currentUserID,
-                                                  1,
-                                                  context),
+                                              onLongPress: () =>
+                                                  _sendPush(
+                                                      _userOutList[index],
+                                                      widget.currentUserID,
+                                                      1,
+                                                      context),
                                               child: UserBubble(
                                                   user: _userOutList[index]),
                                             )),
@@ -331,19 +344,19 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               scrollDirection: Axis.horizontal,
                               children: targetBuilderDelegates
                                   .map((builderDelegate) =>
-                                      builderDelegate.build(
-                                        context,
-                                        WrapItem(
-                                          widget._friendList,
-                                          builderDelegate.message,
-                                          false,
-                                        ),
-                                        animationBuilder: (animation) =>
-                                            CurvedAnimation(
+                                  builderDelegate.build(
+                                    context,
+                                    WrapItem(
+                                      widget._friendList,
+                                      builderDelegate.message,
+                                      false,
+                                    ),
+                                    animationBuilder: (animation) =>
+                                        CurvedAnimation(
                                           parent: animation,
                                           curve: FlippedCurve(Curves.ease),
                                         ),
-                                      ))
+                                  ))
                                   .toList(),
                             ),
                           )
@@ -365,39 +378,43 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               scrollDirection: Axis.horizontal,
                               children: sourceBuilderDelegates
                                   .map((builderDelegate) =>
-                                      builderDelegate.build(
-                                        context,
-                                        WrapItem(widget._friendList,
-                                            builderDelegate.message, true),
-                                        animationBuilder: (animation) =>
-                                            CurvedAnimation(
+                                  builderDelegate.build(
+                                    context,
+                                    WrapItem(widget._friendList,
+                                        builderDelegate.message, true),
+                                    animationBuilder: (animation) =>
+                                        CurvedAnimation(
                                           parent: animation,
                                           curve: Curves.ease,
                                         ),
-                                      ))
+                                  ))
                                   .toList(),
                             ),
                           )
                         ],
                         if (_userInvitedList.length <
-                            SidekickTeamBuilder.of<User>(context)
+                            SidekickTeamBuilder
+                                .of<User>(context)
                                 .targetList
                                 .length) ...[
                           SizedBox(
                             height: 85.0,
                             child: FloatingActionButton(
                                 child: Icon(Icons.send),
-                                onPressed: () => _bloc
+                                onPressed: () =>
+                                    _bloc
                                         .forwardEventToAddedFriend(
-                                            roomSnap.data,
-                                            SidekickTeamBuilder.of<User>(
-                                                    context)
-                                                .targetList,
-                                            widget.currentUserID)
+                                        roomSnap.data,
+                                        SidekickTeamBuilder
+                                            .of<User>(
+                                            context)
+                                            .targetList,
+                                        widget.currentUserID)
                                         .whenComplete(() {
                                       List<User> _toRemove = [];
                                       if (widget._friendList.isNotEmpty) {
-                                        SidekickTeamBuilder.of<User>(context)
+                                        SidekickTeamBuilder
+                                            .of<User>(context)
                                             .targetList
                                             .forEach((invitedUser) {
                                           widget._friendList
@@ -411,41 +428,23 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
 
                                         setState(() {
                                           widget._friendList.removeWhere(
-                                              (user) =>
+                                                  (user) =>
                                                   _toRemove.contains(user));
                                         });
                                       }
                                     })),
                           )
-                        ] else ...[
-                          Column(
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  if (currentUserRequestStatus !=
-                                      'inviter') ...[
-                                    if (currentUserRequestStatus != 'in') ...[
-                                      SizedBox(
-                                          height: 85.0,
-                                          child: GestureDetector(
-                                              onTap: () =>
-                                                  _changeEventRequestStatus(
-                                                      roomSnap.data,
-                                                      widget.currentUserID,
-                                                      inviter.userID,
-                                                      currentUser
-                                                          .eventRequestStatus,
-                                                      newEventStatus: 'in'),
-                                              child: Icon(Icons.thumb_up)))
-                                    ]
-                                  ],
-                                  if (currentUserRequestStatus != 'there') ...[
+                        ] else
+                          ...[
+                            Column(
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
                                     if (currentUserRequestStatus !=
-                                        'inviterThere') ...[
-                                      Padding(
-                                        padding: const EdgeInsets.all(30.0),
-                                        child: SizedBox(
+                                        'inviter') ...[
+                                      if (currentUserRequestStatus != 'in') ...[
+                                        SizedBox(
                                             height: 85.0,
                                             child: GestureDetector(
                                                 onTap: () =>
@@ -455,37 +454,60 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                                         inviter.userID,
                                                         currentUser
                                                             .eventRequestStatus,
-                                                        newEventStatus:
-                                                            'there'),
-                                                child: Icon(
-                                                    Icons.assistant_photo))),
-                                      )
+                                                        newEventStatus: 'in'),
+                                                child: Icon(Icons.thumb_up)))
+                                      ]
+                                    ],
+                                    if (currentUserRequestStatus !=
+                                        'there') ...[
+                                      if (currentUserRequestStatus !=
+                                          'inviterThere') ...[
+                                        Padding(
+                                          padding: const EdgeInsets.all(30.0),
+                                          child: SizedBox(
+                                              height: 85.0,
+                                              child: GestureDetector(
+                                                  onTap: () =>
+                                                      _changeEventRequestStatus(
+                                                          roomSnap.data,
+                                                          widget.currentUserID,
+                                                          inviter.userID,
+                                                          currentUser
+                                                              .eventRequestStatus,
+                                                          newEventStatus:
+                                                          'there'),
+                                                  child: Icon(
+                                                      Icons.assistant_photo))),
+                                        )
+                                      ]
+                                    ],
+                                    if (inviter.userID !=
+                                        currentUser.userID) ...[
+                                      if (currentUserRequestStatus !=
+                                          'out') ...[
+                                        Padding(
+                                          padding: const EdgeInsets.all(30.0),
+                                          child: SizedBox(
+                                              height: 85.0,
+                                              child: GestureDetector(
+                                                  onTap: () =>
+                                                      _changeEventRequestStatus(
+                                                          roomSnap.data,
+                                                          widget.currentUserID,
+                                                          inviter.userID,
+                                                          currentUser
+                                                              .eventRequestStatus,
+                                                          newEventStatus: 'out'),
+                                                  child: Icon(
+                                                      Icons.thumb_down))),
+                                        ),
+                                      ]
                                     ]
                                   ],
-                                  if (inviter.userID != currentUser.userID) ...[
-                                    if (currentUserRequestStatus != 'out') ...[
-                                      Padding(
-                                        padding: const EdgeInsets.all(30.0),
-                                        child: SizedBox(
-                                            height: 85.0,
-                                            child: GestureDetector(
-                                                onTap: () =>
-                                                    _changeEventRequestStatus(
-                                                        roomSnap.data,
-                                                        widget.currentUserID,
-                                                        inviter.userID,
-                                                        currentUser
-                                                            .eventRequestStatus,
-                                                        newEventStatus: 'out'),
-                                                child: Icon(Icons.thumb_down))),
-                                      ),
-                                    ]
-                                  ]
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
+                                ),
+                              ],
+                            )
+                          ],
                         if (inviter.userID == currentUser.userID) ...[
                           _deleteIconButton(context, widget.event)
                         ]
@@ -502,7 +524,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
       {String newEventStatus}) async {
     await _bloc
         .changeEventRequestStatus(
-            event, currentUserId, inviterId, newEventStatus)
+        event, currentUserId, inviterId, newEventStatus)
         .then((status) {
       _launchStatusSnackbar(status);
     });
@@ -603,18 +625,22 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   }
 
   _openNameTextField() {
+    int changer;
+    if (nameChallengeTextFieldEnabler == 1) {
+      changer = 0;
+    } else {
+      changer = 1;
+    }
     setState(() {
-      nameChallengeTextFieldEnabler = 1;
+      nameChallengeTextFieldEnabler = changer;
     });
   }
 }
 
 class WrapItem extends StatelessWidget {
-  const WrapItem(
-    this.userList,
-    this.user,
-    this.isSource,
-  ) : size = isSource ? 40.0 : 70.0;
+  const WrapItem(this.userList,
+      this.user,
+      this.isSource,) : size = isSource ? 40.0 : 70.0;
 
   final bool isSource;
   final double size;

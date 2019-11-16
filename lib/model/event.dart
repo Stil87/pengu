@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:peng_u/model/user.dart';
 
 import 'event_place.dart';
+import 'name_challenge.dart';
 
 class Event {
   String roomId;
@@ -9,6 +10,7 @@ class Event {
   DateTime dateTime;
   EventPlace eventPlace;
   List<User> invitedUserObjectList;
+  List<NameChallenge> nameChallenge;
 
   Event({
     this.roomId,
@@ -16,6 +18,7 @@ class Event {
     this.dateTime,
     this.eventPlace,
     this.invitedUserObjectList,
+    this.nameChallenge,
   });
 
   factory Event.fromFirestore(DocumentSnapshot doc) {
@@ -25,7 +28,8 @@ class Event {
       if (timeStamp is Timestamp) {
         DateTime dateTime = timeStamp.toDate();
         return dateTime;
-      } return timeStamp;
+      }
+      return timeStamp;
     }
 
     List<User> _userListJsonToList(Map jsonUserList) {
@@ -36,13 +40,24 @@ class Event {
       return _userList;
     }
 
+    _nameChallengeListGenerator(Map doc) {
+      List<NameChallenge> list = [];
+      doc.forEach((key, value) =>list.add( NameChallenge.fromJson(value)));
+
+      return list;
+
+
+    }
+    
     return Event(
         roomId: doc.documentID ?? '',
         eventName: data['eventName'] ?? 'we need a name',
         dateTime: _toDateTime(data['dateTime']) ?? DateTime.now(),
-        eventPlace: EventPlace.fromJson(data['eventPlace']) ?? ' we need a place',
+        eventPlace:
+            EventPlace.fromJson(data['eventPlace']) ?? ' we need a place',
         invitedUserObjectList:
-            _userListJsonToList(data['invitedUserObjectList']) ?? null);
+            _userListJsonToList(data['invitedUserObjectList']) ?? null,
+        nameChallenge: _nameChallengeListGenerator(data['nameChallenge']) ?? null);
   }
 
   Map<String, Object> toJson() {

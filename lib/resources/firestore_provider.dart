@@ -567,12 +567,14 @@ class FirestoreProvider {
         .map((doc) => Event.fromFirestore(doc));
   }
 
-  Future<Event> getRoom (String currentUserId, String eventId) async {
-   return await  _firestore.collection(_firestoreCollectionNameAllUsers)
+  Future<Event> getRoom(String currentUserId, String eventId) async {
+    return await _firestore
+        .collection(_firestoreCollectionNameAllUsers)
         .document(currentUserId)
         .collection(_userPersonalRoomsListCollectionName)
         .document(eventId)
-        .get().then((room) => Event.fromFirestore(room));
+        .get()
+        .then((room) => Event.fromFirestore(room));
   }
 
   /// Firebasestorage methods
@@ -625,7 +627,6 @@ class FirestoreProvider {
 
   Future<void> sendPush(
       User userInList, String currentUserId, int pushNote) async {
-        
     User currentUser =
         await getUserFromFirestoreCollectionFuture(userID: currentUserId);
     _firestore.collection(_friendRelationsCollection).document().setData({
@@ -636,5 +637,29 @@ class FirestoreProvider {
       'userToToken': userInList.userMobileToken,
       'userFromToken': currentUser.userMobileToken
     });
+  }
+
+  Future<void> createChallenge(User currentUser, Event event,
+      {String newName}) async {
+    if (newName.isNotEmpty) {
+      event.invitedUserObjectList.forEach((user) {
+        _firestore
+            .collection(_firestoreCollectionNameAllUsers)
+            .document(user.userID)
+            .collection(_userPersonalRoomsListCollectionName)
+            .document(event.roomId)
+            .setData({
+          'nameChallenged': true,
+          'nameChallenge': {
+            currentUser.userID: {
+              'timesChallenged': 1,
+              'newName': newName,
+              'challenger': currentUser.userID,
+            }
+          },
+        }, merge: true);
+      });
+      print('started name challenge');
+    }
   }
 }
