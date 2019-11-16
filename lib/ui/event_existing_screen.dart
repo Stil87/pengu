@@ -29,6 +29,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
   Event updatedEvent;
   String inviterIdUpdate;
   String currentUserEventStatusUpdate;
+  int nameChallengeTextFieldEnabler = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +53,8 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
       body: StreamBuilder<Event>(
           stream:
               _bloc.getRoomStream(widget.event.roomId, widget.currentUserID),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
+          builder: (context, roomSnap) {
+            if (!roomSnap.hasData) {
               return Container(
                 alignment: Alignment.bottomCenter,
                 child: Column(
@@ -65,26 +66,26 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
               );
             }
 
-            User inviter = snapshot.data.invitedUserObjectList.firstWhere(
+            User inviter = roomSnap.data.invitedUserObjectList.firstWhere(
                 (user) =>
                     user.eventRequestStatus == 'inviter' ||
                     user.eventRequestStatus == 'inviterThere');
             inviterIdUpdate = inviter.userID;
-            User currentUser = snapshot.data.invitedUserObjectList
+            User currentUser = roomSnap.data.invitedUserObjectList
                 .firstWhere((user) => user.userID == widget.currentUserID);
             String currentUserRequestStatus = currentUser.eventRequestStatus;
             print('requestStatus: $currentUserRequestStatus');
             currentUserEventStatusUpdate = currentUser.eventRequestStatus;
-            List<User> _userInList = snapshot.data.invitedUserObjectList
+            List<User> _userInList = roomSnap.data.invitedUserObjectList
                 .where((user) => user.eventRequestStatus == 'in')
                 .toList();
-            List<User> _userOutList = snapshot.data.invitedUserObjectList
+            List<User> _userOutList = roomSnap.data.invitedUserObjectList
                 .where((user) => user.eventRequestStatus == 'out')
                 .toList();
-            List<User> _userThereList = snapshot.data.invitedUserObjectList
+            List<User> _userThereList = roomSnap.data.invitedUserObjectList
                 .where((user) => user.eventRequestStatus == 'there')
                 .toList();
-            List<User> _userInvitedList = snapshot.data.invitedUserObjectList
+            List<User> _userInvitedList = roomSnap.data.invitedUserObjectList
                 .where((user) => user.eventRequestStatus == '')
                 .toList();
 
@@ -102,16 +103,52 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 _getInviterBubble(inviter),
-                                Text(
-                                  snapshot.data.eventName,
-                                  style: TextStyle(fontSize: 20),
+                                Container(
+                                  color: Colors.white,
+                                  child: Stack(
+                                    children: <Widget>[
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 12.0),
+                                          child: Text(
+                                            roomSnap.data.eventName,
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Container(
+                                          padding:
+                                              const EdgeInsets.only(left: 5.0),
+                                          child: FloatingActionButton(
+                                            mini: true,
+                                            onPressed: () =>
+                                                _openNameTextField(),
+                                            child: Icon(Icons.sync_problem),
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ],
                             )),
+                        if (nameChallengeTextFieldEnabler == 1) ...[
+                          SizedBox(
+                            height: 70,
+                            child: TextFormField(onFieldSubmitted:(newName) => _bloc.createChallenge(newName),textAlign: TextAlign.center,
+                              decoration: InputDecoration(
+                                  hintText: 'come up with a better name!'),
+                            ),
+                          )
+                        ],
                         GestureDetector(
                           onTap: () => _bloc.launchMapsUrl(
-                              snapshot.data.eventPlace.placeId,
-                              snapshot.data.eventPlace.placeName),
+                              roomSnap.data.eventPlace.placeId,
+                              roomSnap.data.eventPlace.placeName),
                           child: SizedBox(
                             height: 40.0,
                             child: Row(
@@ -120,7 +157,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                 FittedBox(
                                   fit: BoxFit.fitWidth,
                                   child: Text(
-                                    snapshot.data.eventPlace.placeName,
+                                    roomSnap.data.eventPlace.placeName,
                                   ),
                                 ),
                                 Padding(
@@ -137,9 +174,9 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                               padding: const EdgeInsets.all(2.0),
                               child: Column(
                                 children: <Widget>[
-                                  Text(_getDate(snapshot.data.dateTime)),
+                                  Text(_getDate(roomSnap.data.dateTime)),
                                   Text(TimeOfDay.fromDateTime(
-                                          snapshot.data.dateTime)
+                                          roomSnap.data.dateTime)
                                       .format(context)),
                                 ],
                               ),
@@ -286,29 +323,31 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             ),
                           )
                         ],
-                      if (targetBuilderDelegates.length > 0) ...[
-                        SizedBox(
-                          height: 105.0,
-                          child: ListView(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            children: targetBuilderDelegates
-                                .map((builderDelegate) => builderDelegate.build(
-                                      context,
-                                      WrapItem(
-                                        widget._friendList,
-                                        builderDelegate.message,
-                                        false,
-                                      ),
-                                      animationBuilder: (animation) =>
-                                          CurvedAnimation(
-                                        parent: animation,
-                                        curve: FlippedCurve(Curves.ease),
-                                      ),
-                                    ))
-                                .toList(),
-                          ),
-                        )],
+                        if (targetBuilderDelegates.length > 0) ...[
+                          SizedBox(
+                            height: 105.0,
+                            child: ListView(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              children: targetBuilderDelegates
+                                  .map((builderDelegate) =>
+                                      builderDelegate.build(
+                                        context,
+                                        WrapItem(
+                                          widget._friendList,
+                                          builderDelegate.message,
+                                          false,
+                                        ),
+                                        animationBuilder: (animation) =>
+                                            CurvedAnimation(
+                                          parent: animation,
+                                          curve: FlippedCurve(Curves.ease),
+                                        ),
+                                      ))
+                                  .toList(),
+                            ),
+                          )
+                        ],
                         if (sourceBuilderDelegates.length > 0) ...[
                           Padding(
                             padding: const EdgeInsets.all(5.0),
@@ -350,7 +389,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                 child: Icon(Icons.send),
                                 onPressed: () => _bloc
                                         .forwardEventToAddedFriend(
-                                            snapshot.data,
+                                            roomSnap.data,
                                             SidekickTeamBuilder.of<User>(
                                                     context)
                                                 .targetList,
@@ -392,7 +431,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                           child: GestureDetector(
                                               onTap: () =>
                                                   _changeEventRequestStatus(
-                                                      snapshot.data,
+                                                      roomSnap.data,
                                                       widget.currentUserID,
                                                       inviter.userID,
                                                       currentUser
@@ -411,7 +450,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                             child: GestureDetector(
                                                 onTap: () =>
                                                     _changeEventRequestStatus(
-                                                        snapshot.data,
+                                                        roomSnap.data,
                                                         widget.currentUserID,
                                                         inviter.userID,
                                                         currentUser
@@ -432,7 +471,7 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                                             child: GestureDetector(
                                                 onTap: () =>
                                                     _changeEventRequestStatus(
-                                                        snapshot.data,
+                                                        roomSnap.data,
                                                         widget.currentUserID,
                                                         inviter.userID,
                                                         currentUser
@@ -561,6 +600,12 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
       text = 'You just called ${userInList.firstName} a hero!';
     }
     Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(text)));
+  }
+
+  _openNameTextField() {
+    setState(() {
+      nameChallengeTextFieldEnabler = 1;
+    });
   }
 }
 

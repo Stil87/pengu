@@ -12,8 +12,10 @@ class EventExistingBloc {
     List<String> tokens = [];
     event.invitedUserObjectList
         .forEach((user) => tokens.add(user.userMobileToken));
-    User deleter = event.invitedUserObjectList.firstWhere((user) => user.userID == currentUserId);
-    await _repository.deleteEventInformationToRoomCollection(event, tokens, deleter);
+    User deleter = event.invitedUserObjectList
+        .firstWhere((user) => user.userID == currentUserId);
+    await _repository.deleteEventInformationToRoomCollection(
+        event, tokens, deleter);
   }
 
   Future forwardEventToAddedFriend(
@@ -55,17 +57,17 @@ class EventExistingBloc {
     }
   }
 
-  Future<String> changeEventRequestStatus(
-      Event event, String currentUserId, String inviterId, String newEventStatus) async {
-  Event eventUpdated =   await _repository.getRoom(currentUserId, event.roomId);
-  event = eventUpdated;
+  Future<String> changeEventRequestStatus(Event event, String currentUserId,
+      String inviterId, String newEventStatus) async {
+    Event eventUpdated = await _repository.getRoom(currentUserId, event.roomId);
+    event = eventUpdated;
     User _oldCurrentUser = event.invitedUserObjectList
         .firstWhere((user) => user.userID == currentUserId);
 
     //String status = _oldCurrentUser.eventRequestStatus;
     //print('alter Status $status');
 
-   String status = newEventStatus;
+    String status = newEventStatus;
 
     if (currentUserId == inviterId) {
       if (status == 'in') {
@@ -75,8 +77,7 @@ class EventExistingBloc {
       }
     }
 
-
- /*   if (currentUserId == inviterId) {
+    /*   if (currentUserId == inviterId) {
       if (status == 'inviter') {
         status = 'inviterThere';
       } else if (status == 'inviterThere') {
@@ -128,7 +129,10 @@ class EventExistingBloc {
   }
 
   void sendPush(User userInList, String currentUserId, int pushNote) {
-   _repository.sendPush(userInList, currentUserId,pushNote);
+    _repository.sendPush(userInList, currentUserId, pushNote);
+  }
 
+  createChallenge(String newName) {
+    if (newName.isNotEmpty) {}
   }
 }
