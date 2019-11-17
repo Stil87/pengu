@@ -655,6 +655,7 @@ class FirestoreProvider {
               'timesChallenged': 1,
               'newName': newName,
               'challenger': currentUser.userID,
+              'challengeId' : currentUser.userID
             }
           },
         }, merge: true);

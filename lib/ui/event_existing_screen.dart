@@ -152,7 +152,16 @@ class _EventExistingScreenState extends State<EventExistingScreen> {
                             ),
                           )
                         ], if(roomSnap.data.nameChallenge.length!= 0)...[
-                          Text(roomSnap.data.nameChallenge[0].newName)
+                          Text(roomSnap.data.nameChallenge[0].newName),
+
+                        ],
+                        if(roomSnap.data.nameChallenge.length ==2)...[
+                          Text(roomSnap.data.nameChallenge[1].newName),
+
+                        ],
+                        if(roomSnap.data.nameChallenge.length ==3)...[
+                          Text(roomSnap.data.nameChallenge[2].newName),
+
                         ],
                         GestureDetector(
                           onTap: () =>

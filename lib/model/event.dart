@@ -34,21 +34,23 @@ class Event {
 
     List<User> _userListJsonToList(Map jsonUserList) {
       List<User> _userList = [];
-      jsonUserList.forEach((key, value) {
-        _userList.add(User.fromJson(value));
-      });
+      if (jsonUserList != null && jsonUserList.isNotEmpty) {
+        jsonUserList.forEach((key, value) {
+          _userList.add(User.fromJson(value));
+        });
+      }
       return _userList;
     }
 
     _nameChallengeListGenerator(Map doc) {
       List<NameChallenge> list = [];
-      doc.forEach((key, value) =>list.add( NameChallenge.fromJson(value)));
+      if (doc != null) {
+        doc.forEach((key, value) => list.add(NameChallenge.fromJson(value)));
+      }
 
       return list;
-
-
     }
-    
+
     return Event(
         roomId: doc.documentID ?? '',
         eventName: data['eventName'] ?? 'we need a name',
@@ -57,7 +59,8 @@ class Event {
             EventPlace.fromJson(data['eventPlace']) ?? ' we need a place',
         invitedUserObjectList:
             _userListJsonToList(data['invitedUserObjectList']) ?? null,
-        nameChallenge: _nameChallengeListGenerator(data['nameChallenge']) ?? null);
+        nameChallenge:
+            _nameChallengeListGenerator(data['nameChallenge']) ?? null);
   }
 
   Map<String, Object> toJson() {
@@ -67,6 +70,7 @@ class Event {
       'dateTime': dateTime,
       'eventPlace': eventPlace.toJson(),
       'invitedUserObjectList': userListToJson(invitedUserObjectList),
+      'nameChallenge': nameChallengeToJson(nameChallenge),
     };
   }
 
@@ -79,5 +83,21 @@ class Event {
     }
     print('here is the userMAp: $userMap');
     return userMap;
+  }
+
+  nameChallengeToJson(List<NameChallenge> nameChallenges) {
+    try {
+      Map nameChallengeMap = {};
+      if (nameChallenges.length > 0) {
+        nameChallenges.forEach((nameChallenge) {
+          print('single nameChallenge: ${nameChallenge.newName}');
+          nameChallengeMap
+              .addAll({nameChallenge.challengeId: nameChallenge.toJson()});
+          print(nameChallengeMap);
+        });
+      }return nameChallengeMap;
+    } catch (e) {
+      print('nameChallengeToJson mehtod error: $e');
+    }
   }
 }
